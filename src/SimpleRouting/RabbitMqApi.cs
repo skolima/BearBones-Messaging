@@ -130,5 +130,30 @@ namespace Messaging.SimpleRouting
             ch.Close();
             conn.Close();
         }
+
+		public void WithChannel(Action<IModel> actions)
+		{
+			var factory = ConnectionFactory();
+			using (var conn = factory.CreateConnection())
+			using (var channel = conn.CreateModel())
+			{
+				actions(channel);
+				channel.Close();
+				conn.Close();
+			}
+		}
+
+		public T GetWithChannel<T>(Func<IModel, T> actions)
+		{
+			var factory = ConnectionFactory();
+			using (var conn = factory.CreateConnection())
+			using (var channel = conn.CreateModel())
+			{
+				var result = actions(channel);
+				channel.Close();
+				conn.Close();
+				return result;
+			}
+		}
     }
 }

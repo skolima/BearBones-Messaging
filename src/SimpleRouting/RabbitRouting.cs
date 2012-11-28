@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.v0_9_1;
 
 namespace Messaging.SimpleRouting
@@ -12,17 +10,21 @@ namespace Messaging.SimpleRouting
 	/// </summary>
 	public class RabbitRouting : IMessageRouting
 	{
-		readonly RabbitMqApi api;
 		readonly List<string> queues;
 		readonly List<string> exchanges;
 		readonly IDictionary noOptions;
+		readonly RabbitMqApi api;
+
+		public RabbitRouting() : this(RabbitMqApi.WithConfigSettings())
+		{
+		}
 
 		/// <summary>
 		/// Create a new router from config settings
 		/// </summary>
-		public RabbitRouting()
+		public RabbitRouting(RabbitMqApi rabbitApi)
 		{
-			api = RabbitMqApi.WithConfigSettings();
+			api = rabbitApi;
 			queues = new List<string>();
 			exchanges = new List<string>();
 			noOptions = new Dictionary<string,string>();
@@ -33,15 +35,18 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void RemoveRouting ()
 		{
-			foreach (var queue in queues)
-			{
-				api.DeleteQueue(queue);
-			}
-			
-			foreach (var exchange in exchanges)
-			{
-				api.DeleteExchange(exchange);
-			}
+			api.WithChannel(channel =>
+				{
+					foreach (var queue in queues)
+					{
+						channel.QueueDelete(queue);
+					}
+
+					foreach (var exchange in exchanges)
+					{
+						channel.ExchangeDelete(exchange);
+					}
+				});
 
 			queues.Clear();
 			exchanges.Clear();
@@ -53,7 +58,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void AddSource(string name)
 		{
-			WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
+			api.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
 			exchanges.Add(name);
 		}
 		
@@ -63,7 +68,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void AddBroadcastSource(string className)
 		{
-			WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
+			api.WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
 			exchanges.Add(className);
 		}
 
@@ -72,7 +77,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void AddDestination(string name)
 		{
-			WithChannel(channel => channel.QueueDeclare(name, true, false, false, noOptions));
+			api.WithChannel(channel => channel.QueueDeclare(name, true, false, false, noOptions));
 			queues.Add(name);
 		}
 
@@ -81,7 +86,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void Link(string sourceName, string destinationName, string routingKey)
 		{
-			WithChannel(channel => channel.QueueBind(destinationName, sourceName, routingKey));
+			api.WithChannel(channel => channel.QueueBind(destinationName, sourceName, routingKey));
 		}
 
 		/// <summary>
@@ -89,7 +94,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void Route(string parent, string child, string routingKey)
 		{
-			WithChannel(channel => channel.ExchangeBind(parent, child, routingKey));
+			api.WithChannel(channel => channel.ExchangeBind(parent, child, routingKey));
 		}
 
 		/// <summary>
@@ -97,7 +102,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void Send(string sourceName, string routingKey, string data)
 		{
-			WithChannel(channel => channel.BasicPublish(sourceName, routingKey, false, false, new BasicProperties(), Encoding.UTF8.GetBytes(data)));
+			api.WithChannel(channel => channel.BasicPublish(sourceName, routingKey, false, false, new BasicProperties(), Encoding.UTF8.GetBytes(data)));
 		}
 
 		/// <summary>
@@ -105,38 +110,13 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public string Get(string destinationName)
 		{
-			var result = GetWithChannel(channel => {
+			var result = api.GetWithChannel(channel => {
 				var rs = channel.BasicGet(destinationName, false);
 				if (rs == null) return null;
 				channel.BasicAck(rs.DeliveryTag, false);
 				return rs;
 			});
 			return result == null ? null : Encoding.UTF8.GetString(result.Body);
-		}
-
-		private void WithChannel(Action<IModel> actions)
-		{
-			var factory = api.ConnectionFactory();
-			using (var conn = factory.CreateConnection())
-			using (var channel = conn.CreateModel())
-			{
-				actions(channel);
-				channel.Close();
-				conn.Close();
-			}
-		}
-
-		private T GetWithChannel<T>(Func<IModel, T> actions)
-		{
-			var factory = api.ConnectionFactory();
-			using (var conn = factory.CreateConnection())
-			using (var channel = conn.CreateModel())
-			{
-				var result = actions(channel);
-				channel.Close();
-				conn.Close();
-				return result;
-			}
 		}
 	}
 }
