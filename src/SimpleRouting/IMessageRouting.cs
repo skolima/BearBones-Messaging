@@ -1,4 +1,4 @@
-namespace SimpleRouting
+namespace Messaging.SimpleRouting
 {
 	public interface IMessageRouting
 	{

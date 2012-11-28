@@ -1,4 +1,4 @@
-﻿namespace SimpleRouting
+﻿namespace Messaging.SimpleRouting.Management
 {
     public class RMNode : IRMNode
     {

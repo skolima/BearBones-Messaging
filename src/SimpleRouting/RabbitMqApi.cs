@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net;
+using Messaging.SimpleRouting.Management;
 using RabbitMQ.Client;
 using ServiceStack.Text;
 
-namespace SimpleRouting
+namespace Messaging.SimpleRouting
 {
     public class RabbitMqApi
     {
@@ -26,7 +27,8 @@ namespace SimpleRouting
             var password = ConfigurationManager.AppSettings["ApiPassword"];
             var vhost = (parts.Length >= 2) ? (parts[1]) : ("/");
 
-            return new RabbitMqApi("http://" + hostUri + ":55672", username, password, vhost);
+            return new RabbitMqApi("http://" + hostUri + ":15672", username, password, vhost); // 3.0+
+            //return new RabbitMqApi("http://" + hostUri + ":55672", username, password, vhost); // before RMQ 3
         }
 
         public RabbitMqApi(Uri managementApiHost, NetworkCredential credentials)
@@ -68,7 +70,6 @@ namespace SimpleRouting
             {
                 var webRequest = WebRequest.Create(result);
                 webRequest.Credentials = credentials;
-
                 return webRequest.GetResponse().GetResponseStream();
             }
 

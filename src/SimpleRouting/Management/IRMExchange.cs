@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SimpleRouting
+namespace Messaging.SimpleRouting.Management
 {
     public interface IRMExchange
     {

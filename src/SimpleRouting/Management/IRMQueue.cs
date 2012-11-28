@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleRouting
+namespace Messaging.SimpleRouting.Management
 {
     public interface IRMQueue
     {

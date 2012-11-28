@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleRouting
+namespace Messaging.SimpleRouting
 {
     public static class Formatting
     {

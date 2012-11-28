@@ -5,7 +5,7 @@ using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.v0_9_1;
 
-namespace SimpleRouting
+namespace Messaging.SimpleRouting
 {
 	/// <summary>
 	/// Very simple synchronous message routing over RabbitMq
