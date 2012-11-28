@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 
 namespace SimpleRouting.Integration.Tests
@@ -153,26 +154,6 @@ namespace SimpleRouting.Integration.Tests
 			Assert.That(message, Is.Null);
 		}
 
-		[Test, Explicit]
-		public void Can_send_and_receive_1000_messages_synchronously_in_a_minute ()
-		{
-			router.AddSource("A");
-			router.AddDestination("B");
-			router.Link("A","B","K");
-
-			var start = DateTime.Now;
-			int received = 0;
-			for (int i = 0; i < 1000; i++)
-			{
-				router.Send("A", "K", "Woo");
-			}
-			while (router.Get("B") != null) received++;
-
-			var time = (DateTime.Now) - start;
-			Assert.That(received, Is.EqualTo(1000));
-			Assert.That(time.TotalSeconds, Is.LessThanOrEqualTo(60));
-		}
-
 		[Test]
 		public void Can_route_a_hierarchy_of_keys ()
 		{
@@ -222,6 +203,61 @@ namespace SimpleRouting.Integration.Tests
 			Assert.That(router.Get("D1"), Is.EqualTo("D2, D1, D3 get this"));
 			Assert.That(router.Get("D1"), Is.EqualTo("D1, D3 get this"));
 			Assert.That(router.Get("D1"), Is.Null);
+		}
+
+		[Test, Explicit]
+		public void Can_send_and_receive_1000_messages_synchronously_in_a_minute ()
+		{
+			router.AddSource("A");
+			router.AddDestination("B");
+			router.Link("A","B","K");
+
+			var start = DateTime.Now;
+			int received = 0;
+			for (int i = 0; i < 1000; i++)
+			{
+				router.Send("A", "K", "Woo");
+			}
+			while (router.Get("B") != null) received++;
+
+			var time = (DateTime.Now) - start;
+			Assert.That(received, Is.EqualTo(1000));
+			Assert.That(time.TotalSeconds, Is.LessThanOrEqualTo(60));
+		}
+		
+		[Test, Explicit]
+		public void Multithreaded_get_does_not_provide_duplicate_messages ()
+		{
+			router.AddSource("A");
+			router.AddDestination("B");
+			router.Link("A","B","K");
+
+			int[] received = {0};
+			int count = 200;
+			for (int i = 0; i < count; i++)
+			{
+				router.Send("A", "K", "message");
+			}
+
+			var A = new Thread(()=> {
+				while (router.Get("B") != null) Interlocked.Increment(ref received[0]);
+			});
+			var B = new Thread(()=> {
+				while (router.Get("B") != null) Interlocked.Increment(ref received[0]);
+			});
+			var C = new Thread(()=> {
+				while (router.Get("B") != null) Interlocked.Increment(ref received[0]);
+			});
+
+			A.Start();
+			B.Start();
+			C.Start();
+			A.Join();
+			B.Join();
+			C.Join();
+
+			Console.WriteLine(received[0]);
+			Assert.That(received[0], Is.EqualTo(count));
 		}
 
 		[TearDown]
