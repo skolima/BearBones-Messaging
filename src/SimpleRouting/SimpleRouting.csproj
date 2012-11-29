@@ -44,8 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IMessageRouting.cs" />
+    <Compile Include="IRabbitMqApi.cs" />
     <Compile Include="Management\RMQueue.cs" />
-    <Compile Include="Formatting.cs" />
+    <Compile Include="Extensions\Formatting.cs" />
     <Compile Include="Management\IRMExchange.cs" />
     <Compile Include="Management\IRMNode.cs" />
     <Compile Include="Management\IRMQueue.cs" />
@@ -59,6 +60,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

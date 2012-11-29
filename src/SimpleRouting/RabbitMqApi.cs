@@ -9,8 +9,8 @@ using ServiceStack.Text;
 
 namespace Messaging.SimpleRouting
 {
-    public class RabbitMqApi
-    {
+	public class RabbitMqApi : IRabbitMqApi
+	{
         readonly string virtualHost;
         readonly Uri managementApiHost;
         readonly NetworkCredential credentials;

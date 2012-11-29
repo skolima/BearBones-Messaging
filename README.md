@@ -3,14 +3,14 @@ BearBones-Messaging
 Things it should do
 -------------------
 
-* Everything it currently does.
+* Deserialised messages should be of sent type cast to accepted type (if available)
+* Everything MassRabbit currently does.
 * Capture and handle dead messages (i.e. no one is handling a message type) -- maybe by having a failed send on the sender side and a special general dead messages queue (rather than error queue for each real queue)
 * Health Check & re-establish connections (when listening, if RMQ goes down, should reconnect and listen when it's back)
 * Temporary listening -- delete consumer queue when no longer listening.
 * Should be able to query how many handlers are currently running (interlocked incr/decr?)
 * Should be able to set a service to 'cool down' mode where handlers are deregistered and subscriptions stopped (this with counting will help cold code swapping)
 * Disconnect and die method (unreg all handlers)
-* Change name!
 
 Cool code swap
 --------------

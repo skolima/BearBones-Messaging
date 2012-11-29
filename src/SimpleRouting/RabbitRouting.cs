@@ -13,7 +13,7 @@ namespace Messaging.SimpleRouting
 		readonly List<string> queues;
 		readonly List<string> exchanges;
 		readonly IDictionary noOptions;
-		readonly RabbitMqApi api;
+		readonly IRabbitMqApi api;
 
 		public RabbitRouting() : this(RabbitMqApi.WithConfigSettings())
 		{
@@ -22,7 +22,7 @@ namespace Messaging.SimpleRouting
 		/// <summary>
 		/// Create a new router from config settings
 		/// </summary>
-		public RabbitRouting(RabbitMqApi rabbitApi)
+		public RabbitRouting(IRabbitMqApi rabbitApi)
 		{
 			api = rabbitApi;
 			queues = new List<string>();
