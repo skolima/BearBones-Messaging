@@ -48,15 +48,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\SimpleRouting\App.config">
-      <Link>App.config</Link>
-    </None>
+    <None Include="App.config" />
+    <None Include="App.config.buildagent" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimpleRouting\SevenDigital.Messaging.Base.csproj">
+    <ProjectReference Include="..\SevenDigital.Messaging.Base\SevenDigital.Messaging.Base.csproj">
       <Project>{405a9de3-4315-4e02-b504-7ad4be58353a}</Project>
       <Name>SevenDigital.Messaging.Base</Name>
     </ProjectReference>
