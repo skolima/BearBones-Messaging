@@ -1,4 +1,4 @@
-﻿namespace Messaging.SimpleRouting.Management
+﻿namespace SevenDigital.Messaging.Base.Management
 {
     public interface IRMNode
     {

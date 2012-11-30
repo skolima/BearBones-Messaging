@@ -2,10 +2,10 @@
 using System.Configuration;
 using System.IO;
 using System.Net;
-using Messaging.SimpleRouting.Management;
 using ServiceStack.Text;
+using SevenDigital.Messaging.Base.Management;
 
-namespace Messaging.SimpleRouting
+namespace SevenDigital.Messaging.Base
 {
 	public class RabbitMqQuery : IRabbitMqQuery
 	{

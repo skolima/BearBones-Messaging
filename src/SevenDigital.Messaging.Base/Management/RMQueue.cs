@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Messaging.SimpleRouting.Management
+namespace SevenDigital.Messaging.Base.Management
 {
     public class RMQueue : IRMQueue
     {

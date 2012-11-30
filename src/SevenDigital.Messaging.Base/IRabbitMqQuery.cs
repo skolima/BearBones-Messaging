@@ -1,6 +1,6 @@
-using Messaging.SimpleRouting.Management;
+using SevenDigital.Messaging.Base.Management;
 
-namespace Messaging.SimpleRouting
+namespace SevenDigital.Messaging.Base
 {
 	public interface IRabbitMqQuery
 	{

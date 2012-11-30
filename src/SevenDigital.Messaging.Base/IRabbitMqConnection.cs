@@ -1,7 +1,7 @@
 using System;
 using RabbitMQ.Client;
 
-namespace Messaging.SimpleRouting
+namespace SevenDigital.Messaging.Base
 {
 	public interface IRabbitMqConnection
 	{

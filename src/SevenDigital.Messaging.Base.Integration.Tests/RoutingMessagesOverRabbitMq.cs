@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Messaging.SimpleRouting;
 using NUnit.Framework;
+using SevenDigital.Messaging.Base;
 
-namespace SimpleRouting.Integration.Tests
+namespace Messaging.Base.Integration.Tests
 {
 	[TestFixture]
 	public class RoutingMessagesOverRabbitMq

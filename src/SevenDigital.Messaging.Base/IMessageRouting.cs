@@ -1,4 +1,4 @@
-namespace Messaging.SimpleRouting
+namespace SevenDigital.Messaging.Base
 {
 	public interface IMessageRouting
 	{

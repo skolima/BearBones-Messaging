@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Messaging.SimpleRouting
+namespace SevenDigital.Messaging.Base
 {
 	/// <summary>
 	/// Very simple synchronous message routing over RabbitMq

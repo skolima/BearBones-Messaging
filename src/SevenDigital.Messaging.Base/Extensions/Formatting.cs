@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Messaging.SimpleRouting
+namespace SevenDigital.Messaging.Base
 {
     public static class Formatting
     {

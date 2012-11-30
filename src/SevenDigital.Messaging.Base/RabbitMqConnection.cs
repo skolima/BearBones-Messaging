@@ -3,7 +3,7 @@ using System.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.v0_9_1;
 
-namespace Messaging.SimpleRouting
+namespace SevenDigital.Messaging.Base
 {
 	public class RabbitMqConnection : IRabbitMqConnection
 	{
