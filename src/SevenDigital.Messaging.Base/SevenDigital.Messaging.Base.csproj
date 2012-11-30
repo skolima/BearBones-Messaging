@@ -46,6 +46,7 @@
     <Compile Include="IMessageRouting.cs" />
     <Compile Include="IRabbitMqConnection.cs" />
     <Compile Include="IRabbitMqQuery.cs" />
+    <Compile Include="ITypeStructureRouter.cs" />
     <Compile Include="Management\RMQueue.cs" />
     <Compile Include="Extensions\Formatting.cs" />
     <Compile Include="Management\IRMExchange.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="Management\RMExchange.cs" />
     <Compile Include="Management\RMNode.cs" />
     <Compile Include="RabbitRouting.cs" />
+    <Compile Include="TypeStructureRouter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

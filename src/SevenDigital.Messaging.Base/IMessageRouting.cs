@@ -27,7 +27,7 @@ namespace SevenDigital.Messaging.Base
 		/// <summary>
 		/// Route a message between two sources.
 		/// </summary>
-		void RouteSources(string parent, string child, string routingKey);
+		void RouteSources(string child, string parent, string routingKey);
 
 		/// <summary>
 		/// Send a message to an established source (will be routed to destinations by key)

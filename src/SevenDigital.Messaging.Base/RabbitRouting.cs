@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -92,8 +93,9 @@ namespace SevenDigital.Messaging.Base
 		/// <summary>
 		/// Route a message between two sources.
 		/// </summary>
-		public void RouteSources(string parent, string child, string routingKey)
+		public void RouteSources(string child, string parent, string routingKey)
 		{
+			if (parent == child) throw new ArgumentException("Can't bind a source to itself");
 			connection.WithChannel(channel => channel.ExchangeBind(parent, child, routingKey));
 		}
 

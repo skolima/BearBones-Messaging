@@ -39,6 +39,13 @@ namespace Messaging.Base.Integration.Tests
 		}
 
 		[Test]
+		public void Should_not_be_able_to_route_a_source_to_itself()
+		{
+			router.AddSource("A");
+			Assert.Throws<ArgumentException>(() => router.RouteSources("A", "A", ""));
+		}
+
+		[Test]
 		public void Can_create_a_single_exchange_and_queue_and_send_a_simple_message()
 		{
 			router.AddSource("exchange_A");
@@ -174,11 +181,11 @@ namespace Messaging.Base.Integration.Tests
 			router.AddDestination("D2");
 			router.AddDestination("D3");
 
-			router.RouteSources("B", "N1", "");
-			router.RouteSources("B", "N2", "");
-			router.RouteSources("N1", "H1", "");
-			router.RouteSources("N1", "H2", "");
-			router.RouteSources("N2", "H3", "");
+			router.RouteSources("N1", "B", "");
+			router.RouteSources("N2", "B", "");
+			router.RouteSources("H1", "N1", "");
+			router.RouteSources("H2", "N1", "");
+			router.RouteSources("H3", "N2", "");
 
 			router.Link("N1", "D1", "");
 			router.Link("H2", "D2", "");

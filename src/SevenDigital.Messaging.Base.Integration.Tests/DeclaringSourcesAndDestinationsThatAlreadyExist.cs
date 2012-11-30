@@ -65,8 +65,8 @@ namespace Messaging.Base.Integration.Tests
 			router.AddSource("srcB");
 			router.AddDestination("dst");
 
-			router.RouteSources("srcB", "srcA", "");
-			router.RouteSources("srcB", "srcA", "");
+			router.RouteSources("srcA", "srcB", "");
+			router.RouteSources("srcA", "srcB", "");
 
 			router.Link("srcB", "dst", "");
 			router.Send("srcA", "", "Hello");
