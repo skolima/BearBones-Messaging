@@ -44,16 +44,6 @@ namespace Messaging.Base.Unit.Tests
 		}
 
 		[Test]
-		[TestCase("Example.Types.IMetadataFile")]
-		[TestCase("Example.Types.IHash")]
-		[TestCase("Example.Types.IPath")]
-		[TestCase("Example.Types.IMsg")]
-		public void Should_not_link_IMetadataFile_to_itself_indirect_antecendants(string antecendant)
-		{
-			router.DidNotReceive().RouteSources("Example.Types.IMetadataFile", antecendant);
-		}
-
-		[Test]
 		public void Should_link_IFile_to_IPath_with_IPath_as_parent()
 		{
 			router.Received().RouteSources("Example.Types.IFile", "Example.Types.IPath");
@@ -69,6 +59,56 @@ namespace Messaging.Base.Unit.Tests
 		public void Should_link_IPath_to_IPath_with_IMsg_as_parent()
 		{
 			router.Received().RouteSources("Example.Types.IPath", "Example.Types.IMsg");
+		}
+
+		[Test]
+		[TestCase("Example.Types.IMetadataFile")]
+		[TestCase("Example.Types.IHash")]
+		[TestCase("Example.Types.IPath")]
+		[TestCase("Example.Types.IMsg")]
+		public void Should_not_link_IMetadataFile_to_itself_or_indirect_antecendants(string antecendant)
+		{
+			router.DidNotReceive().RouteSources("Example.Types.IMetadataFile", antecendant);
+		}
+
+		[Test]
+		[TestCase("Example.Types.IMetadataFile")]
+		[TestCase("Example.Types.IFile")]
+		[TestCase("Example.Types.IMsg")]
+		public void Should_not_link_IFile_to_itself_or_parents_or_indirect_antecendants(string antecendant)
+		{
+			router.DidNotReceive().RouteSources("Example.Types.IFile", antecendant);
+		}
+
+		[Test]
+		[TestCase("Example.Types.IMetadataFile")]
+		[TestCase("Example.Types.IFile")]
+		[TestCase("Example.Types.IHash")]
+		[TestCase("Example.Types.IPath")]
+		public void Should_not_link_IHash_to_itself_or_parents_or_indirect_antecendants(string antecendant)
+		{
+			router.DidNotReceive().RouteSources("Example.Types.IHash", antecendant);
+		}
+
+		[Test]
+		[TestCase("Example.Types.IMetadataFile")]
+		[TestCase("Example.Types.IFile")]
+		[TestCase("Example.Types.IHash")]
+		[TestCase("Example.Types.IPath")]
+		public void Should_not_link_IPath_to_itself_or_parents_or_indirect_antecendants(string antecendant)
+		{
+			router.DidNotReceive().RouteSources("Example.Types.IPath", antecendant);
+		}
+
+		[Test]
+		[TestCase("Example.Types.IMetadataFile")]
+		[TestCase("Example.Types.IFile")]
+		[TestCase("Example.Types.IHash")]
+		[TestCase("Example.Types.IPath")]
+		[TestCase("Example.Types.IMsg")]
+		public void Should_not_link_IMsg_to_anything(string antecendant)
+		{
+			router.DidNotReceive().RouteSources("Example.Types.IMsg", antecendant);
 		}
 	}
 }
