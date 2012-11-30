@@ -38,5 +38,10 @@ namespace Messaging.SimpleRouting
 		/// Get a message from a destination. This removes the message from the destination
 		/// </summary>
 		string Get(string destinationName);
+
+		/// <summary>
+		/// Delete all waiting messages from a given destination
+		/// </summary>
+		void Purge(string destinationName);
 	}
 }

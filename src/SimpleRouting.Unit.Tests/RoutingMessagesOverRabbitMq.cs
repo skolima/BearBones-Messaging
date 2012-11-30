@@ -10,14 +10,16 @@ namespace SimpleRouting.Integration.Tests
 	[TestFixture]
 	public class RoutingMessagesOverRabbitMq
 	{
-		private RabbitMqApi api;
+		private RabbitMqQuery query;
 		private IMessageRouting router;
+		RabbitMqConnection connection;
 
 		[SetUp]
 		public void SetupApi()
 		{
-			api = RabbitMqApi.WithConfigSettings();
-			router = new RabbitRouting();
+			query = RabbitMqQuery.WithConfigSettings();
+			connection = RabbitMqConnection.WithAppConfigSettings();
+			router = new RabbitRouting(connection);
 		}
 
 		[Test]
@@ -26,14 +28,14 @@ namespace SimpleRouting.Integration.Tests
 			router.AddSource("A");
 			router.AddDestination("B");
 
-			Assert.IsTrue(api.ListExchanges().Any(e=>e.name == "A"), "Exchange not created");
-			Assert.IsTrue(api.ListQueues().Any(e=>e.name == "B"), "Queue not created");
+			Assert.IsTrue(query.ListExchanges().Any(e=>e.name == "A"), "Exchange not created");
+			Assert.IsTrue(query.ListQueues().Any(e=>e.name == "B"), "Queue not created");
 
 			((RabbitRouting)router).RemoveRouting();
 
 
-			Assert.IsFalse(api.ListExchanges().Any(e=>e.name == "A"), "Exchange not cleared");
-			Assert.IsFalse(api.ListQueues().Any(e=>e.name == "B"), "Queue not cleared");
+			Assert.IsFalse(query.ListExchanges().Any(e=>e.name == "A"), "Exchange not cleared");
+			Assert.IsFalse(query.ListQueues().Any(e=>e.name == "B"), "Queue not cleared");
 		}
 
 		[Test]
@@ -50,23 +52,16 @@ namespace SimpleRouting.Integration.Tests
 		}
 
 		[Test]
-		public void Can_pick_up_a_message_from_a_different_connection_after_its_acknowledged()
+		public void Can_pick_up_a_message_from_a_different_connection_after_its_acknowledged_but_not_received()
 		{
 			router.AddSource("src");
 			router.AddDestination("dst");
 			router.Link("src", "dst", "imessage");
 			router.Send("src", "imessage", "Hello, World");
 
+			connection.WithChannel(channel => channel.BasicAck(0, true));
 
-			var factory = api.ConnectionFactory();
-			var conn = factory.CreateConnection();
-			var channel = conn.CreateModel();
-			channel.BasicAck(0, true);
-			channel.Close();
-			conn.Close();
-
-
-			var conn2 = factory.CreateConnection();
+			var conn2 = connection.ConnectionFactory().CreateConnection();
 			var channel2 = conn2.CreateModel();
 			var result = channel2.BasicGet("dst", false);
 			var message = Encoding.UTF8.GetString(result.Body);

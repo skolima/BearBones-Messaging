@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using RabbitMQ.Client.Framing.v0_9_1;
 
 namespace Messaging.SimpleRouting
 {
@@ -13,18 +12,18 @@ namespace Messaging.SimpleRouting
 		readonly List<string> queues;
 		readonly List<string> exchanges;
 		readonly IDictionary noOptions;
-		readonly IRabbitMqApi api;
+		readonly IRabbitMqConnection connection;
 
-		public RabbitRouting() : this(RabbitMqApi.WithConfigSettings())
+		public RabbitRouting() : this(RabbitMqConnection.WithAppConfigSettings())
 		{
 		}
 
 		/// <summary>
 		/// Create a new router from config settings
 		/// </summary>
-		public RabbitRouting(IRabbitMqApi rabbitApi)
+		public RabbitRouting(IRabbitMqConnection rabbitConnection)
 		{
-			api = rabbitApi;
+			connection = rabbitConnection;
 			queues = new List<string>();
 			exchanges = new List<string>();
 			noOptions = new Dictionary<string,string>();
@@ -35,7 +34,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void RemoveRouting ()
 		{
-			api.WithChannel(channel =>
+			connection.WithChannel(channel =>
 				{
 					foreach (var queue in queues)
 					{
@@ -52,13 +51,14 @@ namespace Messaging.SimpleRouting
 			exchanges.Clear();
 		}
 		
+
 		/// <summary>
 		/// Add a new node to which messages can be sent.
 		/// This node send messages over links that share a routing key.
 		/// </summary>
 		public void AddSource(string name)
 		{
-			api.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
+			connection.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
 			exchanges.Add(name);
 		}
 		
@@ -68,7 +68,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void AddBroadcastSource(string className)
 		{
-			api.WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
+			connection.WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
 			exchanges.Add(className);
 		}
 
@@ -77,7 +77,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void AddDestination(string name)
 		{
-			api.WithChannel(channel => channel.QueueDeclare(name, true, false, false, noOptions));
+			connection.WithChannel(channel => channel.QueueDeclare(name, true, false, false, noOptions));
 			queues.Add(name);
 		}
 
@@ -86,7 +86,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void Link(string sourceName, string destinationName, string routingKey)
 		{
-			api.WithChannel(channel => channel.QueueBind(destinationName, sourceName, routingKey));
+			connection.WithChannel(channel => channel.QueueBind(destinationName, sourceName, routingKey));
 		}
 
 		/// <summary>
@@ -94,7 +94,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void Route(string parent, string child, string routingKey)
 		{
-			api.WithChannel(channel => channel.ExchangeBind(parent, child, routingKey));
+			connection.WithChannel(channel => channel.ExchangeBind(parent, child, routingKey));
 		}
 
 		/// <summary>
@@ -102,7 +102,10 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public void Send(string sourceName, string routingKey, string data)
 		{
-			api.WithChannel(channel => channel.BasicPublish(sourceName, routingKey, false, false, new BasicProperties(), Encoding.UTF8.GetBytes(data)));
+			connection.WithChannel(channel => channel.BasicPublish(
+				sourceName, routingKey, false, false, connection.EmptyBasicProperties(),
+				Encoding.UTF8.GetBytes(data))
+				);
 		}
 
 		/// <summary>
@@ -110,7 +113,7 @@ namespace Messaging.SimpleRouting
 		/// </summary>
 		public string Get(string destinationName)
 		{
-			var result = api.GetWithChannel(channel => {
+			var result = connection.GetWithChannel(channel => {
 				var rs = channel.BasicGet(destinationName, false);
 				if (rs == null) return null;
 				channel.BasicAck(rs.DeliveryTag, false);
@@ -118,5 +121,13 @@ namespace Messaging.SimpleRouting
 			});
 			return result == null ? null : Encoding.UTF8.GetString(result.Body);
 		}
+
+		/// <summary>
+		/// Delete all waiting messages from a given destination
+		/// </summary>
+		public void Purge(string destinationName)
+        {
+            connection.WithChannel(channel => channel.QueuePurge(destinationName));
+        }
 	}
 }
