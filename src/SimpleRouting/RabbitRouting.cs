@@ -9,8 +9,8 @@ namespace Messaging.SimpleRouting
 	/// </summary>
 	public class RabbitRouting : IMessageRouting
 	{
-		readonly List<string> queues;
-		readonly List<string> exchanges;
+		readonly ISet<string> queues;
+		readonly ISet<string> exchanges;
 		readonly IDictionary noOptions;
 		readonly IRabbitMqConnection connection;
 
@@ -24,8 +24,8 @@ namespace Messaging.SimpleRouting
 		public RabbitRouting(IRabbitMqConnection rabbitConnection)
 		{
 			connection = rabbitConnection;
-			queues = new List<string>();
-			exchanges = new List<string>();
+			queues = new HashSet<string>();
+			exchanges = new HashSet<string>();
 			noOptions = new Dictionary<string,string>();
 		}
 
@@ -92,7 +92,7 @@ namespace Messaging.SimpleRouting
 		/// <summary>
 		/// Route a message between two sources.
 		/// </summary>
-		public void Route(string parent, string child, string routingKey)
+		public void RouteSources(string parent, string child, string routingKey)
 		{
 			connection.WithChannel(channel => channel.ExchangeBind(parent, child, routingKey));
 		}

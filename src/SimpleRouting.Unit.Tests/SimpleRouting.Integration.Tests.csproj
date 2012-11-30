@@ -43,6 +43,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeclaringSourcesAndDestinationsThatAlreadyExist.cs" />
     <Compile Include="RoutingMessagesOverRabbitMq.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

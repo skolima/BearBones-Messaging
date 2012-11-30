@@ -27,7 +27,7 @@ namespace Messaging.SimpleRouting
 		/// <summary>
 		/// Route a message between two sources.
 		/// </summary>
-		void Route(string parent, string child, string routingKey);
+		void RouteSources(string parent, string child, string routingKey);
 
 		/// <summary>
 		/// Send a message to an established source (will be routed to destinations by key)

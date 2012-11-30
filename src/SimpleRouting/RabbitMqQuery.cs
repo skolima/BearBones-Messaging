@@ -40,7 +40,7 @@ namespace Messaging.SimpleRouting
             slashHost = (virtualHost.StartsWith("/")) ? (virtualHost) : ("/" + virtualHost);
         }
 
-        public RMQueue[] ListQueues()
+        public RMQueue[] ListDestinations()
         {
             using (var stream = Get("/api/queues" + slashHost))
                 return JsonSerializer.DeserializeFromStream<RMQueue[]>(stream);
@@ -52,7 +52,7 @@ namespace Messaging.SimpleRouting
                 return JsonSerializer.DeserializeFromStream<RMNode[]>(stream);
         }
 
-        public RMExchange[] ListExchanges()
+        public RMExchange[] ListSources()
         {
             using (var stream = Get("/api/exchanges" + slashHost))
                 return JsonSerializer.DeserializeFromStream<RMExchange[]>(stream);

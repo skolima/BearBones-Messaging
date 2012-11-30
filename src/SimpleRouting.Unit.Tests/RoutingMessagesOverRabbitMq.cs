@@ -28,14 +28,14 @@ namespace SimpleRouting.Integration.Tests
 			router.AddSource("A");
 			router.AddDestination("B");
 
-			Assert.IsTrue(query.ListExchanges().Any(e=>e.name == "A"), "Exchange not created");
-			Assert.IsTrue(query.ListQueues().Any(e=>e.name == "B"), "Queue not created");
+			Assert.IsTrue(query.ListSources().Any(e=>e.name == "A"), "Exchange not created");
+			Assert.IsTrue(query.ListDestinations().Any(e=>e.name == "B"), "Queue not created");
 
 			((RabbitRouting)router).RemoveRouting();
 
 
-			Assert.IsFalse(query.ListExchanges().Any(e=>e.name == "A"), "Exchange not cleared");
-			Assert.IsFalse(query.ListQueues().Any(e=>e.name == "B"), "Queue not cleared");
+			Assert.IsFalse(query.ListSources().Any(e=>e.name == "A"), "Exchange not cleared");
+			Assert.IsFalse(query.ListDestinations().Any(e=>e.name == "B"), "Queue not cleared");
 		}
 
 		[Test]
@@ -153,12 +153,12 @@ namespace SimpleRouting.Integration.Tests
 		[Test]
 		public void Can_route_a_hierarchy_of_keys ()
 		{
-			// Routing:
+			// Routing: (all sources)
 			// H1╶┬ N1 \
 			// H2╶┘     B
 			// H3╶╴N2 /
 
-			// Linking:
+			// Linking: (destination <- source)
 			// D1 <- N1
 			// D2 <- H2
 			// D3 <- B
@@ -174,11 +174,11 @@ namespace SimpleRouting.Integration.Tests
 			router.AddDestination("D2");
 			router.AddDestination("D3");
 
-			router.Route("B", "N1", "");
-			router.Route("B", "N2", "");
-			router.Route("N1", "H1", "");
-			router.Route("N1", "H2", "");
-			router.Route("N2", "H3", "");
+			router.RouteSources("B", "N1", "");
+			router.RouteSources("B", "N2", "");
+			router.RouteSources("N1", "H1", "");
+			router.RouteSources("N1", "H2", "");
+			router.RouteSources("N2", "H3", "");
 
 			router.Link("N1", "D1", "");
 			router.Link("H2", "D2", "");

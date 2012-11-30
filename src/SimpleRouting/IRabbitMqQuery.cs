@@ -4,8 +4,8 @@ namespace Messaging.SimpleRouting
 {
 	public interface IRabbitMqQuery
 	{
-		RMQueue[] ListQueues();
+		RMQueue[] ListDestinations();
 		RMNode[] ListNodes();
-		RMExchange[] ListExchanges();
+		RMExchange[] ListSources();
 	}
 }
