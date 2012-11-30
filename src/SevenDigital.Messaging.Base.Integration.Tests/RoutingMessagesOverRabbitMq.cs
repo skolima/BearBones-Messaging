@@ -42,7 +42,7 @@ namespace Messaging.Base.Integration.Tests
 		public void Should_not_be_able_to_route_a_source_to_itself()
 		{
 			router.AddSource("A");
-			Assert.Throws<ArgumentException>(() => router.RouteSources("A", "A", ""));
+			Assert.Throws<ArgumentException>(() => router.RouteSources("A", "A"));
 		}
 
 		[Test]
@@ -50,9 +50,9 @@ namespace Messaging.Base.Integration.Tests
 		{
 			router.AddSource("exchange_A");
 			router.AddDestination("queue_A");
-			router.Link("exchange_A", "queue_A", "key");
+			router.Link("exchange_A", "queue_A");
 
-			router.Send("exchange_A", "key", "Hello, world");
+			router.Send("exchange_A", "Hello, world");
 
 			var message = router.Get("queue_A");
 			Assert.That(message, Is.EqualTo("Hello, world"));
@@ -63,8 +63,8 @@ namespace Messaging.Base.Integration.Tests
 		{
 			router.AddSource("src");
 			router.AddDestination("dst");
-			router.Link("src", "dst", "imessage");
-			router.Send("src", "imessage", "Hello, World");
+			router.Link("src", "dst");
+			router.Send("src", "Hello, World");
 
 			connection.WithChannel(channel => channel.BasicAck(0, true));
 
@@ -81,10 +81,10 @@ namespace Messaging.Base.Integration.Tests
 			router.AddSource("exchange");
 			router.AddDestination("queue_A");
 			router.AddDestination("queue_B");
-			router.Link("exchange", "queue_A", "Hi");
-			router.Link("exchange", "queue_B", "Hi");
+			router.Link("exchange", "queue_A");
+			router.Link("exchange", "queue_B");
 
-			router.Send("exchange", "Hi", "Hello, World");
+			router.Send("exchange", "Hello, World");
 
 			
 			var message1 = router.Get("queue_A");
@@ -108,53 +108,17 @@ namespace Messaging.Base.Integration.Tests
 		{
 			router.AddSource("exchange_A");
 			router.AddDestination("queue_A");
-			router.Link("exchange_A", "queue_A", "hi");
+			router.Link("exchange_A", "queue_A");
 
-			router.Send("exchange_A", "hi", "One");
-			router.Send("exchange_A", "hi", "Two");
-			router.Send("exchange_A", "hi", "Three");
-			router.Send("exchange_A", "hi", "Four");
+			router.Send("exchange_A", "One");
+			router.Send("exchange_A", "Two");
+			router.Send("exchange_A", "Three");
+			router.Send("exchange_A", "Four");
 
 			Assert.That(router.Get("queue_A"), Is.EqualTo("One"));
 			Assert.That(router.Get("queue_A"), Is.EqualTo("Two"));
 			Assert.That(router.Get("queue_A"), Is.EqualTo("Three"));
 			Assert.That(router.Get("queue_A"), Is.EqualTo("Four"));
-		}
-
-		[Test]
-		public void Can_use_multiple_routing_keys_between_an_exchange_and_a_queue ()
-		{
-			router.AddSource("exchange_A");
-			router.AddDestination("queue_green");
-			router.AddDestination("queue_blue");
-			router.Link("exchange_A", "queue_blue", "blue");
-			router.Link("exchange_A", "queue_blue", "teal");
-			router.Link("exchange_A", "queue_green", "teal");
-			router.Link("exchange_A", "queue_green", "green");
-
-			router.Send("exchange_A", "green", "One");
-			router.Send("exchange_A", "blue", "One");
-
-			router.Send("exchange_A", "teal", "Two");
-
-			var a = router.Get("queue_green");
-			var b = router.Get("queue_green");
-			var c = router.Get("queue_blue");
-			var d = router.Get("queue_blue");
-			Assert.That(a+b+c+d, Is.EqualTo("OneTwoOneTwo"));
-		}
-
-		[Test]
-		public void Messages_sent_with_an_unlinked_routing_key_are_not_delivered ()
-		{
-			router.AddSource("exchange_A");
-			router.AddDestination("queue_A");
-			router.Link("exchange_A", "queue_A", "one_key");
-
-			router.Send("exchange_A", "a_different_key", "Hello, world");
-
-			var message = router.Get("queue_A");
-			Assert.That(message, Is.Null);
 		}
 
 		[Test]
@@ -181,19 +145,19 @@ namespace Messaging.Base.Integration.Tests
 			router.AddDestination("D2");
 			router.AddDestination("D3");
 
-			router.RouteSources("N1", "B", "");
-			router.RouteSources("N2", "B", "");
-			router.RouteSources("H1", "N1", "");
-			router.RouteSources("H2", "N1", "");
-			router.RouteSources("H3", "N2", "");
+			router.RouteSources("N1", "B");
+			router.RouteSources("N2", "B");
+			router.RouteSources("H1", "N1");
+			router.RouteSources("H2", "N1");
+			router.RouteSources("H3", "N2");
 
-			router.Link("N1", "D1", "");
-			router.Link("H2", "D2", "");
-			router.Link("B", "D3", "");
+			router.Link("N1", "D1");
+			router.Link("H2", "D2");
+			router.Link("B", "D3");
 
-			router.Send("B", "", "D3 gets this");
-			router.Send("H2", "", "D2, D1, D3 get this");
-			router.Send("N1", "", "D1, D3 get this");
+			router.Send("B", "D3 gets this");
+			router.Send("H2", "D2, D1, D3 get this");
+			router.Send("N1", "D1, D3 get this");
 
 			Assert.That(router.Get("D3"), Is.EqualTo("D3 gets this"));
 			Assert.That(router.Get("D3"), Is.EqualTo("D2, D1, D3 get this"));
@@ -213,13 +177,13 @@ namespace Messaging.Base.Integration.Tests
 		{
 			router.AddSource("A");
 			router.AddDestination("B");
-			router.Link("A","B","K");
+			router.Link("A","B");
 
 			var start = DateTime.Now;
 			int received = 0;
 			for (int i = 0; i < 1000; i++)
 			{
-				router.Send("A", "K", "Woo");
+				router.Send("A", "Woo");
 			}
 			while (router.Get("B") != null) received++;
 
@@ -233,13 +197,13 @@ namespace Messaging.Base.Integration.Tests
 		{
 			router.AddSource("A");
 			router.AddDestination("B");
-			router.Link("A","B","K");
+			router.Link("A","B");
 
 			int[] received = {0};
 			int count = 200;
 			for (int i = 0; i < count; i++)
 			{
-				router.Send("A", "K", "message");
+				router.Send("A", "message");
 			}
 
 			var A = new Thread(()=> {

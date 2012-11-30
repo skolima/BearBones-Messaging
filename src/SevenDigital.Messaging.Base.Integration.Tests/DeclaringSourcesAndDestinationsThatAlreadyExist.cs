@@ -49,10 +49,10 @@ namespace Messaging.Base.Integration.Tests
 			router.AddSource("src");
 			router.AddDestination("dst");
 
-			router.Link("src", "dst", "");
-			router.Link("src", "dst", "");
+			router.Link("src", "dst");
+			router.Link("src", "dst");
 
-			router.Send("src", "", "Hello");
+			router.Send("src", "Hello");
 
 			Assert.That(router.Get("dst"), Is.EqualTo("Hello"));
 			Assert.That(router.Get("dst"), Is.Null);
@@ -65,11 +65,11 @@ namespace Messaging.Base.Integration.Tests
 			router.AddSource("srcB");
 			router.AddDestination("dst");
 
-			router.RouteSources("srcA", "srcB", "");
-			router.RouteSources("srcA", "srcB", "");
+			router.RouteSources("srcA", "srcB");
+			router.RouteSources("srcA", "srcB");
 
-			router.Link("srcB", "dst", "");
-			router.Send("srcA", "", "Hello");
+			router.Link("srcB", "dst");
+			router.Send("srcA", "Hello");
 
 			Assert.That(router.Get("dst"), Is.EqualTo("Hello"));
 			Assert.That(router.Get("dst"), Is.Null);

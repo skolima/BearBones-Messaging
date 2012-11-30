@@ -29,7 +29,7 @@ namespace SevenDigital.Messaging.Base
 				foreach (var interfaceType in interfaceTypes)
 				{
 					router.AddSource(interfaceType.FullName);
-					router.RouteSources(type.FullName, interfaceType.FullName, "");
+					router.RouteSources(type.FullName, interfaceType.FullName);
 					AddSourcesAndRoute(interfaceType);
 				}
 			}

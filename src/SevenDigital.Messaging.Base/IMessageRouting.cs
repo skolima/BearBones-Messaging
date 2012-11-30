@@ -22,17 +22,17 @@ namespace SevenDigital.Messaging.Base
 		/// <summary>
 		/// Create a link between a source node and a destination node by a routing key
 		/// </summary>
-		void Link(string sourceName, string destinationName, string routingKey);
+		void Link(string sourceName, string destinationName);
 
 		/// <summary>
 		/// Route a message between two sources.
 		/// </summary>
-		void RouteSources(string child, string parent, string routingKey);
+		void RouteSources(string child, string parent);
 
 		/// <summary>
 		/// Send a message to an established source (will be routed to destinations by key)
 		/// </summary>
-		void Send(string sourceName, string routingKey, string data);
+		void Send(string sourceName, string data);
 
 		/// <summary>
 		/// Get a message from a destination. This removes the message from the destination

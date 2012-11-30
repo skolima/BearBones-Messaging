@@ -34,13 +34,13 @@ namespace Messaging.Base.Unit.Tests
 		[Test]
 		public void Should_link_IMetadataFile_to_IFile_with_IFile_as_parent()
 		{
-			router.Received().RouteSources("Example.Types.IMetadataFile", "Example.Types.IFile", "");
+			router.Received().RouteSources("Example.Types.IMetadataFile", "Example.Types.IFile");
 		}
 
 		[Test]
 		public void Should_link_IFile_to_IHash_with_IHash_as_parent()
 		{
-			router.Received().RouteSources("Example.Types.IFile", "Example.Types.IHash", "");
+			router.Received().RouteSources("Example.Types.IFile", "Example.Types.IHash");
 		}
 
 		[Test]
@@ -50,25 +50,25 @@ namespace Messaging.Base.Unit.Tests
 		[TestCase("Example.Types.IMsg")]
 		public void Should_not_link_IMetadataFile_to_itself_indirect_antecendants(string antecendant)
 		{
-			router.DidNotReceive().RouteSources("Example.Types.IMetadataFile", antecendant, "");
+			router.DidNotReceive().RouteSources("Example.Types.IMetadataFile", antecendant);
 		}
 
 		[Test]
 		public void Should_link_IFile_to_IPath_with_IPath_as_parent()
 		{
-			router.Received().RouteSources("Example.Types.IFile", "Example.Types.IPath", "");
+			router.Received().RouteSources("Example.Types.IFile", "Example.Types.IPath");
 		}
 
 		[Test]
 		public void Should_link_IHash_to_IPath_with_IMsg_as_parent()
 		{
-			router.Received().RouteSources("Example.Types.IHash", "Example.Types.IMsg", "");
+			router.Received().RouteSources("Example.Types.IHash", "Example.Types.IMsg");
 		}
 
 		[Test]
 		public void Should_link_IPath_to_IPath_with_IMsg_as_parent()
 		{
-			router.Received().RouteSources("Example.Types.IPath", "Example.Types.IMsg", "");
+			router.Received().RouteSources("Example.Types.IPath", "Example.Types.IMsg");
 		}
 	}
 }

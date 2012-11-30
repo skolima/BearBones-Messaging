@@ -51,7 +51,6 @@ namespace SevenDigital.Messaging.Base
 			queues.Clear();
 			exchanges.Clear();
 		}
-		
 
 		/// <summary>
 		/// Add a new node to which messages can be sent.
@@ -85,27 +84,27 @@ namespace SevenDigital.Messaging.Base
 		/// <summary>
 		/// Create a link between a source node and a destination node by a routing key
 		/// </summary>
-		public void Link(string sourceName, string destinationName, string routingKey)
+		public void Link(string sourceName, string destinationName)
 		{
-			connection.WithChannel(channel => channel.QueueBind(destinationName, sourceName, routingKey));
+			connection.WithChannel(channel => channel.QueueBind(destinationName, sourceName, ""));
 		}
 
 		/// <summary>
 		/// Route a message between two sources.
 		/// </summary>
-		public void RouteSources(string child, string parent, string routingKey)
+		public void RouteSources(string child, string parent)
 		{
 			if (parent == child) throw new ArgumentException("Can't bind a source to itself");
-			connection.WithChannel(channel => channel.ExchangeBind(parent, child, routingKey));
+			connection.WithChannel(channel => channel.ExchangeBind(parent, child, ""));
 		}
 
 		/// <summary>
 		/// Send a message to an established source (will be routed to destinations by key)
 		/// </summary>
-		public void Send(string sourceName, string routingKey, string data)
+		public void Send(string sourceName, string data)
 		{
 			connection.WithChannel(channel => channel.BasicPublish(
-				sourceName, routingKey, false, false, connection.EmptyBasicProperties(),
+				sourceName, "", false, false, connection.EmptyBasicProperties(),
 				Encoding.UTF8.GetBytes(data))
 				);
 		}
