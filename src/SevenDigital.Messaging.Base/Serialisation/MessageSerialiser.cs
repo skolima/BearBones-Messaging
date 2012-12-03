@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using ServiceStack.Text;
 
-namespace SevenDigital.Messaging.Base
+namespace SevenDigital.Messaging.Base.Serialisation
 {
 	public class MessageSerialiser : IMessageSerialiser
 	{
@@ -13,6 +13,12 @@ namespace SevenDigital.Messaging.Base
 
 			JsConfig.PreferInterfaces = true;
 			return messageObject.ToJson();
+		}
+
+		public T Deserialise<T>(string source)
+		{
+			JsConfig.PreferInterfaces = true;
+			return source.FromJson<T>();
 		}
 	}
 }

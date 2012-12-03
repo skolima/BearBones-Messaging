@@ -2,6 +2,7 @@
 using Example.Types;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Base.Serialisation;
 
 namespace Messaging.Base.Unit.Tests.Serialisation
 {

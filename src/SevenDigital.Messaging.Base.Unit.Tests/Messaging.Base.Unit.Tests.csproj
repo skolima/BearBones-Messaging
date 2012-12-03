@@ -43,6 +43,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsAvailable.cs" />
     <Compile Include="Serialisation\WhenSerialisingAnObjectWithNoTopLevelInterfaces.cs" />
     <Compile Include="Serialisation\WhenSerialisingAnObjectWithOneTopLevelInterface.cs" />
     <Compile Include="Serialisation\WhenSerialisingAnObjectWithTwoTopLevelInterfaces.cs" />
