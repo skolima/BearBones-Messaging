@@ -15,10 +15,6 @@ namespace SevenDigital.Messaging.Base
 		readonly IDictionary noOptions;
 		readonly IRabbitMqConnection connection;
 
-		public RabbitRouting() : this(RabbitMqConnection.WithAppConfigSettings())
-		{
-		}
-
 		/// <summary>
 		/// Create a new router from config settings
 		/// </summary>

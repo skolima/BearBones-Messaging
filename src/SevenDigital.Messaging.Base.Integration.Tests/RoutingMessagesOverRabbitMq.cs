@@ -17,8 +17,8 @@ namespace Messaging.Base.Integration.Tests
 		[SetUp]
 		public void SetupApi()
 		{
-			query = RabbitMqQuery.WithConfigSettings();
-			connection = RabbitMqConnection.WithAppConfigSettings();
+			query = ConfigurationHelpers.RabbitMqQueryWithConfigSettings();
+			connection = ConfigurationHelpers.RabbitMqConnectionWithAppConfigSettings();
 			router = new RabbitRouting(connection);
 		}
 

@@ -13,7 +13,7 @@ namespace Messaging.Base.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			var connection = RabbitMqConnection.WithAppConfigSettings();
+			var connection = ConfigurationHelpers.RabbitMqConnectionWithAppConfigSettings();
 			router = new RabbitRouting(connection);
 			subject = new TypeStructureRouter(router);
 		}

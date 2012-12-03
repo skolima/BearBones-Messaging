@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.v0_9_1;
 
@@ -15,15 +14,6 @@ namespace SevenDigital.Messaging.Base
 	        this.hostUri = hostUri;
 	        this.virtualHost = virtualHost;
         }
-
-		public static RabbitMqConnection WithAppConfigSettings()
-		{
-            var parts = ConfigurationManager.AppSettings["Messaging.Host"].Split('/');
-            var hostUri = (parts.Length >= 1) ? (parts[0]) : ("localhost");
-            var vhost = (parts.Length >= 2) ? (parts[1]) : ("/");
-
-            return new RabbitMqConnection(hostUri, vhost);
-		}
 
 		public ConnectionFactory ConnectionFactory()
         {
