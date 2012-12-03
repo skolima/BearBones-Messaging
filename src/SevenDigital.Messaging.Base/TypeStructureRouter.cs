@@ -5,7 +5,7 @@ namespace SevenDigital.Messaging.Base
 {
 	public class TypeStructureRouter : ITypeStructureRouter
 	{
-		private readonly IMessageRouting router;
+		readonly IMessageRouting router;
 
 		public TypeStructureRouter(IMessageRouting router)
 		{
@@ -14,24 +14,23 @@ namespace SevenDigital.Messaging.Base
 
 		public void BuildRoutes<T>()
 		{
-			Type type = typeof(T);
+			var type = typeof(T);
 
-			router.AddSource(type.FullName);
+			if (type.IsInterface) router.AddSource(type.FullName);
 			AddSourcesAndRoute(type);
 		}
 
 		private void AddSourcesAndRoute(Type type)
 		{
 			var interfaceTypes = type.GetInterfaces().Where(i => !type.GetInterfaces().Any(i2 => i2.GetInterfaces().Contains(i))).ToArray();
-			
-			if (interfaceTypes.Any())
+
+			if (!interfaceTypes.Any()) return;
+
+			foreach (var interfaceType in interfaceTypes)
 			{
-				foreach (var interfaceType in interfaceTypes)
-				{
-					router.AddSource(interfaceType.FullName);
-					router.RouteSources(type.FullName, interfaceType.FullName);
-					AddSourcesAndRoute(interfaceType);
-				}
+				router.AddSource(interfaceType.FullName);
+				router.RouteSources(type.FullName, interfaceType.FullName);
+				AddSourcesAndRoute(interfaceType);
 			}
 		}
 	}
