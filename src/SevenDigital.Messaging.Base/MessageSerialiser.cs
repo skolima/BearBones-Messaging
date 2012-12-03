@@ -1,10 +1,13 @@
+using ServiceStack.Text;
+
 namespace SevenDigital.Messaging.Base
 {
 	public class MessageSerialiser : IMessageSerialiser
 	{
 		public string Serialise<T>(T source)
 		{
-			return "woop";
+			JsConfig.PreferInterfaces = true;
+			return source.ToJson();
 		}
 	}
 }

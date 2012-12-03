@@ -15,7 +15,7 @@ namespace Messaging.Base.Unit.Tests
 		{
 			router = Substitute.For<IMessageRouting>();
 			subject = new TypeStructureRouter(router);
-			subject.BuildRoutes<Example.Types.SuperMetaData>();
+			subject.BuildRoutes<Example.Types.SuperMetadata>();
 		}
 		
 		[Test]
@@ -32,7 +32,7 @@ namespace Messaging.Base.Unit.Tests
 		[Test]
 		public void Should_not_route_for_concrete_type ()
 		{
-			router.DidNotReceive().AddSource("Example.Types.SuperMetaData");
+			router.DidNotReceive().AddSource("Example.Types.SuperMetadata");
 		}
 
 

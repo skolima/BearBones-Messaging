@@ -20,7 +20,7 @@ namespace Messaging.Base.Unit.Tests
 			var start = DateTime.Now;
 			for (int i = 0; i < 1000; i++)
 			{
-				subject.BuildRoutes<Example.Types.SuperMetaData>();
+				subject.BuildRoutes<Example.Types.SuperMetadata>();
 			}
 			var time = DateTime.Now - start;
 			Assert.Pass("Took "+time);
