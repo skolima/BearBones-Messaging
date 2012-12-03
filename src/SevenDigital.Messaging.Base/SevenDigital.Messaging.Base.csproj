@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IMessageRouting.cs" />
+    <Compile Include="IMessageSerialiser.cs" />
     <Compile Include="IRabbitMqConnection.cs" />
     <Compile Include="IRabbitMqQuery.cs" />
     <Compile Include="ITypeStructureRouter.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Management\IRMExchange.cs" />
     <Compile Include="Management\IRMNode.cs" />
     <Compile Include="Management\IRMQueue.cs" />
+    <Compile Include="MessageSerialiser.cs" />
     <Compile Include="RabbitMqConnection.cs" />
     <Compile Include="RabbitMqQuery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
