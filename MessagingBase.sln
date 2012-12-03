@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{7072CACC
 		Todo.md = Todo.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleTypes", "TestTypes\ExampleTypes.csproj", "{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,16 @@ Global
 		{B493B533-88B4-492C-8CA6-EB07AF30BAE5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B493B533-88B4-492C-8CA6-EB07AF30BAE5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B493B533-88B4-492C-8CA6-EB07AF30BAE5}.Release|x86.ActiveCfg = Release|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +74,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{08004102-E7A3-4324-B505-4E13DCA7258B} = {EC61287E-0A59-4A20-9453-EAB481E2F87B}
 		{B493B533-88B4-492C-8CA6-EB07AF30BAE5} = {EC61287E-0A59-4A20-9453-EAB481E2F87B}
+		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D} = {EC61287E-0A59-4A20-9453-EAB481E2F87B}
 	EndGlobalSection
 EndGlobal

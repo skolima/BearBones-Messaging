@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{08004102-E7A3-4324-B505-4E13DCA7258B}</ProjectGuid>
+    <ProjectGuid>{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Messaging.Base.Integration.Tests</RootNamespace>
-    <AssemblyName>Messaging.Base.Integration.Tests</AssemblyName>
+    <RootNamespace>Example.Types</RootNamespace>
+    <AssemblyName>Example.Types</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,39 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="RabbitMQ.Client">
-      <HintPath>..\..\lib\RabbitMQ.Client.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeclaringSourcesAndDestinationsThatAlreadyExist.cs" />
-    <Compile Include="RoutingMessagesOverRabbitMq.cs" />
+    <Compile Include="IMetadataFile.cs" />
+    <Compile Include="ISuperMetaData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeRouterMultipleInheritanceTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="App.config.buildagent" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\TestTypes\ExampleTypes.csproj">
-      <Project>{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}</Project>
-      <Name>ExampleTypes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SevenDigital.Messaging.Base\SevenDigital.Messaging.Base.csproj">
-      <Project>{405a9de3-4315-4e02-b504-7ad4be58353a}</Project>
-      <Name>SevenDigital.Messaging.Base</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -43,6 +43,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IMessageRouting.cs" />
     <Compile Include="IMessageSerialiser.cs" />
     <Compile Include="IRabbitMqConnection.cs" />

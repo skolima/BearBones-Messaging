@@ -43,12 +43,12 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Serialisation\SerialisingAnObjectTests.cs" />
+    <Compile Include="Serialisation\WhenSerialisingAnObjectWithNoTopLevelInterfaces.cs" />
+    <Compile Include="Serialisation\WhenSerialisingAnObjectWithOneTopLevelInterface.cs" />
+    <Compile Include="Serialisation\WhenSerialisingAnObjectWithTwoTopLevelInterfaces.cs" />
     <Compile Include="TypeRouting\RoutingExample_ConcreteClass.cs" />
-    <Compile Include="TypeJunk\IMetadataFile.cs" />
     <Compile Include="TypeRouting\RoutingExample_IMetaData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeJunk\ISuperMetaData.cs" />
     <Compile Include="TypeRouting\TypeRoutingPerformanceTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +56,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\..\TestTypes\ExampleTypes.csproj">
+      <Project>{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}</Project>
+      <Name>ExampleTypes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SevenDigital.Messaging.Base\SevenDigital.Messaging.Base.csproj">
       <Project>{405A9DE3-4315-4E02-B504-7AD4BE58353A}</Project>
       <Name>SevenDigital.Messaging.Base</Name>

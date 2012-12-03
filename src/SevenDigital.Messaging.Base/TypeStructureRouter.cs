@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SevenDigital.Messaging.Base
 {
@@ -23,17 +21,12 @@ namespace SevenDigital.Messaging.Base
 
 		void AddSourcesAndRoute(Type type)
 		{
-			foreach (var interfaceType in DirectlyImplementedInterfaces(type))
+			foreach (var interfaceType in type.DirectlyImplementedInterfaces())
 			{
 				router.AddSource(interfaceType.FullName);
 				router.RouteSources(type.FullName, interfaceType.FullName);
 				AddSourcesAndRoute(interfaceType);
 			}
-		}
-
-		static IEnumerable<Type> DirectlyImplementedInterfaces(Type type)
-		{
-			return type.GetInterfaces().Where(i => !type.GetInterfaces().Any(i2 => i2.GetInterfaces().Contains(i)));
 		}
 	}
 }
