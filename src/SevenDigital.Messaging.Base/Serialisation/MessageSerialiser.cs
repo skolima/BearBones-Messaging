@@ -17,8 +17,12 @@ namespace SevenDigital.Messaging.Base.Serialisation
 
 		public T Deserialise<T>(string source)
 		{
-			JsConfig.PreferInterfaces = true;
-			return source.FromJson<T>();
+			return (T)JsonSerializer.DeserializeFromString(source, WrapperTypeFor<T>());
+		}
+
+		public Type WrapperTypeFor<T>()
+		{
+			return (typeof(T).IsInterface) ? (DynamicProxy.GetInstanceFor<T>().GetType()) : (typeof(T));
 		}
 	}
 }
