@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
@@ -21,12 +18,12 @@ namespace Messaging.Base.Unit.Tests
 			subject = new TypeStructureRouter(router);
 
 			var start = DateTime.Now;
-			for (int i = 0; i < 10000; i++)
+			for (int i = 0; i < 1000; i++)
 			{
 				subject.BuildRoutes<Example.Types.SuperMetaData>();
 			}
 			var time = DateTime.Now - start;
-			Console.WriteLine(time);
+			Assert.Pass("Took "+time);
 		}
 	}
 }

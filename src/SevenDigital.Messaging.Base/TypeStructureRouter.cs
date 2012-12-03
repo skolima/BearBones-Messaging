@@ -31,16 +31,9 @@ namespace SevenDigital.Messaging.Base
 			}
 		}
 
-		readonly Dictionary<Type, Type[]> interfaces = new Dictionary<Type, Type[]>();
-		IEnumerable<Type> DirectlyImplementedInterfaces(Type type)
+		static IEnumerable<Type> DirectlyImplementedInterfaces(Type type)
 		{
-			//return type.GetInterfaces().Where(i => !type.GetInterfaces().Any(i2 => i2.GetInterfaces().Contains(i)));
-			if (interfaces.ContainsKey(type)) return interfaces[type];
-			lock (interfaces)
-			{
-				interfaces.Add(type, type.GetInterfaces().Where(i => !type.GetInterfaces().Any(i2 => i2.GetInterfaces().Contains(i))).ToArray());
-				return interfaces[type];
-			}
+			return type.GetInterfaces().Where(i => !type.GetInterfaces().Any(i2 => i2.GetInterfaces().Contains(i)));
 		}
 	}
 }
