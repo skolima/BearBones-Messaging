@@ -15,7 +15,7 @@ namespace Messaging.Base.Unit.Tests
 		ITypeRouter typeRouter;
 		IMessageRouter messageRouter;
 		IMessageSerialiser serialiser;
-		MetadataMessage metadataMessage;
+		SuperMetadata metadataMessage;
 		object badMessage;
 		string result;
 		private const string serialisedObject = "serialised object";
@@ -23,7 +23,7 @@ namespace Messaging.Base.Unit.Tests
 		[SetUp]
 		public void When_setting_up_a_named_destination ()
 		{
-			metadataMessage = new MetadataMessage();
+			metadataMessage = new SuperMetadata();
 
 			badMessage = new {Who="What"};
 			typeRouter = Substitute.For<ITypeRouter>();
@@ -73,16 +73,4 @@ namespace Messaging.Base.Unit.Tests
 		}
 	}
 
-	public class MetadataMessage: IMetadataFile
-	{
-		public MetadataMessage()
-		{
-			CorrelationId = Guid.NewGuid();
-		}
-		public Guid CorrelationId { get; set; }
-		public int HashValue { get; set; }
-		public string FilePath { get; set; }
-		public string Contents { get; set; }
-		public string MetadataName { get; set; }
-	}
 }

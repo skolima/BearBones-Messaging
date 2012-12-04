@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationTests.cs" />
+    <Compile Include="GetTypeByNameTests.cs" />
     <Compile Include="SendMessageObjectTests.cs" />
     <Compile Include="SetupDestinationTests.cs" />
     <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsAvailable.cs" />

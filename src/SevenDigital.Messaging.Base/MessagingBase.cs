@@ -18,6 +18,11 @@ namespace SevenDigital.Messaging.Base
 			return ObjectFactory.GetInstance<MessagingBase>().Send<T>(messageObject);
 		}
 
+		public static T GetMessage<T>(string destinationName)
+		{
+			return ObjectFactory.GetInstance<MessagingBase>().Get<T>(destinationName);
+		}
+
 		readonly ITypeRouter typeRouter;
 		readonly IMessageRouter messageRouter;
 		readonly IMessageSerialiser serialiser;
@@ -44,12 +49,18 @@ namespace SevenDigital.Messaging.Base
 				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
 
 			var sourceType = interfaceTypes.Single();
-
 			var serialised = serialiser.Serialise(messageObject);
+
 			typeRouter.BuildRoutes(sourceType);
 			messageRouter.Send(sourceType.FullName, serialised);
 
 			return serialised;
+		}
+
+		T Get<T>(string destinationName)
+		{
+			var messageString = messageRouter.Get(destinationName);
+			return (messageString == null) ? (default(T)) : (serialiser.Deserialise<T>(messageString));
 		}
 	}
 }
