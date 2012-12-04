@@ -38,17 +38,22 @@
     <Reference Include="RabbitMQ.Client">
       <HintPath>..\..\lib\RabbitMQ.Client.dll</HintPath>
     </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigurationHelpers.cs" />
-    <Compile Include="DeclaringSourcesAndDestinationsThatAlreadyExist.cs" />
-    <Compile Include="RoutingMessagesOverRabbitMq.cs" />
+    <Compile Include="Configuration\ConfigurationIntegrationTests.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
+    <Compile Include="Helpers\ConfigurationHelpers.cs" />
+    <Compile Include="MessageRouting\DeclaringSourcesAndDestinationsThatAlreadyExist.cs" />
+    <Compile Include="MessageRouting\RoutingMessagesOverRabbitMq.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeRouterMultipleInheritanceTests.cs" />
+    <Compile Include="MessageRouting\TypeRouterMultipleInheritanceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -67,6 +72,7 @@
       <Name>SevenDigital.Messaging.Base</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

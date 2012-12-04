@@ -1,5 +1,4 @@
 ﻿using System.Configuration;
-using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement;
 
@@ -23,7 +22,7 @@ namespace Messaging.Base.Integration.Tests
 		{
             var parts = ConfigurationManager.AppSettings["Messaging.Host"].Split('/');
             var hostUri = (parts.Length >= 1) ? (parts[0]) : ("localhost");
-            var vhost = (parts.Length >= 2) ? (parts[1]) : ("/");
+            var vhost = (parts.Length >= 2 && parts[1].Length > 0) ? (parts[1]) : ("/");
 
             return new RabbitMqConnection(hostUri, vhost);
 		}

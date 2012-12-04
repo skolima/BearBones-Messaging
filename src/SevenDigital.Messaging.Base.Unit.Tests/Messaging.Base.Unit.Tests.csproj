@@ -38,11 +38,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ConfigurationTests.cs" />
     <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsAvailable.cs" />
     <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsUnavailable.cs" />
     <Compile Include="Serialisation\WhenSerialisingAnObjectWithNoTopLevelInterfaces.cs" />

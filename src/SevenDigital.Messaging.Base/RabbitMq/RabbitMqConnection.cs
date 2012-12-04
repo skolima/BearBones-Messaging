@@ -6,12 +6,11 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 {
 	public class RabbitMqConnection : IRabbitMqConnection
 	{
-		readonly string hostUri;
 		readonly string virtualHost;
 
         public RabbitMqConnection(string hostUri, string virtualHost = "/")
         {
-	        this.hostUri = hostUri;
+	        Host = hostUri;
 	        this.virtualHost = virtualHost;
         }
 
@@ -20,7 +19,7 @@ namespace SevenDigital.Messaging.Base.RabbitMq
             return new ConnectionFactory
                 {
                     Protocol = Protocols.FromEnvironment(),
-                    HostName = hostUri,
+                    HostName = Host,
                     VirtualHost = virtualHost,
                 };
         }
@@ -54,5 +53,7 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 		{
 			return new BasicProperties();
 		}
+
+		public string Host { get; private set; }
 	}
 }
