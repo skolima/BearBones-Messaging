@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleTypes", "src\Example
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalHandling", "src\SignalHandling\SignalHandling.csproj", "{CB9BE29D-7A45-4358-AB31-7310451C2FC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleApp", "src\TestConsoleApp\TestConsoleApp.csproj", "{441C628F-C874-4C23-938E-4A8840C4006E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,16 @@ Global
 		{CB9BE29D-7A45-4358-AB31-7310451C2FC8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CB9BE29D-7A45-4358-AB31-7310451C2FC8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CB9BE29D-7A45-4358-AB31-7310451C2FC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{441C628F-C874-4C23-938E-4A8840C4006E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,5 +99,6 @@ Global
 		{08004102-E7A3-4324-B505-4E13DCA7258B} = {EC61287E-0A59-4A20-9453-EAB481E2F87B}
 		{B493B533-88B4-492C-8CA6-EB07AF30BAE5} = {EC61287E-0A59-4A20-9453-EAB481E2F87B}
 		{FDDEE721-C397-4A8A-9C50-A24503BB6C5D} = {EC61287E-0A59-4A20-9453-EAB481E2F87B}
+		{441C628F-C874-4C23-938E-4A8840C4006E} = {EC61287E-0A59-4A20-9453-EAB481E2F87B}
 	EndGlobalSection
 EndGlobal
