@@ -1,14 +1,62 @@
-using Mono.Unix.Native;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-namespace Mono.Unix
+
+namespace SignalHandling
 {
-	public class UnixSignal : WaitHandle
+	class UnixSignal : WaitHandle
 	{
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int Mono_Posix_RuntimeIsShuttingDown();
-		[Map]
+
+		
+		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_ToSignum")]
+		private static extern int ToSignum(int value, out Signum rval);
+		public static bool TryToSignum(int value, out Signum rval)
+		{
+			return ToSignum(value, out rval) == 0;
+		}
+		public static Signum ToSignum(int value)
+		{
+			Signum result;
+			if (ToSignum(value, out result) == -1)
+			{
+				throw new ArgumentException("value "+value+" is not an acceptable signum");
+			}
+			return result;
+		}
+		
+		public static RealTimeSignum ToRealTimeSignum(int offset)
+		{
+			return new RealTimeSignum(offset);
+		}
+		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_FromSignum")]
+		private static extern int FromSignum(Signum value, out int rval);
+		public static bool TryFromSignum(Signum value, out int rval)
+		{
+			return FromSignum(value, out rval) == 0;
+		}
+		public static int FromSignum(Signum value)
+		{
+			int result;
+			if (FromSignum(value, out result) == -1)
+			{
+				throw new ArgumentException("value "+value+" is not an acceptable signum");
+			}
+			return result;
+		}
+		[DllImport("MonoPosixHelper", EntryPoint = "Mono_Posix_FromRealTimeSignum")]
+		private static extern int FromRealTimeSignum(int offset, out int rval);
+		public static int FromRealTimeSignum(RealTimeSignum sig)
+		{
+			int result;
+			if (FromRealTimeSignum(sig.Offset, out result) == -1)
+			{
+				throw new ArgumentException("sig.Offset "+sig.Offset+" is not an acceptable offset");
+			}
+			return result;
+		}
+
 		private struct SignalInfo
 		{
 			public int signum;
@@ -30,7 +78,7 @@ namespace Mono.Unix
 				{
 					throw new InvalidOperationException("This signal is a RealTimeSignum");
 				}
-				return NativeConvert.ToSignum(this.signum);
+				return ToSignum(this.signum);
 			}
 		}
 		public RealTimeSignum RealTimeSignum
@@ -41,7 +89,7 @@ namespace Mono.Unix
 				{
 					throw new InvalidOperationException("This signal is not a RealTimeSignum");
 				}
-				return NativeConvert.ToRealTimeSignum(this.signum - UnixSignal.GetSIGRTMIN());
+				return ToRealTimeSignum(this.signum - UnixSignal.GetSIGRTMIN());
 			}
 		}
 		public bool IsRealTimeSignal
@@ -81,27 +129,12 @@ namespace Mono.Unix
 		}
 		public UnixSignal(Signum signum)
 		{
-			this.signum = NativeConvert.FromSignum(signum);
+			this.signum = FromSignum(signum);
 			this.signal_info = UnixSignal.install(this.signum);
 			if (this.signal_info == IntPtr.Zero)
 			{
 				throw new ArgumentException("Unable to handle signal", "signum");
 			}
-		}
-		public UnixSignal(RealTimeSignum rtsig)
-		{
-			this.signum = NativeConvert.FromRealTimeSignum(rtsig);
-			this.signal_info = UnixSignal.install(this.signum);
-			Errno lastError = Stdlib.GetLastError();
-			if (!(this.signal_info == IntPtr.Zero))
-			{
-				return;
-			}
-			if (lastError == Errno.EADDRINUSE)
-			{
-				throw new ArgumentException("Signal registered outside of Mono.Posix", "signum");
-			}
-			throw new ArgumentException("Unable to handle signal", "signum");
 		}
 		[DllImport("MonoPosixHelper", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Mono_Unix_UnixSignal_install", SetLastError = true)]
 		private static extern IntPtr install(int signum);

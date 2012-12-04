@@ -1,8 +1,6 @@
-using System;
-namespace Mono.Unix.Native
+namespace SignalHandling
 {
-	[Map]
-	public enum Signum
+	enum Signum
 	{
 		SIGHUP = 1,
 		SIGINT,
