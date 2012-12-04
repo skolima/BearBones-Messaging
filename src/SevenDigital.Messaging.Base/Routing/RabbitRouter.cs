@@ -96,7 +96,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		}
 
 		/// <summary>
-		/// SendMesssage a message to an established source (will be routed to destinations by key)
+		/// Send a message to an established source (will be routed to destinations by key)
 		/// </summary>
 		public void Send(string sourceName, string data)
 		{

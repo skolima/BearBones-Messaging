@@ -1,7 +1,6 @@
 ﻿using System;
 using NSubstitute;
 using NUnit.Framework;
-using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Routing;
 
 namespace Messaging.Base.Unit.Tests

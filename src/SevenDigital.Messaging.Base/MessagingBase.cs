@@ -15,7 +15,7 @@ namespace SevenDigital.Messaging.Base
 
 		public static string SendMessage<T>(T messageObject)
 		{
-			return ObjectFactory.GetInstance<MessagingBase>().Send<T>(messageObject);
+			return ObjectFactory.GetInstance<MessagingBase>().Send(messageObject);
 		}
 
 		public static T GetMessage<T>(string destinationName)
@@ -41,9 +41,9 @@ namespace SevenDigital.Messaging.Base
 			messageRouter.Link(typeof(T).FullName, destinationName);
 		}
 
-		string Send<T>(T messageObject)
+		string Send(object messageObject)
 		{
-			var interfaceTypes = typeof(T).DirectlyImplementedInterfaces().ToList();
+			var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
 
 			if ( ! interfaceTypes.HasSingle())
 				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");

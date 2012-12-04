@@ -3,7 +3,7 @@ namespace SevenDigital.Messaging.Base.Serialisation
 {
 	public interface IMessageSerialiser
 	{
-		string Serialise<T>(T source);
+		string Serialise(object source);
 		T Deserialise<T>(string source);
 	}
 }

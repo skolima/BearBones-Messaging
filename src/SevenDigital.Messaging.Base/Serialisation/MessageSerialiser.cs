@@ -6,17 +6,23 @@ namespace SevenDigital.Messaging.Base.Serialisation
 {
 	public class MessageSerialiser : IMessageSerialiser
 	{
-		public string Serialise<T>(T messageObject)
+		public string Serialise(object messageObject)
 		{
-			if ( ! messageObject.DirectlyImplementedInterfaces().HasSingle())
+			var type = messageObject.GetType();
+			var interfaces = type.DirectlyImplementedInterfaces().ToList();
+			if ( ! interfaces.HasSingle())
 				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
 
 			JsConfig.PreferInterfaces = true;
-			return messageObject.ToJson();
+			return JsonSerializer.SerializeToString(messageObject, interfaces.Single());
 		}
 
 		public T Deserialise<T>(string source)
 		{
+			JsConfig.PreferInterfaces = true;
+			var result = JsonSerializer.DeserializeFromString(source, typeof(object));
+			if (result is T) return (T)result;
+
 			return (T)JsonSerializer.DeserializeFromString(source, WrapperTypeFor<T>());
 		}
 

@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Configuration\RabbitQueryConfigurationTests.cs" />
     <Compile Include="Configuration\RabbitConnectionConfigurationTests.cs" />
+    <Compile Include="EndToEnd.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\ConfigurationHelpers.cs" />
     <Compile Include="MessageRouting\DeclaringSourcesAndDestinationsThatAlreadyExist.cs" />

@@ -23,7 +23,7 @@ namespace SevenDigital.Messaging.Base
 		{
 			ObjectFactory.Configure(map => {
 				map.For<IMessageSerialiser>().Use<MessageSerialiser>();
-				map.For<IMessageRouter>().Use<RabbitRouter>();
+				map.For<IMessageRouter>().Singleton().Use<RabbitRouter>();
 				map.For<ITypeRouter>().Use<TypeRouter>();
 			});
 
