@@ -32,8 +32,8 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 			using (var channel = conn.CreateModel())
 			{
 				actions(channel);
-				channel.Close();
-				conn.Close();
+				if (channel.IsOpen) channel.Close();
+				if (conn.IsOpen) conn.Close();
 			}
 		}
 
@@ -44,8 +44,8 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 			using (var channel = conn.CreateModel())
 			{
 				var result = actions(channel);
-				channel.Close();
-				conn.Close();
+				if (channel.IsOpen) channel.Close();
+				if (conn.IsOpen) conn.Close();
 				return result;
 			}
 		}
