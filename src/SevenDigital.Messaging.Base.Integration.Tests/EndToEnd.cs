@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Example.Types;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
@@ -45,7 +46,7 @@ namespace Messaging.Base.Integration.Tests
 			Assert.That(finalObject.Equals(testMessage), Is.False);
 		}
 
-		[Test, Explicit]
+		[Test]
 		public void Should_be_able_to_send_and_receive_1000_messages_in_a_minute ()
 		{
 			MessagingBase.CreateDestination<IMsg>("Test_Destination");
@@ -63,7 +64,7 @@ namespace Messaging.Base.Integration.Tests
 
 			while (MessagingBase.GetMessage<IMsg>("Test_Destination") != null)
 			{
-				received++;
+				Interlocked.Increment(ref received);
 			}
 			Console.WriteLine("Receiving took "+((DateTime.Now) - startGet));
 
