@@ -37,6 +37,12 @@ namespace Messaging.Base.Unit.Tests
 			MessagingBase.SendMesssage(metadataMessage);
 		}
 
+		[Test, Ignore]
+		public void Should_setup_type_routing_for_listening_type()
+		{
+			typeRouter.Received().BuildRoutes<IMetadataFile>();
+		}
+
 		[Test]
 		public void Should_serialise_the_message()
 		{
