@@ -1,6 +1,4 @@
-using SevenDigital.Messaging.Base.Management;
-
-namespace SevenDigital.Messaging.Base
+namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 {
 	public interface IRabbitMqQuery
 	{

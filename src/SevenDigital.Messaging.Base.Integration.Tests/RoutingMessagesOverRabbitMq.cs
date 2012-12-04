@@ -4,6 +4,8 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Base.RabbitMq;
+using SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement;
 
 namespace Messaging.Base.Integration.Tests
 {

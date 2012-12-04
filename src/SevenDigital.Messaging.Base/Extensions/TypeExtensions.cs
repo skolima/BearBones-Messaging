@@ -1,9 +1,11 @@
 ﻿// ReSharper disable CheckNamespace
-namespace System
-{
-	using Collections.Generic;
-	using Linq;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SevenDigital.Messaging.Base
+{
 	public static class TypeExtensions
 	{
 		public static IEnumerable<Type> DirectlyImplementedInterfaces(this Type type)

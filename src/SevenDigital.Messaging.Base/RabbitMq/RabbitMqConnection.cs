@@ -2,7 +2,7 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Framing.v0_9_1;
 
-namespace SevenDigital.Messaging.Base
+namespace SevenDigital.Messaging.Base.RabbitMq
 {
 	public class RabbitMqConnection : IRabbitMqConnection
 	{

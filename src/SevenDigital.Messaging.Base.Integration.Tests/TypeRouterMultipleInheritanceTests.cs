@@ -1,6 +1,7 @@
 ﻿using Example.Types;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
+using SevenDigital.Messaging.Base.RabbitMq;
 
 namespace Messaging.Base.Integration.Tests
 {

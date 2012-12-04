@@ -2,9 +2,8 @@
 using System.IO;
 using System.Net;
 using ServiceStack.Text;
-using SevenDigital.Messaging.Base.Management;
 
-namespace SevenDigital.Messaging.Base
+namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 {
 	public class RabbitMqQuery : IRabbitMqQuery
 	{

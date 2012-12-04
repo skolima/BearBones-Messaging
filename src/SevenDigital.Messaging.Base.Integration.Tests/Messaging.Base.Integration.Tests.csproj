@@ -58,7 +58,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TestTypes\ExampleTypes.csproj">
+    <ProjectReference Include="..\ExampleTypes\ExampleTypes.csproj">
       <Project>{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}</Project>
       <Name>ExampleTypes</Name>
     </ProjectReference>

@@ -1,7 +1,11 @@
 BearBones-Messaging
 ===================
-Things it should do
--------------------
+
+BearBones messaging: A contract-interface based distributed event framework for .Net
+
+
+Rough road-map
+--------------
 
 * Deserialised messages should be of sent type cast to accepted type (if available)
 * Everything MassRabbit currently does.
@@ -12,8 +16,8 @@ Things it should do
 * Should be able to set a service to 'cool down' mode where handlers are deregistered and subscriptions stopped (this with counting will help cold code swapping)
 * Disconnect and die method (unreg all handlers)
 
-Cool code swap
---------------
+Cool-down & code swap
+---------------------
 Assuming that supervisord or similar is watching and restarting service processes, should be able to support this workflow:
 
 1. service is running, using message handling registration as daemon keep-alive

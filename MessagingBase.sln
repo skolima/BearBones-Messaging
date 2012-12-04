@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{7072CACC
 		Todo.md = Todo.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleTypes", "TestTypes\ExampleTypes.csproj", "{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleTypes", "src\ExampleTypes\ExampleTypes.csproj", "{FDDEE721-C397-4A8A-9C50-A24503BB6C5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
