@@ -8,7 +8,7 @@ namespace SevenDigital.Messaging.Base.Serialisation
 	{
 		public string Serialise<T>(T messageObject)
 		{
-			if (messageObject.DirectlyImplementedInterfaces().Count() != 1)
+			if ( ! messageObject.DirectlyImplementedInterfaces().HasSingle())
 				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
 
 			JsConfig.PreferInterfaces = true;

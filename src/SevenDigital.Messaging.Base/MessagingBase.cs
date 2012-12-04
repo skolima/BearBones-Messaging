@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Base.Serialisation;
@@ -14,9 +13,9 @@ namespace SevenDigital.Messaging.Base
 			ObjectFactory.GetInstance<MessagingBase>().Create<T>(destinationName);
 		}
 
-		public static void SendMesssage<T>(T messageObject)
+		public static string SendMessage<T>(T messageObject)
 		{
-			ObjectFactory.GetInstance<MessagingBase>().Send<T>(messageObject);
+			return ObjectFactory.GetInstance<MessagingBase>().Send<T>(messageObject);
 		}
 
 		readonly ITypeRouter typeRouter;
@@ -37,12 +36,20 @@ namespace SevenDigital.Messaging.Base
 			messageRouter.Link(typeof(T).FullName, destinationName);
 		}
 
-		void Send<T>(T messageObject)
+		string Send<T>(T messageObject)
 		{
-			var serialised = serialiser.Serialise(messageObject);
+			var interfaceTypes = typeof(T).DirectlyImplementedInterfaces().ToList();
 
-			var sourceType = (typeof(T).DirectlyImplementedInterfaces()).Single();
+			if ( ! interfaceTypes.HasSingle())
+				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
+
+			var sourceType = interfaceTypes.Single();
+
+			var serialised = serialiser.Serialise(messageObject);
+			typeRouter.BuildRoutes(sourceType);
 			messageRouter.Send(sourceType.FullName, serialised);
+
+			return serialised;
 		}
 	}
 }

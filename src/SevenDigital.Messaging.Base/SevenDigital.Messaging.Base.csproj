@@ -45,6 +45,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="MessagingBase.cs" />
     <Compile Include="MessagingBaseConfiguration.cs" />

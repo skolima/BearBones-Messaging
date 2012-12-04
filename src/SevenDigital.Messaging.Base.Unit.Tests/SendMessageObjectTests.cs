@@ -16,6 +16,8 @@ namespace Messaging.Base.Unit.Tests
 		IMessageRouter messageRouter;
 		IMessageSerialiser serialiser;
 		MetadataMessage metadataMessage;
+		object badMessage;
+		string result;
 		private const string serialisedObject = "serialised object";
 
 		[SetUp]
@@ -23,6 +25,7 @@ namespace Messaging.Base.Unit.Tests
 		{
 			metadataMessage = new MetadataMessage();
 
+			badMessage = new {Who="What"};
 			typeRouter = Substitute.For<ITypeRouter>();
 			messageRouter = Substitute.For<IMessageRouter>();
 			serialiser = Substitute.For<IMessageSerialiser>();
@@ -34,13 +37,13 @@ namespace Messaging.Base.Unit.Tests
 				map.For<IMessageSerialiser>().Use(serialiser);
 			});
 
-			MessagingBase.SendMesssage(metadataMessage);
+			result = MessagingBase.SendMessage(metadataMessage);
 		}
 
-		[Test, Ignore]
-		public void Should_setup_type_routing_for_listening_type()
+		[Test]
+		public void Should_setup_type_message_type()
 		{
-			typeRouter.Received().BuildRoutes<IMetadataFile>();
+			typeRouter.Received().BuildRoutes(typeof(IMetadataFile));
 		}
 
 		[Test]
@@ -49,9 +52,11 @@ namespace Messaging.Base.Unit.Tests
 			serialiser.Received().Serialise(metadataMessage);
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void Should_throw_exception_when_sending_message_without_exactly_one_parent_interface()
 		{
+			var ex = Assert.Throws<ArgumentException>(() => MessagingBase.SendMessage(badMessage));
+			Assert.That(ex.Message, Contains.Substring("Messages must directly implement exactly one interface"));
 		}
 
 		[Test]
@@ -59,6 +64,12 @@ namespace Messaging.Base.Unit.Tests
 		{
 			var source = typeof (IMetadataFile).FullName;
 			messageRouter.Received().Send(source, serialisedObject);
+		}
+
+		[Test]
+		public void Should_return_serialised_message ()
+		{
+			Assert.That(result, Is.EqualTo(serialisedObject));
 		}
 	}
 
