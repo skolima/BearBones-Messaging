@@ -9,18 +9,23 @@ namespace TestConsoleApp
 		static void Main(string[] args)
 		{
 			Console.WriteLine("Waiting for signal. Press ^C or send a SIGTERM (kill $pid)");
-			var waiter = new CrossPlatformSignalDispatch();
-			waiter.TerminateEvent += waiter_TerminateEvent;
+			CrossPlatformSignalDispatch.Instance.TerminateEvent += waiter_TerminateEvent;
 
+			var i = 0;
 			while(true)
 			{
-				Thread.Sleep(250);
+				Thread.Sleep(100);
+
+				if (i++ <= 10) continue;
+				Console.Write("Zz");
+				i = 0;
 			}
 		}
 
 		static void waiter_TerminateEvent(object sender, TerminateEventArgs args)
 		{
-			Console.WriteLine("Got a kill signal. Will now terminate");
+			Console.WriteLine("");
+			Console.WriteLine("Got a kill signal ("+args.Signal+"). Will now terminate");
 			Environment.Exit(0);
 		}
 	}

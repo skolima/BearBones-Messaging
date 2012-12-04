@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using SignalHandling.PrivateMonoDerived;
 
 namespace SignalHandling
 {
@@ -9,24 +10,31 @@ namespace SignalHandling
 	/// </summary>
 	public class CrossPlatformSignalDispatch
     {
-	    public static bool RunningUnderMono { get { return Type.GetType("Mono.Runtime") != null; } }
 
 		public event TerminateEvent TerminateEvent;
 
-	    void TerminateEventSent(int Signal)
+		public static CrossPlatformSignalDispatch Instance {
+			get { 
+				return instance ?? (instance = new CrossPlatformSignalDispatch());
+			}
+		}
+
+		static CrossPlatformSignalDispatch instance;
+		static bool RunningUnderMono { get { return Type.GetType("Mono.Runtime") != null; } }
+	    void TerminateEventSent(int signal)
 	    {
 		    var handler = TerminateEvent;
 			if (handler != null)
 			{
-				handler(this, new TerminateEventArgs(Signal));
+				handler(this, new TerminateEventArgs(signal));
 			}
 			else
 			{
-				Environment.Exit(Signal);
+				Environment.Exit(signal);
 			}
 	    }
 
-		public CrossPlatformSignalDispatch()
+		private CrossPlatformSignalDispatch()
 		{
 			if (RunningUnderMono)
 			{
@@ -36,7 +44,7 @@ namespace SignalHandling
 			}
 			else
 			{
-				Console.CancelKeyPress += Console_CancelKeyPress;
+				Console.CancelKeyPress += ConsoleCancelKeyPress;
 			}
 		}
 
@@ -45,16 +53,16 @@ namespace SignalHandling
 			var signals = new[]{
 							new UnixSignal (Signum.SIGINT),  // ^C
 							new UnixSignal (Signum.SIGTERM), // kill
-							new UnixSignal (Signum.SIGHUP), // background and drop
+							new UnixSignal (Signum.SIGHUP) // background and drop
 						};
-			while (true)
+			while (waitingThread.IsAlive)
 			{
-				int which = UnixSignal.WaitAny(signals, -1);
-				TerminateEventSent((int)signals[which].Signum);
+				var which = UnixSignal.WaitAny(signals, -1);
+				TerminateEventSent((int) signals[which].Signum);
 			}
 		}
 
-		void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+		void ConsoleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
 		{
 			e.Cancel = true;
 			TerminateEventSent((int)Signum.SIGINT);

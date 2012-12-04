@@ -1,43 +1,43 @@
 using System;
 
-namespace SignalHandling
+namespace SignalHandling.PrivateMonoDerived
 {
 	struct RealTimeSignum : IEquatable<RealTimeSignum>
 	{
-		private int rt_offset;
+		private readonly int rt_offset;
 		private static readonly int MaxOffset = UnixSignal.GetSIGRTMAX() - UnixSignal.GetSIGRTMIN() - 1;
 		public static readonly RealTimeSignum MinValue = new RealTimeSignum(0);
-		public static readonly RealTimeSignum MaxValue = new RealTimeSignum(RealTimeSignum.MaxOffset);
+		public static readonly RealTimeSignum MaxValue = new RealTimeSignum(MaxOffset);
 		public int Offset
 		{
 			get
 			{
-				return this.rt_offset;
+				return rt_offset;
 			}
 		}
 		public RealTimeSignum(int offset)
 		{
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException("Offset cannot be negative");
+				throw new ArgumentOutOfRangeException("offset", "Offset cannot be negative");
 			}
-			if (offset > RealTimeSignum.MaxOffset)
+			if (offset > MaxOffset)
 			{
-				throw new ArgumentOutOfRangeException("Offset greater than maximum supported SIGRT");
+				throw new ArgumentOutOfRangeException("offset", "Offset greater than maximum supported SIGRT");
 			}
-			this.rt_offset = offset;
+			rt_offset = offset;
 		}
 		public override int GetHashCode()
 		{
-			return this.rt_offset.GetHashCode();
+			return rt_offset.GetHashCode();
 		}
 		public override bool Equals(object obj)
 		{
-			return obj != null && !(obj.GetType() != base.GetType()) && this.Equals((RealTimeSignum)obj);
+			return obj != null && !(obj.GetType() != GetType()) && Equals((RealTimeSignum)obj);
 		}
 		public bool Equals(RealTimeSignum value)
 		{
-			return this.Offset == value.Offset;
+			return Offset == value.Offset;
 		}
 		public static bool operator ==(RealTimeSignum lhs, RealTimeSignum rhs)
 		{

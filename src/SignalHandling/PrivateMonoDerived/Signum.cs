@@ -1,5 +1,6 @@
-namespace SignalHandling
+namespace SignalHandling.PrivateMonoDerived
 {
+// ReSharper disable InconsistentNaming
 	enum Signum
 	{
 		SIGHUP = 1,
