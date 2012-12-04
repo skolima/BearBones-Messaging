@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SevenDigital.Messaging.Base
+namespace SevenDigital.Messaging.Base.Routing
 {
 	public class TypeStructureRouter : ITypeStructureRouter
 	{
