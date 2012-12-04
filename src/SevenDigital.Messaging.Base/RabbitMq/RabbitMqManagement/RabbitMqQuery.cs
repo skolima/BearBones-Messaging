@@ -7,26 +7,25 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 {
 	public class RabbitMqQuery : IRabbitMqQuery
 	{
-        readonly Uri managementApiHost;
-        readonly NetworkCredential credentials;
-        readonly string slashHost;
-
+		public Uri HostUri { get; private set; }
+		public string VirtualHost { get; private set; }
+		public NetworkCredential Credentials { get; private set; }
 
         public RabbitMqQuery(Uri managementApiHost, NetworkCredential credentials)
         {
-            this.managementApiHost = managementApiHost;
-            this.credentials = credentials;
+            HostUri = managementApiHost;
+            Credentials = credentials;
         }
 
         public RabbitMqQuery(string hostUri, string username, string password, string virtualHost = "/")
             : this(new Uri(hostUri), new NetworkCredential(username, password))
         {
-            slashHost = (virtualHost.StartsWith("/")) ? (virtualHost) : ("/" + virtualHost);
+            VirtualHost = (virtualHost.StartsWith("/")) ? (virtualHost) : ("/" + virtualHost);
         }
 
         public RMQueue[] ListDestinations()
         {
-            using (var stream = Get("/api/queues" + slashHost))
+            using (var stream = Get("/api/queues" + VirtualHost))
                 return JsonSerializer.DeserializeFromStream<RMQueue[]>(stream);
         }
 
@@ -38,18 +37,18 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 
         public RMExchange[] ListSources()
         {
-            using (var stream = Get("/api/exchanges" + slashHost))
+            using (var stream = Get("/api/exchanges" + VirtualHost))
                 return JsonSerializer.DeserializeFromStream<RMExchange[]>(stream);
         }
 
-        Stream Get(string endpoint)
+		Stream Get(string endpoint)
         {
             Uri result;
 
-            if (Uri.TryCreate(managementApiHost, endpoint, out result))
+            if (Uri.TryCreate(HostUri, endpoint, out result))
             {
                 var webRequest = WebRequest.Create(result);
-                webRequest.Credentials = credentials;
+                webRequest.Credentials = Credentials;
                 return webRequest.GetResponse().GetResponseStream();
             }
 

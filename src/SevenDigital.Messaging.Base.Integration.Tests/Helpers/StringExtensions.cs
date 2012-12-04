@@ -50,9 +50,10 @@
 		public static string SubstringAfterLast(this String src, char c)
 		{
 			if (String.IsNullOrEmpty(src)) return "";
+			int fidx =  src.LastIndexOf(c);
+			if (fidx < 0) return "";
 
-			int idx = Math.Min(src.Length - 1, src.LastIndexOf(c) + 1);
-			if (idx < 0) return "";
+			int idx = Math.Min(src.Length - 1, fidx + 1);
 			return src.Substring(idx);
 		}
 	}

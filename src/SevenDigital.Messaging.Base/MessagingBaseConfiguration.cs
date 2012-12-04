@@ -33,11 +33,14 @@ namespace SevenDigital.Messaging.Base
 		public MessagingBaseConfiguration WithConnectionFromAppConfig()
 		{
 			configuredConnection = RabbitMqConnectionWithAppConfigSettings();
+			ObjectFactory.Configure(map => map.For<IRabbitMqConnection>().Use(() => configuredConnection));
+			return this;
+		}
+
+		public MessagingBaseConfiguration WithRabbitManagementFromAppConfig()
+		{
 			configuredQuery = RabbitMqQueryWithConfigSettings();
-			ObjectFactory.Configure(map => {
-				map.For<IRabbitMqConnection>().Use(() => configuredConnection);
-				map.For<IRabbitMqQuery>().Use(() => configuredQuery);
-			});
+			ObjectFactory.Configure(map => map.For<IRabbitMqQuery>().Use(() => configuredQuery));
 			return this;
 		}
 

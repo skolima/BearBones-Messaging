@@ -14,9 +14,7 @@ namespace Messaging.Base.Unit.Tests.Configuration
 		[SetUp]
 		public void A_configured_messaging_base ()
 		{
-			var mockConnection = Substitute.For<IRabbitMqConnection>();
-			ObjectFactory.Configure(map => map.For<IRabbitMqConnection>().Use(()=> mockConnection));
-			new MessagingBaseConfiguration().WithDefaults();
+			new MessagingBaseConfiguration().WithDefaults().WithConnection(Substitute.For<IRabbitMqConnection>());
 		}
 
 		[Test]

@@ -47,7 +47,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ConfigurationIntegrationTests.cs" />
+    <Compile Include="Configuration\RabbitQueryConfigurationTests.cs" />
+    <Compile Include="Configuration\RabbitConnectionConfigurationTests.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\ConfigurationHelpers.cs" />
     <Compile Include="MessageRouting\DeclaringSourcesAndDestinationsThatAlreadyExist.cs" />
