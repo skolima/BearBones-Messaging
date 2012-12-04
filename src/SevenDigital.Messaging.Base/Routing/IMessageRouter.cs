@@ -30,7 +30,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		void RouteSources(string child, string parent);
 
 		/// <summary>
-		/// Send a message to an established source (will be routed to destinations by key)
+		/// SendMesssage a message to an established source (will be routed to destinations by key)
 		/// </summary>
 		void Send(string sourceName, string data);
 
