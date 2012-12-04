@@ -1,6 +1,6 @@
 ﻿namespace SevenDigital.Messaging.Base.Routing
 {
-	public interface ITypeStructureRouter
+	public interface ITypeRouter
 	{
 		void BuildRoutes<T>();
 	}

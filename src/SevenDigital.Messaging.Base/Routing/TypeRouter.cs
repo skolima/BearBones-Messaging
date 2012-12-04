@@ -2,11 +2,11 @@
 
 namespace SevenDigital.Messaging.Base.Routing
 {
-	public class TypeStructureRouter : ITypeStructureRouter
+	public class TypeRouter : ITypeRouter
 	{
-		readonly IMessageRouting router;
+		readonly IMessageRouter router;
 
-		public TypeStructureRouter(IMessageRouting router)
+		public TypeRouter(IMessageRouter router)
 		{
 			this.router = router;
 		}

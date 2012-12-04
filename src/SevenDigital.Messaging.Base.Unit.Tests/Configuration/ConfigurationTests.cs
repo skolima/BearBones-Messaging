@@ -29,16 +29,16 @@ namespace Messaging.Base.Unit.Tests.Configuration
 		public void Should_have_rabbitmq_message_router ()
 		{
 			Assert.That(
-				ObjectFactory.GetInstance<IMessageRouting>(),
-				Is.InstanceOf<RabbitRouting>());
+				ObjectFactory.GetInstance<IMessageRouter>(),
+				Is.InstanceOf<RabbitRouter>());
 		}
 
 		[Test]
 		public void Should_have_type_structure_router ()
 		{
 			Assert.That(
-				ObjectFactory.GetInstance<ITypeStructureRouter>(),
-				Is.InstanceOf<TypeStructureRouter>());
+				ObjectFactory.GetInstance<ITypeRouter>(),
+				Is.InstanceOf<TypeRouter>());
 		}
 	}
 }

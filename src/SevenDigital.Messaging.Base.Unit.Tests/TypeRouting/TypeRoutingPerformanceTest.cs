@@ -9,14 +9,14 @@ namespace Messaging.Base.Unit.Tests
 	[TestFixture]
 	public class TypeRoutingPerformanceTest
 	{
-		ITypeStructureRouter subject;
-		IMessageRouting router;
+		ITypeRouter subject;
+		IMessageRouter router;
 
 		[Test]
 		public void Routing_a_type_1000_times ()
 		{
-			router = Substitute.For<IMessageRouting>();
-			subject = new TypeStructureRouter(router);
+			router = Substitute.For<IMessageRouter>();
+			subject = new TypeRouter(router);
 
 			var start = DateTime.Now;
 			for (int i = 0; i < 1000; i++)

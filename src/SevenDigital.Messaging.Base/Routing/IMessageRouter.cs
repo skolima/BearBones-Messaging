@@ -1,6 +1,6 @@
 namespace SevenDigital.Messaging.Base.Routing
 {
-	public interface IMessageRouting
+	public interface IMessageRouter
 	{
 		/// <summary>
 		/// Add a new node to which messages can be sent.

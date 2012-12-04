@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationTests.cs" />
+    <Compile Include="SendMessageObjectTests.cs" />
+    <Compile Include="SetupDestinationTests.cs" />
     <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsAvailable.cs" />
     <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsUnavailable.cs" />
     <Compile Include="Serialisation\WhenSerialisingAnObjectWithNoTopLevelInterfaces.cs" />

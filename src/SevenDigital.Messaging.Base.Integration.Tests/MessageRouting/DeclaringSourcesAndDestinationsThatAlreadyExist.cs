@@ -11,7 +11,7 @@ namespace Messaging.Base.Integration.Tests
 	public class DeclaringSourcesAndDestinationsThatAlreadyExist
 	{
 		private RabbitMqQuery query;
-		private IMessageRouting router;
+		private IMessageRouter router;
 		RabbitMqConnection connection;
 
 		[SetUp]
@@ -19,7 +19,7 @@ namespace Messaging.Base.Integration.Tests
 		{
 			query = ConfigurationHelpers.RabbitMqQueryWithConfigSettings();
 			connection = ConfigurationHelpers.RabbitMqConnectionWithAppConfigSettings();
-			router = new RabbitRouting(connection);
+			router = new RabbitRouter(connection);
 		}
 
 		[Test]
@@ -81,7 +81,7 @@ namespace Messaging.Base.Integration.Tests
 		[TearDown]
 		public void CleanUp()
 		{
-			((RabbitRouting)router).RemoveRouting();
+			((RabbitRouter)router).RemoveRouting();
 		}
 	}
 }

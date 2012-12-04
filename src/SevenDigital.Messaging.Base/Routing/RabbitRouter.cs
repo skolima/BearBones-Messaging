@@ -9,7 +9,7 @@ namespace SevenDigital.Messaging.Base.Routing
 	/// <summary>
 	/// Very simple synchronous message routing over RabbitMq
 	/// </summary>
-	public class RabbitRouting : IMessageRouting
+	public class RabbitRouter : IMessageRouter
 	{
 		readonly ISet<string> queues;
 		readonly ISet<string> exchanges;
@@ -19,7 +19,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <summary>
 		/// Create a new router from config settings
 		/// </summary>
-		public RabbitRouting(IRabbitMqConnection rabbitConnection)
+		public RabbitRouter(IRabbitMqConnection rabbitConnection)
 		{
 			connection = rabbitConnection;
 			queues = new HashSet<string>();

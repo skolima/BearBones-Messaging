@@ -9,15 +9,15 @@ namespace Messaging.Base.Integration.Tests
 	[TestFixture]
 	public class TypeRouterMultipleInheritanceTests
 	{
-		ITypeStructureRouter subject;
-		IMessageRouting router;
+		ITypeRouter subject;
+		IMessageRouter router;
 
 		[SetUp]
 		public void SetUp()
 		{
 			var connection = ConfigurationHelpers.RabbitMqConnectionWithAppConfigSettings();
-			router = new RabbitRouting(connection);
-			subject = new TypeStructureRouter(router);
+			router = new RabbitRouter(connection);
+			subject = new TypeRouter(router);
 		}
 
 		[Test]
@@ -37,7 +37,7 @@ namespace Messaging.Base.Integration.Tests
 		[TearDown]
 		public void teardown()
 		{
-			((RabbitRouting)router).RemoveRouting();
+			((RabbitRouter)router).RemoveRouting();
 		}
 	}
 }

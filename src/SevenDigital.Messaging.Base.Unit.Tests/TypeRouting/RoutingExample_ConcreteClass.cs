@@ -8,14 +8,14 @@ namespace Messaging.Base.Unit.Tests
 	[TestFixture]
 	public class RoutingExample_ConcreteClass
 	{
-		ITypeStructureRouter subject;
-		IMessageRouting router;
+		ITypeRouter subject;
+		IMessageRouter router;
 
 		[SetUp]
 		public void A_routing_table_build_from_a_class_implementing_IMetadataFile()
 		{
-			router = Substitute.For<IMessageRouting>();
-			subject = new TypeStructureRouter(router);
+			router = Substitute.For<IMessageRouter>();
+			subject = new TypeRouter(router);
 			subject.BuildRoutes<Example.Types.SuperMetadata>();
 		}
 		

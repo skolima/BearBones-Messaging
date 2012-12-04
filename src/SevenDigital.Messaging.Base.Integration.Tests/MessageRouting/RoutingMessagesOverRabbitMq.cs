@@ -14,7 +14,7 @@ namespace Messaging.Base.Integration.Tests
 	public class RoutingMessagesOverRabbitMq
 	{
 		private RabbitMqQuery query;
-		private IMessageRouting router;
+		private IMessageRouter router;
 		RabbitMqConnection connection;
 
 		[SetUp]
@@ -22,7 +22,7 @@ namespace Messaging.Base.Integration.Tests
 		{
 			query = ConfigurationHelpers.RabbitMqQueryWithConfigSettings();
 			connection = ConfigurationHelpers.RabbitMqConnectionWithAppConfigSettings();
-			router = new RabbitRouting(connection);
+			router = new RabbitRouter(connection);
 		}
 
 		[Test]
@@ -34,7 +34,7 @@ namespace Messaging.Base.Integration.Tests
 			Assert.IsTrue(query.ListSources().Any(e=>e.name == "A"), "Exchange not created");
 			Assert.IsTrue(query.ListDestinations().Any(e=>e.name == "B"), "Queue not created");
 
-			((RabbitRouting)router).RemoveRouting();
+			((RabbitRouter)router).RemoveRouting();
 
 
 			Assert.IsFalse(query.ListSources().Any(e=>e.name == "A"), "Exchange not cleared");
@@ -233,7 +233,7 @@ namespace Messaging.Base.Integration.Tests
 		[TearDown]
 		public void CleanUp()
 		{
-			((RabbitRouting)router).RemoveRouting();
+			((RabbitRouter)router).RemoveRouting();
 		}
 	}
 }

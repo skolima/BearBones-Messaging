@@ -46,12 +46,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="MessagingBase.cs" />
     <Compile Include="MessagingBaseConfiguration.cs" />
-    <Compile Include="Routing\IMessageRouting.cs" />
+    <Compile Include="Routing\IMessageRouter.cs" />
     <Compile Include="Serialisation\IMessageSerialiser.cs" />
     <Compile Include="RabbitMq\IRabbitMqConnection.cs" />
     <Compile Include="RabbitMq\RabbitMqManagement\IRabbitMqQuery.cs" />
-    <Compile Include="Routing\ITypeStructureRouter.cs" />
+    <Compile Include="Routing\ITypeRouter.cs" />
     <Compile Include="RabbitMq\RabbitMqManagement\RMQueue.cs" />
     <Compile Include="Extensions\Formatting.cs" />
     <Compile Include="RabbitMq\RabbitMqManagement\IRMExchange.cs" />
@@ -63,8 +64,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabbitMq\RabbitMqManagement\RMExchange.cs" />
     <Compile Include="RabbitMq\RabbitMqManagement\RMNode.cs" />
-    <Compile Include="Routing\RabbitRouting.cs" />
-    <Compile Include="Routing\TypeStructureRouter.cs" />
+    <Compile Include="Routing\RabbitRouter.cs" />
+    <Compile Include="Routing\TypeRouter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
