@@ -51,8 +51,15 @@ namespace SevenDigital.Messaging.Base
 			var sourceType = interfaceTypes.Single();
 			var serialised = serialiser.Serialise(messageObject);
 
-			typeRouter.BuildRoutes(sourceType);
-			messageRouter.Send(sourceType.FullName, serialised);
+			try
+			{
+				messageRouter.Send(sourceType.FullName, serialised);
+			}
+			catch (RabbitMQ.Client.Impl.ChannelErrorException)
+			{
+				typeRouter.BuildRoutes(sourceType);
+				messageRouter.Send(sourceType.FullName, serialised);
+			}
 
 			return serialised;
 		}

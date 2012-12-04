@@ -31,6 +31,7 @@ namespace Messaging.Base.Unit.Tests
 			serialiser = Substitute.For<IMessageSerialiser>();
 			serialiser.Serialise(metadataMessage).Returns(serialisedObject);
 
+
 			ObjectFactory.Configure(map => {
 				map.For<ITypeRouter>().Use(typeRouter);
 				map.For<IMessageRouter>().Use(messageRouter);
@@ -41,8 +42,12 @@ namespace Messaging.Base.Unit.Tests
 		}
 
 		[Test]
-		public void Should_setup_type_message_type()
+		public void Should_setup_type_message_type_if_not_already_in_place()
 		{
+			int calls = 0;
+			// simulate a route not in place
+			messageRouter.When(m=>m.Send(Arg.Any<string>(), Arg.Any<string>())).Do(i => { if(calls++ < 1) throw new RabbitMQ.Client.Impl.ChannelErrorException(0); });
+			result = MessagingBase.SendMessage(metadataMessage);
 			typeRouter.Received().BuildRoutes(typeof(IMetadataFile));
 		}
 
