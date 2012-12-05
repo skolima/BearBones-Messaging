@@ -20,7 +20,9 @@ namespace Messaging.Base.Unit.Tests
 		{
 			typeRouter = Substitute.For<ITypeRouter>();
 			messageRouter = Substitute.For<IMessageRouter>();
-			serialiser = Substitute.For<IMessageSerialiser>();
+			serialiser = Substitute.For<IMessageSerialiser>();			
+			
+			ObjectFactory.ResetDefaults();
 			ObjectFactory.Configure(map => {
 				map.For<ITypeRouter>().Use(typeRouter);
 				map.For<IMessageRouter>().Use(messageRouter);

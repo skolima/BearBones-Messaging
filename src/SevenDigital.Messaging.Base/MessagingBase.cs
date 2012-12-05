@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Base.Serialisation;
@@ -36,9 +37,33 @@ namespace SevenDigital.Messaging.Base
 
 		void Create<T>(string destinationName)
 		{
-			typeRouter.BuildRoutes<T>();
+			RouteSource(typeof(T));
 			messageRouter.AddDestination(destinationName);
 			messageRouter.Link(typeof(T).FullName, destinationName);
+		}
+
+		static readonly IDictionary<Type, RateLimitedAction> RouteCache = new Dictionary<Type, RateLimitedAction>();
+		void RouteSource(Type routeType)
+		{
+			lock (RouteCache)
+			{
+				if (! RouteCache.ContainsKey(routeType))
+				{
+					RouteCache.Add(routeType, RateLimitedAction.Of(() => typeRouter.BuildRoutes(routeType)));
+				}
+			}
+			RouteCache[routeType].YoungerThan(TimeSpan.FromMinutes(1));
+		}
+		
+		/// <summary>
+		/// Ensure that routes are rebuild on next SendMessage or CreateDestination.
+		/// </summary>
+		internal static void ResetRouteCache()
+		{
+			lock (RouteCache)
+			{
+				RouteCache.Clear();
+			}
 		}
 
 		string Send(object messageObject)
@@ -51,15 +76,8 @@ namespace SevenDigital.Messaging.Base
 			var sourceType = interfaceTypes.Single();
 			var serialised = serialiser.Serialise(messageObject);
 
-			try
-			{
-				messageRouter.Send(sourceType.FullName, serialised);
-			}
-			catch (RabbitMQ.Client.Impl.ChannelErrorException)
-			{
-				typeRouter.BuildRoutes(sourceType);
-				messageRouter.Send(sourceType.FullName, serialised);
-			}
+			RouteSource(sourceType);
+			messageRouter.Send(sourceType.FullName, serialised);
 
 			return serialised;
 		}

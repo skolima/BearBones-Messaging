@@ -23,7 +23,7 @@ namespace Messaging.Base.Integration.Tests
 		[Test]
 		public void When_sending_a_message_with_mulitple_inheritance_should_receive_one_copy_at_base_level()
 		{
-			subject.BuildRoutes<IFile>();
+			subject.BuildRoutes(typeof(IFile));
 			
 			router.AddDestination("dst");
 			router.Link("Example.Types.IMsg", "dst");

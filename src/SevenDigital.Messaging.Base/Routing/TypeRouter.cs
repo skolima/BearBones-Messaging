@@ -11,11 +11,6 @@ namespace SevenDigital.Messaging.Base.Routing
 			this.router = router;
 		}
 
-		public void BuildRoutes<T>()
-		{
-			BuildRoutes(typeof(T));
-		}
-
 		public void BuildRoutes(Type type)
 		{
 			if (type.IsInterface) router.AddSource(type.FullName);

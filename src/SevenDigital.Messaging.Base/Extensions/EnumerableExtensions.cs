@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace System.Linq
+namespace SevenDigital.Messaging.Base
 {
 	public static class EnumerableExtensions
 	{

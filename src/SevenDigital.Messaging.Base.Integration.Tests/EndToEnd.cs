@@ -13,7 +13,7 @@ namespace Messaging.Base.Integration.Tests
 	{
 		SuperMetadata testMessage;
 
-		[SetUp]
+		[TestFixtureSetUp]
 		public void A_configured_messaging_base ()
 		{
 			new MessagingBaseConfiguration()
@@ -73,7 +73,7 @@ namespace Messaging.Base.Integration.Tests
 			Assert.That(time.TotalSeconds, Is.LessThanOrEqualTo(60));
 		}
 
-		[TearDown]
+		[TestFixtureTearDown]
 		public void cleanup ()
 		{
 			((RabbitRouter)ObjectFactory.GetInstance<IMessageRouter>()).RemoveRouting();
