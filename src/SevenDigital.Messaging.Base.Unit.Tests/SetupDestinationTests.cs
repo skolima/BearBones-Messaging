@@ -14,6 +14,7 @@ namespace Messaging.Base.Unit.Tests
 		ITypeRouter typeRouter;
 		IMessageRouter messageRouter;
 		IMessageSerialiser serialiser;
+		IMessagingBase messaging;
 
 		[SetUp]
 		public void When_setting_up_a_named_destination ()
@@ -21,16 +22,10 @@ namespace Messaging.Base.Unit.Tests
 			typeRouter = Substitute.For<ITypeRouter>();
 			messageRouter = Substitute.For<IMessageRouter>();
 			serialiser = Substitute.For<IMessageSerialiser>();
-
-			ObjectFactory.ResetDefaults();
-			ObjectFactory.Configure(map => {
-				map.For<ITypeRouter>().Use(typeRouter);
-				map.For<IMessageRouter>().Use(messageRouter);
-				map.For<IMessageSerialiser>().Use(serialiser);
-			});
-			
 			MessagingBase.ResetRouteCache();
-			MessagingBase.CreateDestination<IMetadataFile>("MyServiceDestination");
+
+			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
+			messaging.CreateDestination<IMetadataFile>("MyServiceDestination");
 		}
 
 		[Test]

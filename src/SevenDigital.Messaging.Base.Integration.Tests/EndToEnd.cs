@@ -12,6 +12,7 @@ namespace Messaging.Base.Integration.Tests
 	public class EndToEnd
 	{
 		SuperMetadata testMessage;
+		IMessagingBase messaging;
 
 		[TestFixtureSetUp]
 		public void A_configured_messaging_base ()
@@ -19,6 +20,8 @@ namespace Messaging.Base.Integration.Tests
 			new MessagingBaseConfiguration()
 				.WithDefaults()
 				.WithConnectionFromAppConfig();
+
+			messaging = ObjectFactory.GetInstance<IMessagingBase>();
 
 			testMessage = new SuperMetadata{
 				CorrelationId = Guid.NewGuid(),
@@ -32,10 +35,10 @@ namespace Messaging.Base.Integration.Tests
 		[Test]
 		public void Should_be_able_to_send_and_receive_messages_by_interface_type_and_destination_name ()
 		{
-			MessagingBase.CreateDestination<IMsg>("Test_Destination");
-			MessagingBase.SendMessage(testMessage);
+			messaging.CreateDestination<IMsg>("Test_Destination");
+			messaging.SendMessage(testMessage);
 
-			var finalObject = (IMetadataFile)MessagingBase.GetMessage<IMsg>("Test_Destination");
+			var finalObject = (IMetadataFile)messaging.GetMessage<IMsg>("Test_Destination");
 
 			Assert.That(finalObject, Is.Not.Null);
 			Assert.That(finalObject.CorrelationId, Is.EqualTo(testMessage.CorrelationId));
@@ -49,20 +52,20 @@ namespace Messaging.Base.Integration.Tests
 		[Test]
 		public void Should_be_able_to_send_and_receive_1000_messages_in_a_minute ()
 		{
-			MessagingBase.CreateDestination<IMsg>("Test_Destination");
+			messaging.CreateDestination<IMsg>("Test_Destination");
 
 			int sent = 1000;
 			int received = 0;
 			var start = DateTime.Now;
 			for (int i = 0; i < sent; i++)
 			{
-				MessagingBase.SendMessage(testMessage);
+				messaging.SendMessage(testMessage);
 			}
 
 			Console.WriteLine("Sending took "+((DateTime.Now) - start));
 			var startGet = DateTime.Now;
 
-			while (MessagingBase.GetMessage<IMsg>("Test_Destination") != null)
+			while (messaging.GetMessage<IMsg>("Test_Destination") != null)
 			{
 				Interlocked.Increment(ref received);
 			}

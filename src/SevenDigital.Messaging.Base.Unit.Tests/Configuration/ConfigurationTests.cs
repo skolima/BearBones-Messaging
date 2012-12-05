@@ -40,5 +40,13 @@ namespace Messaging.Base.Unit.Tests.Configuration
 				ObjectFactory.GetInstance<ITypeRouter>(),
 				Is.InstanceOf<TypeRouter>());
 		}
+
+		[Test]
+		public void Should_have_messaging_base ()
+		{
+			Assert.That(
+				ObjectFactory.GetInstance<IMessagingBase>(),
+				Is.InstanceOf<MessagingBase>());
+		}
 	}
 }

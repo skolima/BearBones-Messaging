@@ -12,21 +12,22 @@ namespace SevenDigital.Messaging.Base
 		IRabbitMqConnection configuredConnection;
 		IRabbitMqQuery configuredQuery;
 
-		public MessagingBaseConfiguration WithConnection(IRabbitMqConnection connection)
-		{
-			configuredConnection = connection;
-			ObjectFactory.Configure(map => map.For<IRabbitMqConnection>().Use(()=> configuredConnection));
-			return this;
-		}
-
 		public MessagingBaseConfiguration WithDefaults()
 		{
 			ObjectFactory.Configure(map => {
 				map.For<IMessageSerialiser>().Use<MessageSerialiser>();
 				map.For<IMessageRouter>().Singleton().Use<RabbitRouter>();
 				map.For<ITypeRouter>().Use<TypeRouter>();
+				map.For<IMessagingBase>().Use<MessagingBase>();
 			});
 
+			return this;
+		}
+
+		public MessagingBaseConfiguration WithConnection(IRabbitMqConnection connection)
+		{
+			configuredConnection = connection;
+			ObjectFactory.Configure(map => map.For<IRabbitMqConnection>().Use(()=> configuredConnection));
 			return this;
 		}
 

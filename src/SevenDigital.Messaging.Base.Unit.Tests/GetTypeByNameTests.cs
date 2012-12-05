@@ -14,22 +14,18 @@ namespace Messaging.Base.Unit.Tests
 		ITypeRouter typeRouter;
 		IMessageRouter messageRouter;
 		IMessageSerialiser serialiser;
+		IMessagingBase messaging;
 
 		[SetUp]
 		public void When_setting_up_a_named_destination ()
 		{
 			typeRouter = Substitute.For<ITypeRouter>();
 			messageRouter = Substitute.For<IMessageRouter>();
-			serialiser = Substitute.For<IMessageSerialiser>();			
-			
-			ObjectFactory.ResetDefaults();
-			ObjectFactory.Configure(map => {
-				map.For<ITypeRouter>().Use(typeRouter);
-				map.For<IMessageRouter>().Use(messageRouter);
-				map.For<IMessageSerialiser>().Use(serialiser);
-			});
+			serialiser = Substitute.For<IMessageSerialiser>();
 
-			MessagingBase.GetMessage<IMetadataFile>("MyServiceDestination");
+			MessagingBase.ResetRouteCache();
+			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
+			messaging.GetMessage<IMetadataFile>("MyServiceDestination");
 		}
 
 		[Test]
@@ -42,7 +38,7 @@ namespace Messaging.Base.Unit.Tests
 		public void When_there_is_no_message_should_return_null ()
 		{
 			messageRouter.Get("MyServiceDestination").Returns((string)null);
-			var result = MessagingBase.GetMessage<IMetadataFile>("MyServiceDestination");
+			var result = messaging.GetMessage<IMetadataFile>("MyServiceDestination");
 
 			Assert.That(result, Is.Null);
 		}
@@ -52,7 +48,7 @@ namespace Messaging.Base.Unit.Tests
 		{
 			messageRouter.Get("MyServiceDestination").Returns("");
 			serialiser.Deserialise<IMetadataFile>("").Returns(new SuperMetadata());
-			var result = MessagingBase.GetMessage<IMetadataFile>("MyServiceDestination");
+			var result = messaging.GetMessage<IMetadataFile>("MyServiceDestination");
 
 			Assert.That(result, Is.InstanceOf<IMetadataFile>());
 		}

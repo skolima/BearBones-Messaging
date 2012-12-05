@@ -7,23 +7,15 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Base
 {
-	public class MessagingBase
+	public interface IMessagingBase
 	{
-		public static void CreateDestination<T>(string destinationName)
-		{
-			ObjectFactory.GetInstance<MessagingBase>().Create<T>(destinationName);
-		}
+		void CreateDestination<T>(string destinationName);
+		string SendMessage(object messageObject);
+		T GetMessage<T>(string destinationName);
+	}
 
-		public static string SendMessage<T>(T messageObject)
-		{
-			return ObjectFactory.GetInstance<MessagingBase>().Send(messageObject);
-		}
-
-		public static T GetMessage<T>(string destinationName)
-		{
-			return ObjectFactory.GetInstance<MessagingBase>().Get<T>(destinationName);
-		}
-
+	public class MessagingBase : IMessagingBase
+	{
 		readonly ITypeRouter typeRouter;
 		readonly IMessageRouter messageRouter;
 		readonly IMessageSerialiser serialiser;
@@ -35,12 +27,35 @@ namespace SevenDigital.Messaging.Base
 			this.serialiser = serialiser;
 		}
 
-		void Create<T>(string destinationName)
+		public void CreateDestination<T>(string destinationName)
 		{
 			RouteSource(typeof(T));
 			messageRouter.AddDestination(destinationName);
 			messageRouter.Link(typeof(T).FullName, destinationName);
 		}
+
+		public string SendMessage(object messageObject)
+		{
+			var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
+
+			if ( ! interfaceTypes.HasSingle())
+				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
+
+			var sourceType = interfaceTypes.Single();
+			var serialised = serialiser.Serialise(messageObject);
+
+			RouteSource(sourceType);
+			messageRouter.Send(sourceType.FullName, serialised);
+
+			return serialised;
+		}
+
+		public T GetMessage<T>(string destinationName)
+		{
+			var messageString = messageRouter.Get(destinationName);
+			return (messageString == null) ? (default(T)) : (serialiser.Deserialise<T>(messageString));
+		}
+
 
 		static readonly IDictionary<Type, RateLimitedAction> RouteCache = new Dictionary<Type, RateLimitedAction>();
 		void RouteSource(Type routeType)
@@ -64,28 +79,6 @@ namespace SevenDigital.Messaging.Base
 			{
 				RouteCache.Clear();
 			}
-		}
-
-		string Send(object messageObject)
-		{
-			var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
-
-			if ( ! interfaceTypes.HasSingle())
-				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
-
-			var sourceType = interfaceTypes.Single();
-			var serialised = serialiser.Serialise(messageObject);
-
-			RouteSource(sourceType);
-			messageRouter.Send(sourceType.FullName, serialised);
-
-			return serialised;
-		}
-
-		T Get<T>(string destinationName)
-		{
-			var messageString = messageRouter.Get(destinationName);
-			return (messageString == null) ? (default(T)) : (serialiser.Deserialise<T>(messageString));
 		}
 	}
 }
