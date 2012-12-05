@@ -20,8 +20,15 @@ namespace SignalHandling
 		}
 
 		static CrossPlatformSignalDispatch instance;
-		static bool RunningUnderMono { get { return Type.GetType("Mono.Runtime") != null; } }
-	    void TerminateEventSent(int signal)
+		static bool RunningUnderPosix
+		{
+			get
+			{
+				var p = (int)Environment.OSVersion.Platform;
+				return (p == 4) || (p == 6) || (p == 128);
+			}
+		}
+		void TerminateEventSent(int signal)
 	    {
 		    var handler = TerminateEvent;
 			if (handler != null)
@@ -36,7 +43,7 @@ namespace SignalHandling
 
 		private CrossPlatformSignalDispatch()
 		{
-			if (RunningUnderMono)
+			if (RunningUnderPosix)
 			{
 				waitingThread = new Thread(UnixSignalLoop);
 				waitingThread.IsBackground = true;
