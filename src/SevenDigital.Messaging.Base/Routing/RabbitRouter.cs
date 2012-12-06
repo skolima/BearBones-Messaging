@@ -32,6 +32,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void RemoveRouting ()
 		{
+			MessagingBase.ResetRouteCache();
 			connection.WithChannel(channel =>
 				{
 					foreach (var queue in queues)

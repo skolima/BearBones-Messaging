@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Base.Serialisation;
-using StructureMap;
 
 namespace SevenDigital.Messaging.Base
 {
