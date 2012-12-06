@@ -72,7 +72,7 @@ namespace SevenDigital.Messaging.Base
 		/// <summary>
 		/// Ensure that routes are rebuild on next SendMessage or CreateDestination.
 		/// </summary>
-		internal static void ResetRouteCache()
+		public static void ResetRouteCache()
 		{
 			lock (RouteCache)
 			{
