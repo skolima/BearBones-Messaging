@@ -1,7 +1,5 @@
 ﻿using Example.Types;
 using NUnit.Framework;
-using SevenDigital.Messaging.Base;
-using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.Routing;
 
 namespace Messaging.Base.Integration.Tests
@@ -37,7 +35,7 @@ namespace Messaging.Base.Integration.Tests
 		[TearDown]
 		public void teardown()
 		{
-			((RabbitRouter)router).RemoveRouting();
+			((RabbitRouter)router).RemoveRouting(n=>true);
 		}
 	}
 }

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using NUnit.Framework;
-using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement;
 using SevenDigital.Messaging.Base.Routing;
@@ -34,7 +33,7 @@ namespace Messaging.Base.Integration.Tests
 			Assert.IsTrue(query.ListSources().Any(e=>e.name == "A"), "Exchange not created");
 			Assert.IsTrue(query.ListDestinations().Any(e=>e.name == "B"), "Queue not created");
 
-			((RabbitRouter)router).RemoveRouting();
+			((RabbitRouter)router).RemoveRouting(n=>true);
 
 
 			Assert.IsFalse(query.ListSources().Any(e=>e.name == "A"), "Exchange not cleared");
@@ -233,7 +232,7 @@ namespace Messaging.Base.Integration.Tests
 		[TearDown]
 		public void CleanUp()
 		{
-			((RabbitRouter)router).RemoveRouting();
+			((RabbitRouter)router).RemoveRouting(n=>true);
 		}
 	}
 }

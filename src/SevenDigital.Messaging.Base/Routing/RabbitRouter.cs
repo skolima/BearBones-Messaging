@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using SevenDigital.Messaging.Base.RabbitMq;
 
@@ -30,17 +31,17 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <summary>
 		/// Deletes all queues and exchanges created or used by this Router.
 		/// </summary>
-		public void RemoveRouting ()
+		public void RemoveRouting (Func<string, bool> filter)
 		{
 			MessagingBase.ResetRouteCache();
 			connection.WithChannel(channel =>
 				{
-					foreach (var queue in queues)
+					foreach (var queue in queues.Where(filter))
 					{
 						channel.QueueDelete(queue);
 					}
 
-					foreach (var exchange in exchanges)
+					foreach (var exchange in exchanges.Where(filter))
 					{
 						channel.ExchangeDelete(exchange);
 					}

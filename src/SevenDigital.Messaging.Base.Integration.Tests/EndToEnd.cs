@@ -79,7 +79,7 @@ namespace Messaging.Base.Integration.Tests
 		[TestFixtureTearDown]
 		public void cleanup ()
 		{
-			((RabbitRouter)ObjectFactory.GetInstance<IMessageRouter>()).RemoveRouting();
+			((RabbitRouter)ObjectFactory.GetInstance<IMessageRouter>()).RemoveRouting(n=>true);
 		}
 	}
 }
