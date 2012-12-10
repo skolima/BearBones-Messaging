@@ -30,10 +30,16 @@ namespace SevenDigital.Messaging.Base
 		
 		public static string ContractTypeName(object instance)
 		{
-			var interfaceTypes = instance.GetType().DirectlyImplementedInterfaces().ToList();
+			return ContractTypeName(instance.GetType());
+		}
+		public static string ContractTypeName(Type type)
+		{
+			if (type.IsInterface) return type.FullName;
+
+			var interfaceTypes = type.DirectlyImplementedInterfaces().ToList();
 
 			if ( ! interfaceTypes.HasSingle())
-				throw new ArgumentException("Messages must directly implement exactly one interface", "instance");
+				throw new ArgumentException("Messages must directly implement exactly one interface", "type");
 
 			return interfaceTypes.Single().FullName;
 		}
