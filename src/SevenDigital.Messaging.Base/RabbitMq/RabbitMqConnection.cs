@@ -49,10 +49,5 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 				return result;
 			}
 		}
-		
-		public IBasicProperties EmptyBasicProperties()
-		{
-			return new BasicProperties();
-		}
 	}
 }

@@ -20,7 +20,7 @@ namespace SevenDigital.Messaging.Base
 				map.For<IMessagingBase>().Use<MessagingBase>();
 
 				map.For<IMessageRouter>().Singleton().Use<RabbitRouter>();
-				map.For<ILongTermConnection>().Singleton().Use<LongTermRabbitConnection>();
+				map.For<IChannelAction>().Singleton().Use<LongTermRabbitConnection>();
 			});
 
 			return this;

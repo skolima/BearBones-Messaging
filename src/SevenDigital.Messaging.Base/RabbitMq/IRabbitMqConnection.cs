@@ -8,6 +8,5 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 		string VirtualHost { get; }
 
 		ConnectionFactory ConnectionFactory();
-		IBasicProperties EmptyBasicProperties();
 	}
 }

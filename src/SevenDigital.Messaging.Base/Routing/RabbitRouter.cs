@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Framing.v0_9_1;
 using SevenDigital.Messaging.Base.RabbitMq;
 
 namespace SevenDigital.Messaging.Base.Routing
@@ -15,14 +17,14 @@ namespace SevenDigital.Messaging.Base.Routing
 		readonly ISet<string> queues;
 		readonly ISet<string> exchanges;
 		readonly IDictionary noOptions;
-		readonly IRabbitMqConnection connection;
+		readonly IChannelAction messagingChannel;
 
 		/// <summary>
 		/// Create a new router from config settings
 		/// </summary>
-		public RabbitRouter(IRabbitMqConnection rabbitConnection)
+		public RabbitRouter(IChannelAction messagingChannel)
 		{
-			connection = rabbitConnection;
+			this.messagingChannel = messagingChannel;
 			queues = new HashSet<string>();
 			exchanges = new HashSet<string>();
 			noOptions = new Dictionary<string,string>();
@@ -34,7 +36,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		public void RemoveRouting (Func<string, bool> filter)
 		{
 			MessagingBase.ResetRouteCache();
-			connection.WithChannel(channel =>
+			messagingChannel.WithChannel(channel =>
 				{
 					foreach (var queue in queues.Where(filter))
 					{
@@ -57,7 +59,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void AddSource(string name)
 		{
-			connection.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
+			messagingChannel.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
 			exchanges.Add(name);
 		}
 		
@@ -67,7 +69,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void AddBroadcastSource(string className)
 		{
-			connection.WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
+			messagingChannel.WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
 			exchanges.Add(className);
 		}
 
@@ -76,7 +78,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void AddDestination(string name)
 		{
-			connection.WithChannel(channel => channel.QueueDeclare(name, true, false, false, noOptions));
+			messagingChannel.WithChannel(channel => channel.QueueDeclare(name, true, false, false, noOptions));
 			queues.Add(name);
 		}
 
@@ -85,7 +87,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void Link(string sourceName, string destinationName)
 		{
-			connection.WithChannel(channel => channel.QueueBind(destinationName, sourceName, ""));
+			messagingChannel.WithChannel(channel => channel.QueueBind(destinationName, sourceName, ""));
 		}
 
 		/// <summary>
@@ -94,7 +96,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		public void RouteSources(string child, string parent)
 		{
 			if (parent == child) throw new ArgumentException("Can't bind a source to itself");
-			connection.WithChannel(channel => channel.ExchangeBind(parent, child, ""));
+			messagingChannel.WithChannel(channel => channel.ExchangeBind(parent, child, ""));
 		}
 
 		/// <summary>
@@ -102,8 +104,8 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void Send(string sourceName, string data)
 		{
-			connection.WithChannel(channel => channel.BasicPublish(
-				sourceName, "", false, false, connection.EmptyBasicProperties(),
+			messagingChannel.WithChannel(channel => channel.BasicPublish(
+				sourceName, "", false, false, EmptyBasicProperties(),
 				Encoding.UTF8.GetBytes(data))
 				);
 		}
@@ -113,7 +115,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public string Get(string destinationName)
 		{
-			var result = connection.GetWithChannel(channel => {
+			var result = messagingChannel.GetWithChannel(channel => {
 				var rs = channel.BasicGet(destinationName, false);
 				if (rs == null) return null;
 				channel.BasicAck(rs.DeliveryTag, false);
@@ -127,7 +129,11 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void Purge(string destinationName)
         {
-            connection.WithChannel(channel => channel.QueuePurge(destinationName));
-        }
+            messagingChannel.WithChannel(channel => channel.QueuePurge(destinationName));
+        }		
+		public IBasicProperties EmptyBasicProperties()
+		{
+			return new BasicProperties();
+		}
 	}
 }
