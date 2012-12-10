@@ -45,36 +45,47 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 			DisposeConnection();
 		}
 
+		readonly object lockObject = new Object();
+
 		public void WithChannel(Action<IModel> actions)
 		{
-			EnsureChannel();
-			actions(channel);
+			lock (lockObject)
+			{
+				EnsureChannel();
+				actions(channel);
+			}
 		}
 
 		public T GetWithChannel<T>(Func<IModel, T> actions)
 		{
-			EnsureChannel();
-			return actions(channel);
+			lock (lockObject)
+			{
+				EnsureChannel();
+				return actions(channel);
+			}
 		}
 
 		void EnsureChannel()
 		{
-			if (factory == null)
+			lock (lockObject)
 			{
-				factory = rabbitMqConnection.ConnectionFactory();
-			}
-			if (channel != null && channel.IsOpen) return;
-			if (conn != null && conn.IsOpen)
-			{
-				DisposeChannel();
+				if (factory == null)
+				{
+					factory = rabbitMqConnection.ConnectionFactory();
+				}
+				if (channel != null && channel.IsOpen) return;
+				if (conn != null && conn.IsOpen)
+				{
+					DisposeChannel();
+					channel = conn.CreateModel();
+					return;
+				}
+
+				DisposeConnection();
+
+				conn = factory.CreateConnection();
 				channel = conn.CreateModel();
-				return;
 			}
-
-			DisposeConnection();
-
-			conn = factory.CreateConnection();
-			channel = conn.CreateModel();
 		}
 
 // ReSharper disable EmptyGeneralCatchClause
