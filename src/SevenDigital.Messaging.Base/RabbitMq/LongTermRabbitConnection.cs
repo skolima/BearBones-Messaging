@@ -21,31 +21,18 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 
 		~LongTermRabbitConnection()
 		{
-			Shutdown();
+			ShutdownConnection();
 		}
 
 		public void Dispose()
 		{
-			Shutdown();
+			ShutdownConnection();
 		}
 
-		void Shutdown()
+		public void Reset()
 		{
-			if (channel != null && channel.IsOpen)
-			{
-				channel.Close();
-			}
-
-			if (conn != null && conn.IsOpen)
-			{
-				conn.Close();
-			}
-
-			DisposeChannel();
-			DisposeConnection();
+			ShutdownConnection();
 		}
-
-		readonly object lockObject = new Object();
 
 		public void WithChannel(Action<IModel> actions)
 		{
@@ -64,6 +51,26 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 				return actions(channel);
 			}
 		}
+
+		void ShutdownConnection()
+		{
+			if (channel != null && channel.IsOpen)
+			{
+				channel.Close();
+			}
+
+			if (conn != null && conn.IsOpen)
+			{
+				conn.Close();
+			}
+
+			DisposeChannel();
+			DisposeConnection();
+			factory = null;
+		}
+
+		readonly object lockObject = new Object();
+
 
 		void EnsureChannel()
 		{

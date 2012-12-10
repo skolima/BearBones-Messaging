@@ -22,7 +22,7 @@ namespace Messaging.Base.Unit.Tests
 			typeRouter = Substitute.For<ITypeRouter>();
 			messageRouter = Substitute.For<IMessageRouter>();
 			serialiser = Substitute.For<IMessageSerialiser>();
-			MessagingBase.ResetRouteCache();
+			MessagingBase.ResetCaches();
 
 			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
 			messaging.CreateDestination<IMetadataFile>("MyServiceDestination");

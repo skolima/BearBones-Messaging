@@ -24,25 +24,19 @@ namespace Messaging.Base.Integration.Tests
 		[Test]
 		public void If_I_add_a_destination_twice_I_get_one_destination_and_no_errors ()
 		{
-			var initialCount = query.ListDestinations().Count();
-
 			router.AddDestination("B");
 			router.AddDestination("B");
 
 			Assert.That(query.ListDestinations().Count(e=>e.name == "B"), Is.EqualTo(1));
-			Assert.That(query.ListDestinations().Count(), Is.EqualTo(initialCount + 1), "Total count of destinations");
 		}
 		
 		[Test]
 		public void If_I_add_a_source_twice_I_get_one_source_and_no_errors ()
 		{
-			var initialCount = query.ListSources().Count();
-
 			router.AddSource("S");
 			router.AddSource("S");
 
 			Assert.That(query.ListSources().Count(e=>e.name == "S"), Is.EqualTo(1));
-			Assert.That(query.ListSources().Count(), Is.EqualTo(initialCount + 1), "Total count of sources");
 		}
 
 		[Test]

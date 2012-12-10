@@ -32,7 +32,7 @@ namespace Messaging.Base.Unit.Tests
 			serialiser = Substitute.For<IMessageSerialiser>();
 			serialiser.Serialise(metadataMessage).Returns(serialisedObject);
 
-			MessagingBase.ResetRouteCache();
+			MessagingBase.ResetCaches();
 			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
 			result = messaging.SendMessage(metadataMessage);
 		}

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Base.Serialisation;
+using StructureMap;
 
 namespace SevenDigital.Messaging.Base
 {
@@ -80,13 +82,18 @@ namespace SevenDigital.Messaging.Base
 		}
 		
 		/// <summary>
-		/// Ensure that routes are rebuild on next SendMessage or CreateDestination.
+		/// Ensure that routes and connections are rebuild on next SendMessage or CreateDestination.
 		/// </summary>
-		public static void ResetRouteCache()
+		public static void ResetCaches()
 		{
 			lock (RouteCache)
 			{
 				RouteCache.Clear();
+			}
+			var channelAction = ObjectFactory.TryGetInstance<IChannelAction>();
+			if (channelAction is LongTermRabbitConnection)
+			{
+				((LongTermRabbitConnection)channelAction).Reset();
 			}
 		}
 	}
