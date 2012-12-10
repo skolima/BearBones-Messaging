@@ -25,6 +25,16 @@ namespace SevenDigital.Messaging.Base
 			this.messageRouter = messageRouter;
 			this.serialiser = serialiser;
 		}
+		
+		public static string ContractTypeName(object instance)
+		{
+			var interfaceTypes = instance.GetType().DirectlyImplementedInterfaces().ToList();
+
+			if ( ! interfaceTypes.HasSingle())
+				throw new ArgumentException("Messages must directly implement exactly one interface", "instance");
+
+			return interfaceTypes.Single().FullName;
+		}
 
 		public void CreateDestination<T>(string destinationName)
 		{
