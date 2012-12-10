@@ -48,5 +48,15 @@ namespace Messaging.Base.Unit.Tests.Configuration
 				ObjectFactory.GetInstance<IMessagingBase>(),
 				Is.InstanceOf<MessagingBase>());
 		}
+
+		[Test]
+		public void Should_have_long_term_connection_as_singleton ()
+		{
+			var instance1 = ObjectFactory.GetInstance<ILongTermConnection>();
+			var instance2 = ObjectFactory.GetInstance<ILongTermConnection>();
+
+			Assert.That(instance1, Is.InstanceOf<LongTermRabbitConnection>());
+			Assert.That(instance1, Is.SameAs(instance2));
+		}
 	}
 }
