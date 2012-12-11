@@ -49,7 +49,6 @@ namespace SevenDigital.Messaging.Base
 		
 		public MessagingBaseConfiguration WithRabbitManagement(string host, string username, string password, string vhost)
 		{
-			configuredQuery = RabbitMqQueryWithConfigSettings();
 			ObjectFactory.Configure(map => map.For<IRabbitMqQuery>().Use(() => new RabbitMqQuery("http://" + host + ":55672", username, password, vhost) ));
 			return this;
 		}
