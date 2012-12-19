@@ -1,6 +1,5 @@
 ﻿using System;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Framing.v0_9_1;
 
 namespace SevenDigital.Messaging.Base.RabbitMq
 {
@@ -48,6 +47,10 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 				if (conn.IsOpen) conn.Close();
 				return result;
 			}
+		}
+
+		public void Dispose()
+		{
 		}
 	}
 }

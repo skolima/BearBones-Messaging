@@ -3,7 +3,7 @@ using RabbitMQ.Client;
 
 namespace SevenDigital.Messaging.Base.RabbitMq
 {
-	public interface IChannelAction
+	public interface IChannelAction:IDisposable
 	{
 		void WithChannel(Action<IModel> actions);
 		T GetWithChannel<T>(Func<IModel, T> actions);

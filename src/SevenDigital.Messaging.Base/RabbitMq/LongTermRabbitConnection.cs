@@ -3,9 +3,7 @@ using RabbitMQ.Client;
 
 namespace SevenDigital.Messaging.Base.RabbitMq
 {
-	public interface ILongTermConnection:IDisposable,IChannelAction
-	{
-	}
+	public interface ILongTermConnection: IChannelAction { }
 
 	public class LongTermRabbitConnection : ILongTermConnection
 	{
