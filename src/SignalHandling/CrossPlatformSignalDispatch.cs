@@ -52,6 +52,9 @@ namespace SignalHandling
 			else
 			{
 				Console.CancelKeyPress += ConsoleCancelKeyPress;
+				waitingThread = new Thread(WindowsStdInReader);
+				waitingThread.IsBackground = true;
+				waitingThread.Start();
 			}
 		}
 
@@ -60,7 +63,7 @@ namespace SignalHandling
 			var signals = new[]{
 							new UnixSignal (Signum.SIGINT),  // ^C
 							new UnixSignal (Signum.SIGTERM), // kill
-							new UnixSignal (Signum.SIGHUP) // background and drop
+							new UnixSignal (Signum.SIGHUP)   // background and drop
 						};
 			while (waitingThread.IsAlive)
 			{
@@ -68,6 +71,30 @@ namespace SignalHandling
 				TerminateEventSent((int) signals[which].Signum);
 			}
 		}
+
+		void WindowsStdInReader()
+		{
+			try
+			{
+				using (var inp = Console.OpenStandardInput()) // this seems to be non-competitive
+				{
+					while (true)
+					{
+						var x = inp.ReadByte(); // blocking read
+						if (x == 3 || x == -1)  // ctrl-c or stream closed
+						{
+							TerminateEventSent((int)Signum.SIGINT);
+						}
+					}
+				}
+			}
+			catch
+			{
+				Ignore();
+			}
+		}
+
+		static void Ignore() { }
 
 		void ConsoleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
 		{
