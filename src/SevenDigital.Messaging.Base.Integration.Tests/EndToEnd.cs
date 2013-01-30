@@ -48,6 +48,23 @@ namespace Messaging.Base.Integration.Tests
 			Assert.That(finalObject.MetadataName, Is.EqualTo(testMessage.MetadataName));
 			Assert.That(finalObject.Equals(testMessage), Is.False);
 		}
+		
+		[Test]
+		public void Should_be_able_to_send_and_receive_messages_by_destination_name_and_get_correct_type ()
+		{
+			messaging.CreateDestination<IMsg>("Test_Destination");
+			messaging.SendMessage(testMessage);
+
+			var finalObject = (IMetadataFile)messaging.GetMessage("Test_Destination");
+
+			Assert.That(finalObject, Is.Not.Null);
+			Assert.That(finalObject.CorrelationId, Is.EqualTo(testMessage.CorrelationId));
+			Assert.That(finalObject.Contents, Is.EqualTo(testMessage.Contents));
+			Assert.That(finalObject.FilePath, Is.EqualTo(testMessage.FilePath));
+			Assert.That(finalObject.HashValue, Is.EqualTo(testMessage.HashValue));
+			Assert.That(finalObject.MetadataName, Is.EqualTo(testMessage.MetadataName));
+			Assert.That(finalObject.Equals(testMessage), Is.False);
+		}
 
 		[Test]
 		public void Should_be_able_to_send_and_receive_1000_messages_in_a_minute ()

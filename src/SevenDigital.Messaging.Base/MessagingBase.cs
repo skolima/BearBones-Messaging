@@ -13,6 +13,7 @@ namespace SevenDigital.Messaging.Base
 		void CreateDestination<T>(string destinationName);
 		string SendMessage(object messageObject);
 		T GetMessage<T>(string destinationName);
+		object GetMessage(string destinationName);
 	}
 
 	public class MessagingBase : IMessagingBase
@@ -72,7 +73,12 @@ namespace SevenDigital.Messaging.Base
 			var messageString = messageRouter.Get(destinationName);
 			return (messageString == null) ? (default(T)) : (serialiser.Deserialise<T>(messageString));
 		}
-
+		
+		public object GetMessage(string destinationName)
+		{
+			var messageString = messageRouter.Get(destinationName);
+			return (messageString == null) ? (null) : (serialiser.DeserialiseByStack(messageString));
+		}
 
 		static readonly IDictionary<Type, RateLimitedAction> RouteCache = new Dictionary<Type, RateLimitedAction>();
 		void RouteSource(Type routeType)
