@@ -78,10 +78,10 @@ namespace SignalHandling
 			{
 				using (var inp = Console.OpenStandardInput()) // this seems to be non-competitive
 				{
-					while (true)
+					int byt;
+					while ((byt = inp.ReadByte()) >= 0)// blocking read
 					{
-						var x = inp.ReadByte(); // blocking read
-						if (x == 3 || x == -1)  // ctrl-c or stream closed
+						if (byt == 3)  // ctrl-c
 						{
 							TerminateEventSent((int)Signum.SIGINT);
 						}
