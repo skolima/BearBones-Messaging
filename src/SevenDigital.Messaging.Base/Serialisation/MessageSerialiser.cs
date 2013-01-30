@@ -15,7 +15,7 @@ namespace SevenDigital.Messaging.Base.Serialisation
 
 			JsConfig.PreferInterfaces = true;
 			var str = JsonSerializer.SerializeToString(messageObject, interfaces.Single());
-			return str.Insert(str.Length - 2, "\"__contracts\":\""+InterfaceStack.Of(messageObject)+"\"");
+			return str.Insert(str.Length - 1, ",\"__contracts\":\""+InterfaceStack.Of(messageObject)+"\"");
 		}
 
 		public T Deserialise<T>(string source)
@@ -26,6 +26,18 @@ namespace SevenDigital.Messaging.Base.Serialisation
 
 			return (T)JsonSerializer.DeserializeFromString(source, WrapperTypeFor<T>());
 		}
+
+		public object DeserialiseByStack(string source)
+		{
+			JsConfig.PreferInterfaces = true;
+
+			var bestKnownType = JsonSerializer.DeserializeFromString<ContractStack>(source).FirstKnownType();
+			if (bestKnownType == null) 
+				throw new Exception("Can't deserialise message, as no matching types are available. Are you missing an assembly reference?");
+
+			return JsonSerializer.DeserializeFromString(source, bestKnownType);
+		}
+
 
 		public Type WrapperTypeFor<T>()
 		{

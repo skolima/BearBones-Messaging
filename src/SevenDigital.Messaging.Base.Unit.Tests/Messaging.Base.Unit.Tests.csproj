@@ -42,6 +42,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\RabbitMQ.Client.dll</HintPath>
     </Reference>
+    <Reference Include="SevenDigital.ServiceStack.Merged, Version=3.9.32.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\SevenDigital.ServiceStack.Merged.dll</HintPath>
+    </Reference>
     <Reference Include="StructureMap">
       <HintPath>..\..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
     </Reference>
@@ -54,6 +58,8 @@
     <Compile Include="ContractNameTests.cs" />
     <Compile Include="GetTypeByNameTests.cs" />
     <Compile Include="SendMessageObjectTests.cs" />
+    <Compile Include="Serialisation\ContractStackTests.cs" />
+    <Compile Include="Serialisation\DeserialisingAMessageUsingBaseContractAndTypeStack.cs" />
     <Compile Include="Serialisation\InterfaceStackTests.cs" />
     <Compile Include="SetupDestinationTests.cs" />
     <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsAvailable.cs" />

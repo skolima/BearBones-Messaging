@@ -6,7 +6,7 @@ using SevenDigital.Messaging.Base.Serialisation;
 namespace Messaging.Base.Unit.Tests.Serialisation
 {
 	[TestFixture]
-	public class DeserialisingAMessageWhenTheOriginalInterfaceIsUnavailable
+	public class DeserialisingAMessageUsingBaseContractAndTypeStack
 	{
 		IMessageSerialiser subject;
 		string message;
@@ -24,7 +24,7 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 					HashValue = 123124512,
 					MetadataName = "Mind the gap"
 				};
-			message = subject.Serialise(originalObject).Replace("Example.Types.IMetadataFile, Example.Types", "Pauls.IMum, Phils.Face");
+			message = subject.Serialise(originalObject);
 			Console.WriteLine(message);
 		}
 
@@ -32,7 +32,7 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 		[Test]
 		public void Should_deserialise_to_a_concrete_implementation_of_the_requested_interface()
 		{
-			var result = subject.Deserialise<IMetadataFile>(message);
+			object result = subject.DeserialiseByStack(message);
 
 			Assert.That(result, Is.InstanceOf<IMetadataFile>());
 		}
@@ -40,13 +40,20 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 		[Test]
 		public void Should_deserialise_properties_as_initially_provided()
 		{
-			var result = subject.Deserialise<IMetadataFile>(message);
+			var result = subject.DeserialiseByStack(message) as IMetadataFile;
+			if (result == null)
+				Assert.Fail();
 
 			Assert.That(result.CorrelationId, Is.EqualTo(Guid.Parse("05C90FEB-5C10-4179-9FC0-D26DDA5FD1C6")));
 			Assert.That(result.Contents, Is.EqualTo("My message contents"));
 			Assert.That(result.FilePath, Is.EqualTo("C:\\work\\message"));
 			Assert.That(result.HashValue, Is.EqualTo(123124512));
-			Assert.That(result.MetadataName, Is.EqualTo("Mind the gap"));
+		}
+
+		[Test]
+		public void if_no_types_are_known_should_throw_exception ()
+		{
+			Assert.Throws<Exception>(()=>subject.DeserialiseByStack(message.Replace("Example.Types", "Phils.Face")));
 		}
 	}
 }
