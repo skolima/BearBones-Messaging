@@ -55,7 +55,7 @@ namespace Messaging.Base.Integration.Tests
 			messaging.CreateDestination<IMsg>("Test_Destination");
 			messaging.SendMessage(testMessage);
 
-			var finalObject = (IMetadataFile)messaging.GetMessage("Test_Destination");
+			var finalObject = (IMetadataFile)messaging.GetMessage<IMsg>("Test_Destination");
 
 			Assert.That(finalObject, Is.Not.Null);
 			Assert.That(finalObject.CorrelationId, Is.EqualTo(testMessage.CorrelationId));
@@ -82,7 +82,7 @@ namespace Messaging.Base.Integration.Tests
 			Console.WriteLine("Sending took "+((DateTime.Now) - start));
 			var startGet = DateTime.Now;
 
-			while (messaging.GetMessage/*<IMsg>*/("Test_Destination") != null)
+			while (messaging.GetMessage<IMsg>("Test_Destination") != null)
 			{
 				Interlocked.Increment(ref received);
 			}

@@ -30,23 +30,11 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 
 
 		[Test]
-		public void Should_deserialise_to_a_concrete_implementation_of_the_requested_interface()
+		public void Should_return_null ()
 		{
 			var result = subject.Deserialise<IMetadataFile>(message);
 
-			Assert.That(result, Is.InstanceOf<IMetadataFile>());
-		}
-
-		[Test]
-		public void Should_deserialise_properties_as_initially_provided()
-		{
-			var result = subject.Deserialise<IMetadataFile>(message);
-
-			Assert.That(result.CorrelationId, Is.EqualTo(Guid.Parse("05C90FEB-5C10-4179-9FC0-D26DDA5FD1C6")));
-			Assert.That(result.Contents, Is.EqualTo("My message contents"));
-			Assert.That(result.FilePath, Is.EqualTo("C:\\work\\message"));
-			Assert.That(result.HashValue, Is.EqualTo(123124512));
-			Assert.That(result.MetadataName, Is.EqualTo("Mind the gap"));
+			Assert.That(result, Is.Null);
 		}
 	}
 }

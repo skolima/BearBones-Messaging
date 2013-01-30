@@ -24,10 +24,20 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 					HashValue = 123124512,
 					MetadataName = "Mind the gap"
 				};
+
 			message = subject.Serialise(originalObject);
 			Console.WriteLine(message);
 		}
 
+		[Test]
+		public void if_first_type_is_unknown_should_get_second_type ()
+		{
+			var newmsg = message.Replace("IMetadataFile","rubbish");
+			
+			object result = subject.DeserialiseByStack(newmsg);
+
+			Assert.That(result, Is.InstanceOf<IFile>());
+		}
 
 		[Test]
 		public void Should_deserialise_to_a_concrete_implementation_of_the_requested_interface()

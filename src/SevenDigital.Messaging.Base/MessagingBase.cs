@@ -13,7 +13,6 @@ namespace SevenDigital.Messaging.Base
 		void CreateDestination<T>(string destinationName);
 		string SendMessage(object messageObject);
 		T GetMessage<T>(string destinationName);
-		object GetMessage(string destinationName);
 	}
 
 	public class MessagingBase : IMessagingBase
@@ -33,6 +32,7 @@ namespace SevenDigital.Messaging.Base
 		{
 			return ContractTypeName(instance.GetType());
 		}
+
 		public static string ContractTypeName(Type type)
 		{
 			if (type.IsInterface) return type.FullName;
@@ -71,13 +71,17 @@ namespace SevenDigital.Messaging.Base
 		public T GetMessage<T>(string destinationName)
 		{
 			var messageString = messageRouter.Get(destinationName);
-			return (messageString == null) ? (default(T)) : (serialiser.Deserialise<T>(messageString));
-		}
-		
-		public object GetMessage(string destinationName)
-		{
-			var messageString = messageRouter.Get(destinationName);
-			return (messageString == null) ? (null) : (serialiser.DeserialiseByStack(messageString));
+
+			if (messageString == null) return default(T);
+
+			try
+			{
+				return (T)serialiser.DeserialiseByStack(messageString);
+			}
+			catch
+			{
+				return serialiser.Deserialise<T>(messageString);
+			}
 		}
 
 		static readonly IDictionary<Type, RateLimitedAction> RouteCache = new Dictionary<Type, RateLimitedAction>();

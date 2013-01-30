@@ -1,4 +1,5 @@
-﻿using Example.Types;
+﻿using System;
+using Example.Types;
 using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
@@ -46,6 +47,17 @@ namespace Messaging.Base.Unit.Tests
 		public void When_a_message_is_available_should_deserialise_and_return_requested_type ()
 		{
 			messageRouter.Get("MyServiceDestination").Returns("");
+			serialiser.DeserialiseByStack("").Returns(new SuperMetadata());
+			var result = messaging.GetMessage<IMetadataFile>("MyServiceDestination");
+
+			Assert.That(result, Is.InstanceOf<IMetadataFile>());
+		}
+
+		[Test]
+		public void When_a_message_is_available_should_deserialise_and_return_requested_type_using_old_message_format ()
+		{
+			messageRouter.Get("MyServiceDestination").Returns("");
+			serialiser.DeserialiseByStack("").Returns(c => { throw new Exception(); });
 			serialiser.Deserialise<IMetadataFile>("").Returns(new SuperMetadata());
 			var result = messaging.GetMessage<IMetadataFile>("MyServiceDestination");
 

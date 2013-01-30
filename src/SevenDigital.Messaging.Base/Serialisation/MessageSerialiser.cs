@@ -21,27 +21,26 @@ namespace SevenDigital.Messaging.Base.Serialisation
 		public T Deserialise<T>(string source)
 		{
 			JsConfig.PreferInterfaces = true;
-			var result = JsonSerializer.DeserializeFromString(source, typeof(object));
-			if (result is T) return (T)result;
-
-			return (T)JsonSerializer.DeserializeFromString(source, WrapperTypeFor<T>());
+			return JsonSerializer.DeserializeFromString<T>(source);
 		}
 
 		public object DeserialiseByStack(string source)
 		{
-			JsConfig.PreferInterfaces = true;
-
 			var bestKnownType = ContractStack.FirstKnownType(source);
 			if (bestKnownType == null) 
 				throw new Exception("Can't deserialise message, as no matching types are available. Are you missing an assembly reference?");
 
-			return JsonSerializer.DeserializeFromString(source, bestKnownType);
+			return JsonSerializer.DeserializeFromString(source, WrapperTypeFor(bestKnownType));
 		}
 
 
 		public Type WrapperTypeFor<T>()
 		{
 			return (typeof(T).IsInterface) ? (DynamicProxy.GetInstanceFor<T>().GetType()) : (typeof(T));
+		}
+		public Type WrapperTypeFor(Type t)
+		{
+			return (t.IsInterface) ? (DynamicProxy.GetInstanceFor(t).GetType()) : (t);
 		}
 	}
 }
