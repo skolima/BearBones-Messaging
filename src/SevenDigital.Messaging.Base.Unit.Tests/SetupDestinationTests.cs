@@ -4,7 +4,6 @@ using NUnit.Framework;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Base.Serialisation;
-using StructureMap;
 
 namespace Messaging.Base.Unit.Tests
 {

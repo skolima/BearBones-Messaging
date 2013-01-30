@@ -1,7 +1,6 @@
 ﻿using System;
 using Example.Types;
 using NUnit.Framework;
-using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Serialisation;
 
 namespace Messaging.Base.Unit.Tests.Serialisation
@@ -10,12 +9,12 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 	public class WhenSerialisingAnObjectWithOneTopLevelInterface
 	{
 		IMessageSerialiser subject;
-		
+
 		static SuperMetadata source;
 		string result;
 
 		[SetUp]
-		public void With_string_serialised_from_a_source_object ()
+		public void With_string_serialised_from_a_source_object()
 		{
 			source = new SuperMetadata
 			{
@@ -28,6 +27,7 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 
 			subject = new MessageSerialiser();
 			result = subject.Serialise(source);
+			Console.WriteLine(result);
 		}
 
 		[Test]
@@ -35,10 +35,18 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 		[TestCase("Contents", "My message contents")]
 		[TestCase("FilePath", @"C:\\work\\message")]
 		[TestCase("MetadataName", "Mind the gap")]
-		public void Should_serialise_its_properties (string expectedPropertyName, string expectedPropertyValue)
+		public void Should_serialise_its_properties(string expectedPropertyName, string expectedPropertyValue)
 		{
-			Assert.That(result, Contains.Substring("\""+expectedPropertyName+"\":\""+expectedPropertyValue+"\""));
+			Assert.That(result, Contains.Substring("\"" + expectedPropertyName + "\":\"" + expectedPropertyValue + "\""));
 		}
+
+		[Test]
+		public void Should_store_interface_stack_in_order_in_message ()
+		{
+			var contracts = InterfaceStack.Of(source);
+			Assert.That(result, Contains.Substring("\"__contracts\":\"" + contracts + "\""));
+		}
+
 		[Test]
 		public void Should_serialise_int_values_without_quotes()
 		{

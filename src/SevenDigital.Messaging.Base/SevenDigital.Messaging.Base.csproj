@@ -62,6 +62,7 @@
     <Compile Include="RabbitMq\RabbitMqManagement\IRMExchange.cs" />
     <Compile Include="RabbitMq\RabbitMqManagement\IRMNode.cs" />
     <Compile Include="RabbitMq\RabbitMqManagement\IRMQueue.cs" />
+    <Compile Include="Serialisation\InterfaceStack.cs" />
     <Compile Include="Serialisation\MessageSerialiser.cs" />
     <Compile Include="RabbitMq\RabbitMqConnection.cs" />
     <Compile Include="RabbitMq\RabbitMqManagement\RabbitMqQuery.cs" />

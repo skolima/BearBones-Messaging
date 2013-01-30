@@ -14,7 +14,8 @@ namespace SevenDigital.Messaging.Base.Serialisation
 				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
 
 			JsConfig.PreferInterfaces = true;
-			return JsonSerializer.SerializeToString(messageObject, interfaces.Single());
+			var str = JsonSerializer.SerializeToString(messageObject, interfaces.Single());
+			return str.Insert(str.Length - 2, "\"__contracts\":\""+InterfaceStack.Of(messageObject)+"\"");
 		}
 
 		public T Deserialise<T>(string source)

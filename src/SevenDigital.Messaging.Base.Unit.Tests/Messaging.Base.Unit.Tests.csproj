@@ -54,6 +54,7 @@
     <Compile Include="ContractNameTests.cs" />
     <Compile Include="GetTypeByNameTests.cs" />
     <Compile Include="SendMessageObjectTests.cs" />
+    <Compile Include="Serialisation\InterfaceStackTests.cs" />
     <Compile Include="SetupDestinationTests.cs" />
     <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsAvailable.cs" />
     <Compile Include="Serialisation\DeserialisingAMessageWhenTheOriginalInterfaceIsUnavailable.cs" />
