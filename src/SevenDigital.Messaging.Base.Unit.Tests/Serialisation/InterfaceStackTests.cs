@@ -16,10 +16,10 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 			var result = InterfaceStack.Of(source);
 			Console.WriteLine(result);
 			Assert.That(result,
-				Is.EqualTo("Example.Types.IMetadataFile, Example.Types; " +
-				           "Example.Types.IFile, Example.Types; " +
-				           "Example.Types.IHash, Example.Types; " +
-				           "Example.Types.IPath, Example.Types; " +
+				Is.EqualTo("Example.Types.IMetadataFile, Example.Types;" +
+				           "Example.Types.IFile, Example.Types;" +
+				           "Example.Types.IHash, Example.Types;" +
+				           "Example.Types.IPath, Example.Types;" +
 				           "Example.Types.IMsg, Example.Types"));
 		}
 	}

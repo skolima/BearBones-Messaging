@@ -1,20 +1,36 @@
 using System;
-using System.Linq;
 
 namespace SevenDigital.Messaging.Base.Serialisation
 {
 	public class ContractStack
 	{
-		public string __contracts { get; set; }
+		const string Marker = "\"__contracts\":\"";
 
-		public Type FirstKnownType()
+
+		public static Type FirstKnownType(string message)
 		{
-			if (__contracts == null) return null;
+			if (string.IsNullOrEmpty(message)) return null;
+			var ord = StringComparison.Ordinal;
 
-			var typespecs = __contracts.Split(';');
-			return typespecs
-				.Select(typespec => Type.GetType(typespec.Trim(), /*throw on error:*/false, /*ignore case:*/true))
-				.FirstOrDefault(t => t != null);
+
+			int left = message.IndexOf(Marker, ord) + Marker.Length;
+			if (left < 0 || (left >= message.Length)) return null;
+
+			while (left < message.Length)
+			{
+				var right = message.IndexOfAny(new[] { ';', '"' }, left);
+				if (right <= left) return null;
+
+				var t = Type.GetType(message.Substring(left, right - left), false);
+				if (t != null) return t;
+
+				left = right + 1;
+				while (Char.IsWhiteSpace(message[left]))
+				{
+					left++;
+				}
+			}
+			return null;
 		}
 	}
 }

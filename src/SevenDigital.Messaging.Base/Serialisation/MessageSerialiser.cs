@@ -31,7 +31,7 @@ namespace SevenDigital.Messaging.Base.Serialisation
 		{
 			JsConfig.PreferInterfaces = true;
 
-			var bestKnownType = JsonSerializer.DeserializeFromString<ContractStack>(source).FirstKnownType();
+			var bestKnownType = ContractStack.FirstKnownType(source);
 			if (bestKnownType == null) 
 				throw new Exception("Can't deserialise message, as no matching types are available. Are you missing an assembly reference?");
 

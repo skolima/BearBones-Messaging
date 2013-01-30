@@ -82,7 +82,7 @@ namespace Messaging.Base.Integration.Tests
 			Console.WriteLine("Sending took "+((DateTime.Now) - start));
 			var startGet = DateTime.Now;
 
-			while (messaging.GetMessage<IMsg>("Test_Destination") != null)
+			while (messaging.GetMessage/*<IMsg>*/("Test_Destination") != null)
 			{
 				Interlocked.Increment(ref received);
 			}

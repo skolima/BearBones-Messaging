@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace SevenDigital.Messaging.Base.Serialisation
 {
@@ -10,15 +11,21 @@ namespace SevenDigital.Messaging.Base.Serialisation
 		{
 			var set = new List<Type>();
 			Interfaces(source.DirectlyImplementedInterfaces(), set);
-			return 
-				string.Join("; ",
-				            set.Select(type => Shorten(type.AssemblyQualifiedName))
-					);
+			
+			var sb = new StringBuilder();
+			for (int i = 0; i < set.Count; i++)
+			{
+				var type = set[i];
+				if (i>0) sb.Append(";");
+				sb.Append(Shorten(type.AssemblyQualifiedName));
+			}
+			return sb.ToString();
 		}
 
 		static string Shorten(string assemblyQualifiedName)
 		{
-			return string.Join(",", assemblyQualifiedName.Split(',').Take(2));
+			var idx = assemblyQualifiedName.IndexOf(", Version", StringComparison.Ordinal);
+			return idx < 0 ? assemblyQualifiedName : assemblyQualifiedName.Substring(0, idx);
 		}
 
 		static void Interfaces(IEnumerable<Type> interfaces, ICollection<Type> set)

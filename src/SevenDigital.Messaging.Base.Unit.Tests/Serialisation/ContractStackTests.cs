@@ -1,6 +1,6 @@
-﻿using Example.Types;
+﻿using System;
+using Example.Types;
 using NUnit.Framework;
-using ServiceStack.Text;
 using SevenDigital.Messaging.Base.Serialisation;
 
 namespace Messaging.Base.Unit.Tests.Serialisation
@@ -17,24 +17,18 @@ namespace Messaging.Base.Unit.Tests.Serialisation
 		                "Example.Types.IPath, Example.Types; " +
 		                "Example.Types.IMsg, Example.Types\"}";
 
-		ContractStack _contractStack;
+		Type _foundType;
 
 		[SetUp]
 		public void setup ()
 		{
-			_contractStack = JsonSerializer.DeserializeFromString<ContractStack>(sample);
-		}
-
-		[Test]
-		public void can_get_contract_stack_from_json_string ()
-		{
-			Assert.That(_contractStack.__contracts, Is.EqualTo("Not.A.Real.Type, Example.Types; Example.Types.IMetadataFile, Example.Types; Example.Types.IFile, Example.Types; Example.Types.IHash, Example.Types; Example.Types.IPath, Example.Types; Example.Types.IMsg, Example.Types"));
+			_foundType = ContractStack.FirstKnownType(sample);
 		}
 
 		[Test]
 		public void can_get_first_available_real_type ()
 		{
-			Assert.That(_contractStack.FirstKnownType(),
+			Assert.That(_foundType,
 				Is.EqualTo(typeof(IMetadataFile)));
 		}
 	}
