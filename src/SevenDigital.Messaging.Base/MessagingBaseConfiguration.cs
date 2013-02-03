@@ -46,10 +46,14 @@ namespace SevenDigital.Messaging.Base
 			ObjectFactory.Configure(map => map.For<IRabbitMqQuery>().Use(() => configuredQuery));
 			return this;
 		}
-		
+
+		const int port = 55672; // before RMQ 3; 3 redirects, so we use this for compatibility for now.
+		//const int port = 15672; // RMQ 3+
+
 		public MessagingBaseConfiguration WithRabbitManagement(string host, string username, string password, string vhost)
 		{
-			ObjectFactory.Configure(map => map.For<IRabbitMqQuery>().Use(() => new RabbitMqQuery("http://" + host + ":55672", username, password, vhost) ));
+			ObjectFactory.Configure(map => map.For<IRabbitMqQuery>().Use(() =>
+				new RabbitMqQuery("http://" + host + ":" + port, username, password, vhost) ));
 			return this;
 		}
 		
@@ -61,8 +65,7 @@ namespace SevenDigital.Messaging.Base
             var password = ConfigurationManager.AppSettings["ApiPassword"];
             var vhost = (parts.Length >= 2) ? (parts[1]) : ("/");
 
-            //return new RabbitMqManagement("http://" + hostUri + ":15672", username, password, vhost); // 3.0+
-            return new RabbitMqQuery("http://" + hostUri + ":55672", username, password, vhost); // before RMQ 3
+            return new RabbitMqQuery("http://" + hostUri + ":" + port, username, password, vhost); 
         }
 
 		static RabbitMqConnection RabbitMqConnectionWithAppConfigSettings()

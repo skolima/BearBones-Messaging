@@ -32,7 +32,7 @@ namespace Messaging.Base.Unit.Tests.Configuration
 		[Test]
 		public void Should_have_host_uri_from_app_config ()
 		{
-			Assert.That(query.HostUri.ToString(), Is.EqualTo("http://"+host+":55672/"));
+			Assert.That(query.HostUri.ToString(), Is.StringStarting("http://"+host+":"));
 		}
 
 		[Test]

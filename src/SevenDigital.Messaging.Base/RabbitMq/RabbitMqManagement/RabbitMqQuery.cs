@@ -1,7 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using ServiceStack.Text;
+using ShiftIt;
+using ShiftIt.Http;
 
 namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 {
@@ -25,34 +26,43 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 
         public RMQueue[] ListDestinations()
         {
-            using (var stream = Get("/api/queues" + VirtualHost))
-                return JsonSerializer.DeserializeFromStream<RMQueue[]>(stream);
+			return JsonSerializer.DeserializeFromString<RMQueue[]>(Get("/api/queues" + VirtualHost));
         }
 
         public RMNode[] ListNodes()
         {
-            using (var stream = Get("/api/nodes"))
-                return JsonSerializer.DeserializeFromStream<RMNode[]>(stream);
+			return JsonSerializer.DeserializeFromString<RMNode[]>(Get("/api/nodes"));
         }
 
         public RMExchange[] ListSources()
         {
-            using (var stream = Get("/api/exchanges" + VirtualHost))
-                return JsonSerializer.DeserializeFromStream<RMExchange[]>(stream);
+			return JsonSerializer.DeserializeFromString<RMExchange[]>(Get("/api/exchanges" + VirtualHost));
         }
 
-		Stream Get(string endpoint)
+		string Get(string endpoint)
         {
             Uri result;
 
-            if (Uri.TryCreate(HostUri, endpoint, out result))
-            {
-                var webRequest = WebRequest.Create(result);
-                webRequest.Credentials = Credentials;
-                return webRequest.GetResponse().GetResponseStream();
-            }
-
-            return null;
+            return Uri.TryCreate(HostUri, endpoint, out result) ? GetResponseString(result, 0) : null;
         }
-    }
+
+		static string GetResponseString(Uri target, int redirects)
+		{
+			var rq = new HttpRequestBuilder().Get(target).BasicAuthentication("guest", "guest").Build();
+			using (var reader = new HttpClient().Request(rq))
+			{
+				if (reader.StatusClass == StatusClass.Redirection
+					&& reader.Headers.ContainsKey("Location")
+					&& redirects < 3)
+				{
+					return GetResponseString(new Uri(reader.Headers["Location"]), redirects + 1);
+				}
+				if (reader.StatusClass == StatusClass.Success)
+				{
+					return reader.BodyReader.ReadStringToLength();
+				}
+				throw new Exception("Endpoint failed: " + target + "; " + reader.StatusCode);
+			}
+		}
+	}
 }
