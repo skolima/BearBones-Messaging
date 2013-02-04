@@ -49,19 +49,19 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 		static string GetResponseString(Uri target, int redirects)
 		{
 			var rq = new HttpRequestBuilder().Get(target).BasicAuthentication("guest", "guest").Build();
-			using (var reader = new HttpClient().Request(rq))
+			using (var response = new HttpClient().Request(rq))
 			{
-				if (reader.StatusClass == StatusClass.Redirection
-					&& reader.Headers.ContainsKey("Location")
+				if (response.StatusClass == StatusClass.Redirection
+					&& response.Headers.ContainsKey("Location")
 					&& redirects < 3)
 				{
-					return GetResponseString(new Uri(reader.Headers["Location"]), redirects + 1);
+					return GetResponseString(new Uri(response.Headers["Location"]), redirects + 1);
 				}
-				if (reader.StatusClass == StatusClass.Success)
+				if (response.StatusClass == StatusClass.Success)
 				{
-					return reader.BodyReader.ReadStringToLength();
+					return response.BodyReader.ReadStringToLength();
 				}
-				throw new Exception("Endpoint failed: " + target + "; " + reader.StatusCode);
+				throw new Exception("Endpoint failed: " + target + "; " + response.StatusCode);
 			}
 		}
 	}
