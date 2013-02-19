@@ -77,6 +77,29 @@ namespace SevenDigital.Messaging.Base
 			}
 		}
 
+		public IPendingMessage<T> TryStartMessage<T>(string destinationName)
+		{
+			ulong deliveryTag;
+			var messageString = messageRouter.Get(destinationName, out deliveryTag);
+
+            if (messageString == null) return null;
+
+            T message;
+            try
+            {
+	            message = (T) serialiser.DeserialiseByStack(messageString);
+            } catch
+            {
+                message = serialiser.Deserialise<T>(messageString);
+            }
+
+            return new PendingMessage<T> {
+                Message = message,
+                Cancel = () => messageRouter.Cancel(deliveryTag),
+                Finish = () => messageRouter.Finish(deliveryTag)
+            };
+		}
+
 		static readonly IDictionary<Type, RateLimitedAction> RouteCache = new Dictionary<Type, RateLimitedAction>();
 		void RouteSource(Type routeType)
 		{

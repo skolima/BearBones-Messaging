@@ -52,8 +52,10 @@
     <Compile Include="Extensions\RateLimitedAction.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IMessagingBase.cs" />
+    <Compile Include="IPendingMessage.cs" />
     <Compile Include="MessagingBase.cs" />
     <Compile Include="MessagingBaseConfiguration.cs" />
+    <Compile Include="Routing\PendingMessage.cs" />
     <Compile Include="RabbitMq\IChannelAction.cs" />
     <Compile Include="RabbitMq\IRabbitMqConnection.cs" />
     <Compile Include="RabbitMq\LongTermRabbitConnection.cs" />

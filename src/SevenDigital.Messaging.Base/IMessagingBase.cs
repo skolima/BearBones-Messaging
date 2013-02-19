@@ -6,5 +6,7 @@ namespace SevenDigital.Messaging.Base
 		void CreateDestination<T>(string destinationName);
 		string SendMessage(object messageObject);
 		T GetMessage<T>(string destinationName);
+
+        IPendingMessage<T> TryStartMessage<T>(string destinationName);
 	}
 }

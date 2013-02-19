@@ -66,6 +66,34 @@ namespace Messaging.Base.Integration.Tests
 			Assert.That(finalObject.Equals(testMessage), Is.False);
 		}
 
+        [Test]
+		public void should_be_able_to_get_cancel_get_again_and_finish_messages ()
+		{
+			messaging.CreateDestination<IMsg>("Test_Destination");
+			messaging.SendMessage(testMessage);
+
+			var pending_1 = messaging.TryStartMessage<IMsg>("Test_Destination");
+			var pending_2 = messaging.TryStartMessage<IMsg>("Test_Destination");
+			Assert.That(pending_1, Is.Not.Null);
+			Assert.That(pending_2, Is.Null);
+
+            pending_1.Cancel();
+            pending_2 = messaging.TryStartMessage<IMsg>("Test_Destination");
+			Assert.That(pending_2, Is.Not.Null);
+
+            pending_2.Finish();
+			var pending_3 = messaging.TryStartMessage<IMsg>("Test_Destination");
+			Assert.That(pending_3, Is.Null);
+
+            var finalObject = (IMetadataFile)pending_2.Message;
+			Assert.That(finalObject.CorrelationId, Is.EqualTo(testMessage.CorrelationId));
+			Assert.That(finalObject.Contents, Is.EqualTo(testMessage.Contents));
+			Assert.That(finalObject.FilePath, Is.EqualTo(testMessage.FilePath));
+			Assert.That(finalObject.HashValue, Is.EqualTo(testMessage.HashValue));
+			Assert.That(finalObject.MetadataName, Is.EqualTo(testMessage.MetadataName));
+			Assert.That(finalObject.Equals(testMessage), Is.False);
+		}
+
 		[Test]
 		public void Should_be_able_to_send_and_receive_1000_messages_in_a_minute ()
 		{
