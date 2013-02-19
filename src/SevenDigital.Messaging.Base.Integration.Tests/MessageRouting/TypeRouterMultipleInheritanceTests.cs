@@ -28,16 +28,8 @@ namespace Messaging.Base.Integration.Tests
 
 			router.Send("Example.Types.IFile", "Hello");
 
-			Assert.That(GetAndFinish(router, "dst"), Is.EqualTo("Hello"));
-			Assert.That(GetAndFinish(router, "dst"), Is.Null);
-		}
-
-		string GetAndFinish(IMessageRouter messageRouter, string dst)
-		{
-			ulong tag;
-            var str = messageRouter.Get(dst, out tag);
-            if (str != null) messageRouter.Finish(tag);
-            return str;
+			Assert.That(router.GetAndFinish("dst"), Is.EqualTo("Hello"));
+			Assert.That(router.GetAndFinish("dst"), Is.Null);
 		}
 
 		[TearDown]

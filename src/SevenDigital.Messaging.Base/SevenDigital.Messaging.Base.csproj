@@ -51,6 +51,7 @@
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\RateLimitedAction.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="IMessagingBase.cs" />
     <Compile Include="MessagingBase.cs" />
     <Compile Include="MessagingBaseConfiguration.cs" />
     <Compile Include="RabbitMq\IChannelAction.cs" />

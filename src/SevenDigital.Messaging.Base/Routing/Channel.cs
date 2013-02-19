@@ -152,7 +152,17 @@ namespace SevenDigital.Messaging.Base.Routing
 		public void Purge(string destinationName)
         {
             messagingChannel.WithChannel(channel => channel.QueuePurge(destinationName));
-        }		
+        }
+
+		/// <summary>
+		/// Cancel a 'Get' by it's tag. The message will remain on the queue and become available for another 'Get'
+		/// </summary>
+		/// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+		public void Cancel(ulong deliveryTag)
+		{
+            messagingChannel.WithChannel(channel => channel.BasicReject(deliveryTag, true));
+		}
+
 		public IBasicProperties EmptyBasicProperties()
 		{
 			return new BasicProperties();
