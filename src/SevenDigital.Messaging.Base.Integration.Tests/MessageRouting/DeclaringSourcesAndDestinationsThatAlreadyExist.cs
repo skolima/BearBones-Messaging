@@ -11,13 +11,13 @@ namespace Messaging.Base.Integration.Tests
 	{
 		private RabbitMqQuery query;
 		private IMessageRouter router;
-		RabbitMqConnection connection;
+		IChannelAction connection;
 
 		[SetUp]
 		public void SetupApi()
 		{
 			query = ConfigurationHelpers.RabbitMqQueryWithConfigSettings();
-			connection = ConfigurationHelpers.RabbitMqConnectionWithAppConfigSettings();
+			connection = ConfigurationHelpers.ChannelWithAppConfigSettings();
 			router = new RabbitRouter(connection);
 		}
 
@@ -50,8 +50,8 @@ namespace Messaging.Base.Integration.Tests
 
 			router.Send("src", "Hello");
 
-			Assert.That(router.Get("dst"), Is.EqualTo("Hello"));
-			Assert.That(router.Get("dst"), Is.Null);
+			Assert.That(router.GetAndFinish("dst"), Is.EqualTo("Hello"));
+			Assert.That(router.GetAndFinish("dst"), Is.Null);
 		}
 
 		[Test]
@@ -67,8 +67,8 @@ namespace Messaging.Base.Integration.Tests
 			router.Link("srcB", "dst");
 			router.Send("srcA", "Hello");
 
-			Assert.That(router.Get("dst"), Is.EqualTo("Hello"));
-			Assert.That(router.Get("dst"), Is.Null);
+			Assert.That(router.GetAndFinish("dst"), Is.EqualTo("Hello"));
+			Assert.That(router.GetAndFinish("dst"), Is.Null);
 		}
 
 		[TearDown]

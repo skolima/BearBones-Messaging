@@ -113,15 +113,37 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <summary>
 		/// Get a message from a destination. This removes the message from the destination
 		/// </summary>
-		public string Get(string destinationName)
+		public string Get(string destinationName, out ulong deliveryTag)
 		{
-			var result = messagingChannel.GetWithChannel(channel => {
-				var rs = channel.BasicGet(destinationName, false);
-				if (rs == null) return null;
-				channel.BasicAck(rs.DeliveryTag, false);
-				return rs;
-			});
-			return result == null ? null : Encoding.UTF8.GetString(result.Body);
+			var result = messagingChannel.GetWithChannel(channel => channel.BasicGet(destinationName, false));
+            if (result == null)
+            {
+                deliveryTag = 0UL;
+                return null;
+            }
+            deliveryTag = result.DeliveryTag;
+            return Encoding.UTF8.GetString(result.Body);
+		}
+
+		/// <summary>
+		/// Finish a message retrieved by 'Get'.
+		/// This will remove the message from the queue
+		/// </summary>
+		/// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+		public void Finish(ulong deliveryTag)
+		{
+            messagingChannel.WithChannel(channel => channel.BasicAck(deliveryTag, false));
+		}
+
+		/// <summary>
+		/// Get a message from a destination, removing it from the queue
+		/// </summary>
+		public string GetAndFinish(string destinationName)
+		{
+			ulong tag;
+            var str = Get(destinationName, out tag);
+            if (str != null) Finish(tag);
+            return str;
 		}
 
 		/// <summary>

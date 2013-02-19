@@ -70,7 +70,7 @@ namespace SevenDigital.Messaging.Base
 
 		public T GetMessage<T>(string destinationName)
 		{
-			var messageString = messageRouter.Get(destinationName);
+			var messageString = messageRouter.GetAndFinish(destinationName);
 
 			if (messageString == null) return default(T);
 

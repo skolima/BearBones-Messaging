@@ -13,7 +13,7 @@ namespace Messaging.Base.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			var connection = ConfigurationHelpers.RabbitMqConnectionWithAppConfigSettings();
+			var connection = ConfigurationHelpers.ChannelWithAppConfigSettings();
 			router = new RabbitRouter(connection);
 			subject = new TypeRouter(router);
 		}
@@ -28,8 +28,16 @@ namespace Messaging.Base.Integration.Tests
 
 			router.Send("Example.Types.IFile", "Hello");
 
-			Assert.That(router.Get("dst"), Is.EqualTo("Hello"));
-			Assert.That(router.Get("dst"), Is.Null);
+			Assert.That(GetAndFinish(router, "dst"), Is.EqualTo("Hello"));
+			Assert.That(GetAndFinish(router, "dst"), Is.Null);
+		}
+
+		string GetAndFinish(IMessageRouter messageRouter, string dst)
+		{
+			ulong tag;
+            var str = messageRouter.Get(dst, out tag);
+            if (str != null) messageRouter.Finish(tag);
+            return str;
 		}
 
 		[TearDown]

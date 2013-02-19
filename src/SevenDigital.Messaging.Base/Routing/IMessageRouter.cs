@@ -35,9 +35,22 @@ namespace SevenDigital.Messaging.Base.Routing
 		void Send(string sourceName, string data);
 
 		/// <summary>
-		/// Get a message from a destination. This removes the message from the destination
+		/// Get a message from a destination. This does not remove the message from the queue.
+		/// Use 'Finish' to complete a message and remove from the queue.
 		/// </summary>
-		string Get(string destinationName);
+		string Get(string destinationName, out ulong deliveryTag);
+
+        /// <summary>
+        /// Finish a message retrieved by 'Get'.
+        /// This will remove the message from the queue
+        /// </summary>
+        /// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+        void Finish(ulong deliveryTag);
+
+		/// <summary>
+		/// Get a message from a destination, removing it from the queue
+		/// </summary>
+		string GetAndFinish(string destinationName);
 
 		/// <summary>
 		/// Delete all waiting messages from a given destination

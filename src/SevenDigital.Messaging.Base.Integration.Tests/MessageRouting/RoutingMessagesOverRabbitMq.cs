@@ -14,14 +14,14 @@ namespace Messaging.Base.Integration.Tests
 	{
 		private RabbitMqQuery query;
 		private IMessageRouter router;
-		RabbitMqConnection connection;
+		IChannelAction channelAction;
 
 		[SetUp]
 		public void SetupApi()
 		{
 			query = ConfigurationHelpers.RabbitMqQueryWithConfigSettings();
-			connection = ConfigurationHelpers.RabbitMqConnectionWithAppConfigSettings();
-			router = new RabbitRouter(connection);
+			channelAction = ConfigurationHelpers.ChannelWithAppConfigSettings();
+			router = new RabbitRouter(channelAction);
 		}
 
 		[Test]
@@ -56,7 +56,7 @@ namespace Messaging.Base.Integration.Tests
 
 			router.Send("exchange_A", "Hello, world");
 
-			var message = router.Get("queue_A");
+			var message = router.GetAndFinish("queue_A");
 			Assert.That(message, Is.EqualTo("Hello, world"));
 		}
 
@@ -68,9 +68,11 @@ namespace Messaging.Base.Integration.Tests
 			router.Link("src", "dst");
 			router.Send("src", "Hello, World");
 
-			connection.WithChannel(channel => channel.BasicAck(0, true));
+			channelAction.WithChannel(channel => channel.BasicAck(0, true));
 
-			var conn2 = connection.ConnectionFactory().CreateConnection();
+            var conn = ConfigurationHelpers.FreshConnectionFromAppConfig();
+
+			var conn2 = conn.ConnectionFactory().CreateConnection();
 			var channel2 = conn2.CreateModel();
 			var result = channel2.BasicGet("dst", false);
 			var message = Encoding.UTF8.GetString(result.Body);
@@ -89,8 +91,8 @@ namespace Messaging.Base.Integration.Tests
 			router.Send("exchange", "Hello, World");
 
 			
-			var message1 = router.Get("queue_A");
-			var message2 = router.Get("queue_B");
+			var message1 = router.GetAndFinish("queue_A");
+			var message2 = router.GetAndFinish("queue_B");
 
 			Assert.That(message1, Is.EqualTo("Hello, World"), "queue_A");
 			Assert.That(message2, Is.EqualTo("Hello, World"), "queue_B");
@@ -100,7 +102,7 @@ namespace Messaging.Base.Integration.Tests
 		public void Can_request_a_message_from_an_empty_destination ()
 		{
 			router.AddDestination("A");
-			var result = router.Get("A");
+			var result = router.GetAndFinish("A");
 
 			Assert.That(result, Is.Null);
 		}
@@ -117,10 +119,10 @@ namespace Messaging.Base.Integration.Tests
 			router.Send("exchange_A", "Three");
 			router.Send("exchange_A", "Four");
 
-			Assert.That(router.Get("queue_A"), Is.EqualTo("One"));
-			Assert.That(router.Get("queue_A"), Is.EqualTo("Two"));
-			Assert.That(router.Get("queue_A"), Is.EqualTo("Three"));
-			Assert.That(router.Get("queue_A"), Is.EqualTo("Four"));
+			Assert.That(router.GetAndFinish("queue_A"), Is.EqualTo("One"));
+			Assert.That(router.GetAndFinish("queue_A"), Is.EqualTo("Two"));
+			Assert.That(router.GetAndFinish("queue_A"), Is.EqualTo("Three"));
+			Assert.That(router.GetAndFinish("queue_A"), Is.EqualTo("Four"));
 		}
 
 		[Test]
@@ -161,17 +163,17 @@ namespace Messaging.Base.Integration.Tests
 			router.Send("H2", "D2, D1, D3 get this");
 			router.Send("N1", "D1, D3 get this");
 
-			Assert.That(router.Get("D3"), Is.EqualTo("D3 gets this"));
-			Assert.That(router.Get("D3"), Is.EqualTo("D2, D1, D3 get this"));
-			Assert.That(router.Get("D3"), Is.EqualTo("D1, D3 get this"));
-			Assert.That(router.Get("D3"), Is.Null);
+			Assert.That(router.GetAndFinish("D3"), Is.EqualTo("D3 gets this"));
+			Assert.That(router.GetAndFinish("D3"), Is.EqualTo("D2, D1, D3 get this"));
+			Assert.That(router.GetAndFinish("D3"), Is.EqualTo("D1, D3 get this"));
+			Assert.That(router.GetAndFinish("D3"), Is.Null);
 
-			Assert.That(router.Get("D2"), Is.EqualTo("D2, D1, D3 get this"));
-			Assert.That(router.Get("D2"), Is.Null);
+			Assert.That(router.GetAndFinish("D2"), Is.EqualTo("D2, D1, D3 get this"));
+			Assert.That(router.GetAndFinish("D2"), Is.Null);
 
-			Assert.That(router.Get("D1"), Is.EqualTo("D2, D1, D3 get this"));
-			Assert.That(router.Get("D1"), Is.EqualTo("D1, D3 get this"));
-			Assert.That(router.Get("D1"), Is.Null);
+			Assert.That(router.GetAndFinish("D1"), Is.EqualTo("D2, D1, D3 get this"));
+			Assert.That(router.GetAndFinish("D1"), Is.EqualTo("D1, D3 get this"));
+			Assert.That(router.GetAndFinish("D1"), Is.Null);
 		}
 
 		[Test, Explicit]
@@ -187,7 +189,7 @@ namespace Messaging.Base.Integration.Tests
 			{
 				router.Send("A", "Woo");
 			}
-			while (router.Get("B") != null) received++;
+			while (router.GetAndFinish("B") != null) received++;
 
 			var time = (DateTime.Now) - start;
 			Assert.That(received, Is.EqualTo(1000));
@@ -209,13 +211,13 @@ namespace Messaging.Base.Integration.Tests
 			}
 
 			var A = new Thread(()=> {
-				while (router.Get("B") != null) Interlocked.Increment(ref received[0]);
+				while (router.GetAndFinish("B") != null) Interlocked.Increment(ref received[0]);
 			});
 			var B = new Thread(()=> {
-				while (router.Get("B") != null) Interlocked.Increment(ref received[0]);
+				while (router.GetAndFinish("B") != null) Interlocked.Increment(ref received[0]);
 			});
 			var C = new Thread(()=> {
-				while (router.Get("B") != null) Interlocked.Increment(ref received[0]);
+				while (router.GetAndFinish("B") != null) Interlocked.Increment(ref received[0]);
 			});
 
 			A.Start();
