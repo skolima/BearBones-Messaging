@@ -40,9 +40,14 @@ namespace SevenDigital.Messaging.Base
 
 		public void CreateDestination<T>(string destinationName)
 		{
-			RouteSource(typeof(T));
+			CreateDestination(typeof(T), destinationName);
+		}
+
+		public void CreateDestination(Type sourceType, string destinationName)
+		{
+			RouteSource(sourceType);
 			messageRouter.AddDestination(destinationName);
-			messageRouter.Link(typeof(T).FullName, destinationName);
+			messageRouter.Link(sourceType.FullName, destinationName);
 		}
 
 		public string SendMessage(object messageObject)
