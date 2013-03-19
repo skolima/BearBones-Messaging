@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using ServiceStack.Text;
-using ShiftIt;
 using ShiftIt.Http;
 
 namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
