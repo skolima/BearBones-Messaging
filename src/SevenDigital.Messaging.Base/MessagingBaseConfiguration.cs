@@ -68,13 +68,13 @@ namespace SevenDigital.Messaging.Base
             return new RabbitMqQuery("http://" + hostUri + ":" + port, username, password, vhost); 
         }
 
-		static ShortTermRabbitMqConnection RabbitMqConnectionWithAppConfigSettings()
+		static RabbitMqConnection RabbitMqConnectionWithAppConfigSettings()
 		{
             var parts = ConfigurationManager.AppSettings["Messaging.Host"].Split('/');
             var hostUri = (parts.Length >= 1) ? (parts[0]) : ("localhost");
             var vhost = (parts.Length >= 2 && parts[1].Length > 0) ? (parts[1]) : ("/");
 
-            return new ShortTermRabbitMqConnection(hostUri, vhost);
+            return new RabbitMqConnection(hostUri, vhost);
 		}
 
 	}

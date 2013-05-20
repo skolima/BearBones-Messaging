@@ -30,7 +30,7 @@ namespace Messaging.Base.Integration.Tests
 			var hostUri = (parts.Length >= 1) ? (parts[0]) : ("localhost");
 			var vhost = (parts.Length >= 2 && parts[1].Length > 0) ? (parts[1]) : ("/");
 
-			return new ShortTermRabbitMqConnection(hostUri, vhost);
+			return new RabbitMqConnection(hostUri, vhost);
 		}
 
 		public static IChannelAction ChannelWithAppConfigSettings()

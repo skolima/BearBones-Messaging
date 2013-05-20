@@ -22,7 +22,7 @@ namespace Messaging.Base.Unit.Tests.Configuration
 		[Test]
 		public void Should_have_rabbit_mq_connection_in_configuration()
 		{
-			Assert.That(connection, Is.InstanceOf<ShortTermRabbitMqConnection>());
+			Assert.That(connection, Is.InstanceOf<RabbitMqConnection>());
 		}
 
 		[Test]

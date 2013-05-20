@@ -59,7 +59,7 @@
     <Compile Include="RabbitMq\IChannelAction.cs" />
     <Compile Include="RabbitMq\IRabbitMqConnection.cs" />
     <Compile Include="RabbitMq\LongTermRabbitConnection.cs" />
-    <Compile Include="RabbitMq\ShortTermRabbitMqConnection.cs" />
+    <Compile Include="RabbitMq\RabbitMqConnection.cs" />
     <Compile Include="Routing\IMessageRouter.cs" />
     <Compile Include="Serialisation\ContractStack.cs" />
     <Compile Include="Serialisation\IMessageSerialiser.cs" />

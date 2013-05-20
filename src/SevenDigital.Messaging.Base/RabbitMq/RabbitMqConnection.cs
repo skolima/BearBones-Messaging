@@ -3,27 +3,27 @@ using RabbitMQ.Client;
 
 namespace SevenDigital.Messaging.Base.RabbitMq
 {
-	public class ShortTermRabbitMqConnection : IRabbitMqConnection
+	public class RabbitMqConnection : IRabbitMqConnection
 	{
 		public string Host { get; private set; }
 		public string VirtualHost { get; private set; }
 
-		public ShortTermRabbitMqConnection(string hostUri, string virtualHost = "/")
-		{
-			Host = hostUri;
-			VirtualHost = virtualHost;
-		}
+        public RabbitMqConnection(string hostUri, string virtualHost = "/")
+        {
+	        Host = hostUri;
+	        VirtualHost = virtualHost;
+        }
 
 		public ConnectionFactory ConnectionFactory()
-		{
-			return new ConnectionFactory
-				{
-					Protocol = Protocols.FromEnvironment(),
-					HostName = Host,
-					VirtualHost = VirtualHost,
-				};
-		}
-
+        {
+            return new ConnectionFactory
+                {
+                    Protocol = Protocols.FromEnvironment(),
+                    HostName = Host,
+                    VirtualHost = VirtualHost,
+                };
+        }
+		
 		public void WithChannel(Action<IModel> actions)
 		{
 			var factory = ConnectionFactory();
@@ -51,7 +51,6 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 
 		public void Dispose()
 		{
-			// doesn't hold a connection	
 		}
 	}
 }
