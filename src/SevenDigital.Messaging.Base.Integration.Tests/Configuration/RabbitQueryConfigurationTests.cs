@@ -8,14 +8,14 @@ using StructureMap;
 namespace Messaging.Base.Unit.Tests.Configuration
 {
 	[TestFixture]
-    public class RabbitQueryConfigurationTests
-    {
+	public class RabbitQueryConfigurationTests
+	{
 		IRabbitMqQuery query;
 		string host;
 		string vhost;
 
 		[SetUp]
-		public void When_configuring_the_messaging_base_with_app_config_settings ()
+		public void When_configuring_the_messaging_base_with_app_config_settings()
 		{
 			new MessagingBaseConfiguration().WithRabbitManagementFromAppConfig();
 			query = ObjectFactory.GetInstance<IRabbitMqQuery>();
@@ -30,22 +30,22 @@ namespace Messaging.Base.Unit.Tests.Configuration
 		}
 
 		[Test]
-		public void Should_have_host_uri_from_app_config ()
+		public void Should_have_host_uri_from_app_config()
 		{
-			Assert.That(query.HostUri.ToString(), Is.StringStarting("http://"+host+":"));
+			Assert.That(query.HostUri.ToString(), Is.StringStarting("http://" + host + ":"));
 		}
 
 		[Test]
-		public void Should_have_network_credentials_from_app_config ()
+		public void Should_have_network_credentials_from_app_config()
 		{
 			Assert.That(query.Credentials.Password, Is.EqualTo(ConfigurationManager.AppSettings["ApiPassword"]));
 			Assert.That(query.Credentials.UserName, Is.EqualTo(ConfigurationManager.AppSettings["ApiUsername"]));
 		}
 
 		[Test]
-		public void	Should_have_virtual_host_from_app_config ()
+		public void Should_have_virtual_host_from_app_config()
 		{
-			Assert.That(query.VirtualHost, Is.EqualTo("/"+vhost));
+			Assert.That(query.VirtualHost, Is.EqualTo("/" + vhost));
 		}
-    }
+	}
 }

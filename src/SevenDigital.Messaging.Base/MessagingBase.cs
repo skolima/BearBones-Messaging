@@ -20,7 +20,7 @@ namespace SevenDigital.Messaging.Base
 			this.messageRouter = messageRouter;
 			this.serialiser = serialiser;
 		}
-		
+
 		public static string ContractTypeName(object instance)
 		{
 			return ContractTypeName(instance.GetType());
@@ -32,7 +32,7 @@ namespace SevenDigital.Messaging.Base
 
 			var interfaceTypes = type.DirectlyImplementedInterfaces().ToList();
 
-			if ( ! interfaceTypes.HasSingle())
+			if (!interfaceTypes.HasSingle())
 				throw new ArgumentException("Messages must directly implement exactly one interface", "type");
 
 			return interfaceTypes.Single().FullName;
@@ -54,7 +54,7 @@ namespace SevenDigital.Messaging.Base
 		{
 			var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
 
-			if ( ! interfaceTypes.HasSingle())
+			if (!interfaceTypes.HasSingle())
 				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
 
 			var sourceType = interfaceTypes.Single();
@@ -87,22 +87,24 @@ namespace SevenDigital.Messaging.Base
 			ulong deliveryTag;
 			var messageString = messageRouter.Get(destinationName, out deliveryTag);
 
-            if (messageString == null) return null;
+			if (messageString == null) return null;
 
-            T message;
-            try
-            {
-	            message = (T) serialiser.DeserialiseByStack(messageString);
-            } catch
-            {
-                message = serialiser.Deserialise<T>(messageString);
-            }
+			T message;
+			try
+			{
+				message = (T)serialiser.DeserialiseByStack(messageString);
+			}
+			catch
+			{
+				message = serialiser.Deserialise<T>(messageString);
+			}
 
-            return new PendingMessage<T> {
-                Message = message,
-                Cancel = () => messageRouter.Cancel(deliveryTag),
-                Finish = () => messageRouter.Finish(deliveryTag)
-            };
+			return new PendingMessage<T>
+			{
+				Message = message,
+				Cancel = () => messageRouter.Cancel(deliveryTag),
+				Finish = () => messageRouter.Finish(deliveryTag)
+			};
 		}
 
 		static readonly IDictionary<Type, RateLimitedAction> RouteCache = new Dictionary<Type, RateLimitedAction>();
@@ -110,14 +112,14 @@ namespace SevenDigital.Messaging.Base
 		{
 			lock (RouteCache)
 			{
-				if (! RouteCache.ContainsKey(routeType))
+				if (!RouteCache.ContainsKey(routeType))
 				{
 					RouteCache.Add(routeType, RateLimitedAction.Of(() => typeRouter.BuildRoutes(routeType)));
 				}
 			}
 			RouteCache[routeType].YoungerThan(TimeSpan.FromMinutes(1));
 		}
-		
+
 		/// <summary>
 		/// Ensure that routes and connections are rebuild on next SendMessage or CreateDestination.
 		/// </summary>

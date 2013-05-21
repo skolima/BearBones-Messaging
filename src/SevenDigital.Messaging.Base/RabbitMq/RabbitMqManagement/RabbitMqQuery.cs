@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using ServiceStack.Text;
-using ShiftIt;
 using ShiftIt.Http;
 
 namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
@@ -12,32 +11,32 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 		public string VirtualHost { get; private set; }
 		public NetworkCredential Credentials { get; private set; }
 
-        public RabbitMqQuery(Uri managementApiHost, NetworkCredential credentials)
-        {
-            HostUri = managementApiHost;
-            Credentials = credentials;
-        }
+		public RabbitMqQuery(Uri managementApiHost, NetworkCredential credentials)
+		{
+			HostUri = managementApiHost;
+			Credentials = credentials;
+		}
 
-        public RabbitMqQuery(string hostUri, string username, string password, string virtualHost = "/")
-            : this(new Uri(hostUri), new NetworkCredential(username, password))
-        {
-            VirtualHost = (virtualHost.StartsWith("/")) ? (virtualHost) : ("/" + virtualHost);
-        }
+		public RabbitMqQuery(string hostUri, string username, string password, string virtualHost = "/")
+			: this(new Uri(hostUri), new NetworkCredential(username, password))
+		{
+			VirtualHost = (virtualHost.StartsWith("/")) ? (virtualHost) : ("/" + virtualHost);
+		}
 
-        public RMQueue[] ListDestinations()
-        {
+		public RMQueue[] ListDestinations()
+		{
 			return JsonSerializer.DeserializeFromString<RMQueue[]>(LowLevelGet("/api/queues" + VirtualHost));
-        }
+		}
 
-        public RMNode[] ListNodes()
-        {
+		public RMNode[] ListNodes()
+		{
 			return JsonSerializer.DeserializeFromString<RMNode[]>(Get("/api/nodes"));
-        }
+		}
 
-        public RMExchange[] ListSources()
-        {
+		public RMExchange[] ListSources()
+		{
 			return JsonSerializer.DeserializeFromString<RMExchange[]>(LowLevelGet("/api/exchanges" + VirtualHost));
-        }
+		}
 
 		string Get(string endpoint)
 		{
@@ -48,7 +47,8 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 
 		static string GetResponseString(Uri target)
 		{
-			using (var webclient = new WebClient()) {
+			using (var webclient = new WebClient())
+			{
 				webclient.UseDefaultCredentials = true;
 				webclient.Credentials = new NetworkCredential("guest", "guest");
 				return webclient.DownloadString(target);
@@ -58,7 +58,7 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 		[Obsolete("Use Get()")]
 		string LowLevelGet(string endpoint)
 		{
-            Uri result;
+			Uri result;
 
 			return Uri.TryCreate(HostUri, endpoint, out result) ? LowLevelGetResponseString(result, 0) : null;
 		}

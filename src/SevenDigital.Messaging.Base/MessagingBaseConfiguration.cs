@@ -14,7 +14,8 @@ namespace SevenDigital.Messaging.Base
 
 		public MessagingBaseConfiguration WithDefaults()
 		{
-			ObjectFactory.Configure(map => {
+			ObjectFactory.Configure(map =>
+			{
 				map.For<IMessageSerialiser>().Use<MessageSerialiser>();
 				map.For<ITypeRouter>().Use<TypeRouter>();
 				map.For<IMessagingBase>().Use<MessagingBase>();
@@ -29,7 +30,7 @@ namespace SevenDigital.Messaging.Base
 		public MessagingBaseConfiguration WithConnection(IRabbitMqConnection connection)
 		{
 			configuredConnection = connection;
-			ObjectFactory.Configure(map => map.For<IRabbitMqConnection>().Use(()=> configuredConnection));
+			ObjectFactory.Configure(map => map.For<IRabbitMqConnection>().Use(() => configuredConnection));
 			return this;
 		}
 
@@ -53,28 +54,28 @@ namespace SevenDigital.Messaging.Base
 		public MessagingBaseConfiguration WithRabbitManagement(string host, string username, string password, string vhost)
 		{
 			ObjectFactory.Configure(map => map.For<IRabbitMqQuery>().Use(() =>
-				new RabbitMqQuery("http://" + host + ":" + port, username, password, vhost) ));
+				new RabbitMqQuery("http://" + host + ":" + port, username, password, vhost)));
 			return this;
 		}
-		
-        static RabbitMqQuery RabbitMqQueryWithConfigSettings()
-        {
-            var parts = ConfigurationManager.AppSettings["Messaging.Host"].Split('/');
-            var hostUri = (parts.Length >= 1) ? (parts[0]) : ("localhost");
-            var username = ConfigurationManager.AppSettings["ApiUsername"];
-            var password = ConfigurationManager.AppSettings["ApiPassword"];
-            var vhost = (parts.Length >= 2) ? (parts[1]) : ("/");
 
-            return new RabbitMqQuery("http://" + hostUri + ":" + port, username, password, vhost); 
-        }
+		static RabbitMqQuery RabbitMqQueryWithConfigSettings()
+		{
+			var parts = ConfigurationManager.AppSettings["Messaging.Host"].Split('/');
+			var hostUri = (parts.Length >= 1) ? (parts[0]) : ("localhost");
+			var username = ConfigurationManager.AppSettings["ApiUsername"];
+			var password = ConfigurationManager.AppSettings["ApiPassword"];
+			var vhost = (parts.Length >= 2) ? (parts[1]) : ("/");
+
+			return new RabbitMqQuery("http://" + hostUri + ":" + port, username, password, vhost);
+		}
 
 		static RabbitMqConnection RabbitMqConnectionWithAppConfigSettings()
 		{
-            var parts = ConfigurationManager.AppSettings["Messaging.Host"].Split('/');
-            var hostUri = (parts.Length >= 1) ? (parts[0]) : ("localhost");
-            var vhost = (parts.Length >= 2 && parts[1].Length > 0) ? (parts[1]) : ("/");
+			var parts = ConfigurationManager.AppSettings["Messaging.Host"].Split('/');
+			var hostUri = (parts.Length >= 1) ? (parts[0]) : ("localhost");
+			var vhost = (parts.Length >= 2 && parts[1].Length > 0) ? (parts[1]) : ("/");
 
-            return new RabbitMqConnection(hostUri, vhost);
+			return new RabbitMqConnection(hostUri, vhost);
 		}
 
 	}
