@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using ServiceStack.Text;
-using ShiftIt.Http;
 
 namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 {
@@ -25,7 +24,7 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 
 		public RMQueue[] ListDestinations()
 		{
-			return JsonSerializer.DeserializeFromString<RMQueue[]>(LowLevelGet("/api/queues" + VirtualHost));
+			return JsonSerializer.DeserializeFromString<RMQueue[]>(Get("/api/queues" + VirtualHost));
 		}
 
 		public RMNode[] ListNodes()
@@ -35,7 +34,7 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 
 		public RMExchange[] ListSources()
 		{
-			return JsonSerializer.DeserializeFromString<RMExchange[]>(LowLevelGet("/api/exchanges" + VirtualHost));
+			return JsonSerializer.DeserializeFromString<RMExchange[]>(Get("/api/exchanges" + VirtualHost));
 		}
 
 		string Get(string endpoint)
@@ -52,34 +51,6 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 				webclient.UseDefaultCredentials = true;
 				webclient.Credentials = new NetworkCredential("guest", "guest");
 				return webclient.DownloadString(target);
-			}
-		}
-
-		[Obsolete("Use Get()")]
-		string LowLevelGet(string endpoint)
-		{
-			Uri result;
-
-			return Uri.TryCreate(HostUri, endpoint, out result) ? LowLevelGetResponseString(result, 0) : null;
-		}
-
-		[Obsolete("Use GetResponseString()")]
-		static string LowLevelGetResponseString(Uri target, int redirects)
-		{
-			var rq = new HttpRequestBuilder().Get(target).BasicAuthentication("guest", "guest").Build();
-			using (var response = new HttpClient().Request(rq))
-			{
-				if (response.StatusClass == StatusClass.Redirection
-					&& response.Headers.ContainsKey("Location")
-					&& redirects < 3)
-				{
-					return LowLevelGetResponseString(new Uri(response.Headers["Location"]), redirects + 1);
-				}
-				if (response.StatusClass == StatusClass.Success)
-				{
-					return response.BodyReader.ReadStringToLength();
-				}
-				throw new Exception("Endpoint failed: " + target + "; " + response.StatusCode);
 			}
 		}
 	}
