@@ -2,6 +2,9 @@
 
 namespace SevenDigital.Messaging.Base
 {
+	/// <summary>
+	/// Extensions for IEnumerable&lt;T&gt;
+	/// </summary>
 	public static class EnumerableExtensions
 	{
 		/// <summary>

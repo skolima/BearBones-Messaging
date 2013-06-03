@@ -1,5 +1,8 @@
 namespace SevenDigital.Messaging.Base.Routing
 {
+	/// <summary>
+	/// Basic actions to drive a RabbitMQ cluster
+	/// </summary>
 	public interface IMessageRouter
 	{
 		/// <summary>

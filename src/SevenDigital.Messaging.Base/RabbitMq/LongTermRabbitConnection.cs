@@ -4,11 +4,23 @@ using RabbitMQ.Client;
 
 namespace SevenDigital.Messaging.Base.RabbitMq
 {
+	/// <summary>
+	/// Long-term connection to an RMQ cluster.
+	/// This provider should be used when polling.
+	/// </summary>
 	public interface ILongTermConnection : IChannelAction
 	{
+		/// <summary>
+		/// Close any existing connections.
+		/// Connections will be re-opened if an action is requested.
+		/// </summary>
 		void Reset();
 	}
 
+	/// <summary>
+	/// Default long-term connection to an RMQ cluster.
+	/// This provider should be used when polling.
+	/// </summary>
 	public class LongTermRabbitConnection : ILongTermConnection
 	{
 		readonly IRabbitMqConnection rabbitMqConnection;
@@ -18,27 +30,45 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 		IConnection _conn;
 		IModel _channel;
 
+		/// <summary>
+		/// Prepare a long term connection with a connection provider.
+		/// Call `MessagingBaseConfiguration` and request IChannelAction
+		/// </summary>
+		/// <param name="rabbitMqConnection"></param>
 		public LongTermRabbitConnection(IRabbitMqConnection rabbitMqConnection)
 		{
 			lockObject = new Object();
 			this.rabbitMqConnection = rabbitMqConnection;
 		}
-
+		
+		/// <summary>
+		/// Close any existing connections and dispose of unmanaged resources
+		/// </summary>
 		~LongTermRabbitConnection()
 		{
 			ShutdownConnection();
 		}
 
+		/// <summary>
+		/// Close any existing connections and dispose of unmanaged resources
+		/// </summary>
 		public void Dispose()
 		{
 			ShutdownConnection();
 		}
 
+		/// <summary>
+		/// Close any existing connections.
+		/// Connections will be re-opened if an action is requested.
+		/// </summary>
 		public void Reset()
 		{
 			ShutdownConnection();
 		}
 
+		/// <summary>
+		/// Perform an action against the RMQ cluster, returning no data
+		/// </summary>
 		public void WithChannel(Action<IModel> actions)
 		{
 			lock (lockObject)
@@ -47,6 +77,9 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 			}
 		}
 
+		/// <summary>
+		/// Perform an action against the RMQ cluster, returning data
+		/// </summary>
 		public T GetWithChannel<T>(Func<IModel, T> actions)
 		{
 			lock (lockObject)

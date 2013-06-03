@@ -1,6 +1,9 @@
 
 namespace SevenDigital.Messaging.Base.Serialisation
 {
+	/// <summary>
+	/// Contract for message serialisation
+	/// </summary>
 	public interface IMessageSerialiser
 	{
 		///<summary>Return a JSON string representing a source object</summary>

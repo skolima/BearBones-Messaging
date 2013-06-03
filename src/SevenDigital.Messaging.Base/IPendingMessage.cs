@@ -2,6 +2,10 @@ using System;
 
 namespace SevenDigital.Messaging.Base
 {
+	/// <summary>
+	/// Represents a message received from RabbitMq.
+	/// May be acknowledged or cancelled.
+	/// </summary>
 	public interface IPendingMessage<out T>
 	{
 		/// <summary>Message on queue</summary>

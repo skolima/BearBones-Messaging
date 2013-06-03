@@ -5,8 +5,16 @@ using System.Text;
 
 namespace SevenDigital.Messaging.Base.Serialisation
 {
+	/// <summary>
+	/// Helper class for reading the definition stack of interfaces.
+	/// </summary>
 	public class InterfaceStack
 	{
+		/// <summary>
+		/// Return a string implementation of 
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
 		public static string Of(object source)
 		{
 			var set = new List<Type>();

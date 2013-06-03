@@ -7,11 +7,19 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Base
 {
+	/// <summary>
+	/// Configuration options for messaging base
+	/// </summary>
 	public class MessagingBaseConfiguration
 	{
 		IRabbitMqConnection configuredConnection;
 		IRabbitMqQuery configuredQuery;
 
+		/// <summary>
+		/// Configure all default mappings in structure map.
+		/// You must also call a `WithConnection...` method to get a
+		/// working system.
+		/// </summary>
 		public MessagingBaseConfiguration WithDefaults()
 		{
 			ObjectFactory.Configure(map =>
@@ -27,6 +35,9 @@ namespace SevenDigital.Messaging.Base
 			return this;
 		}
 
+		/// <summary>
+		/// Configure long and short term connections to use the specified connection details
+		/// </summary>
 		public MessagingBaseConfiguration WithConnection(IRabbitMqConnection connection)
 		{
 			configuredConnection = connection;
@@ -34,6 +45,9 @@ namespace SevenDigital.Messaging.Base
 			return this;
 		}
 
+		/// <summary>
+		/// Use details contained in .Net configuration key `Messaging.Host` for connections
+		/// </summary>
 		public MessagingBaseConfiguration WithConnectionFromAppConfig()
 		{
 			configuredConnection = RabbitMqConnectionWithAppConfigSettings();
@@ -41,6 +55,9 @@ namespace SevenDigital.Messaging.Base
 			return this;
 		}
 
+		/// <summary>
+		/// Use details contained in .Net configuration keys `Messaging.Host`, `ApiUsername` and `ApiPassword` for connections
+		/// </summary>
 		public MessagingBaseConfiguration WithRabbitManagementFromAppConfig()
 		{
 			configuredQuery = RabbitMqQueryWithConfigSettings();
@@ -51,6 +68,9 @@ namespace SevenDigital.Messaging.Base
 		const int port = 55672; // before RMQ 3; 3 redirects, so we use this for compatibility for now.
 		//const int port = 15672; // RMQ 3+
 
+		/// <summary>
+		/// Use a specific rabbit management node
+		/// </summary>
 		public MessagingBaseConfiguration WithRabbitManagement(string host, string username, string password, string vhost)
 		{
 			ObjectFactory.Configure(map => map.For<IRabbitMqQuery>().Use(() =>

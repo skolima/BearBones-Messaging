@@ -8,12 +8,18 @@ using StructureMap;
 
 namespace SevenDigital.Messaging.Base
 {
+	/// <summary>
+	/// Default messaging base.
+	/// </summary>
 	public class MessagingBase : IMessagingBase
 	{
 		readonly ITypeRouter typeRouter;
 		readonly IMessageRouter messageRouter;
 		readonly IMessageSerialiser serialiser;
 
+		/// <summary>
+		/// Create with `ObjectFactory.GetInstance&lt;IMessagingBase&gt;()`
+		/// </summary>
 		public MessagingBase(ITypeRouter typeRouter, IMessageRouter messageRouter, IMessageSerialiser serialiser)
 		{
 			this.typeRouter = typeRouter;
@@ -21,11 +27,17 @@ namespace SevenDigital.Messaging.Base
 			this.serialiser = serialiser;
 		}
 
+		/// <summary>
+		/// Get the contract name of an object instance
+		/// </summary>
 		public static string ContractTypeName(object instance)
 		{
 			return ContractTypeName(instance.GetType());
 		}
-
+		
+		/// <summary>
+		/// Get the contract name of a type
+		/// </summary>
 		public static string ContractTypeName(Type type)
 		{
 			if (type.IsInterface) return type.FullName;
@@ -38,11 +50,17 @@ namespace SevenDigital.Messaging.Base
 			return interfaceTypes.Single().FullName;
 		}
 
+		/// <summary>
+		/// Ensure a destination exists, and bind it to the exchanges for the given type
+		/// </summary>
 		public void CreateDestination<T>(string destinationName)
 		{
 			CreateDestination(typeof(T), destinationName);
 		}
 
+		/// <summary>
+		/// Ensure a destination exists, and bind it to the exchanges for the given type
+		/// </summary>
 		public void CreateDestination(Type sourceType, string destinationName)
 		{
 			RouteSource(sourceType);
@@ -50,6 +68,10 @@ namespace SevenDigital.Messaging.Base
 			messageRouter.Link(sourceType.FullName, destinationName);
 		}
 
+		/// <summary>
+		/// Send a message to all bound destinations.
+		/// Returns serialised form of the message object.
+		/// </summary>
 		public string SendMessage(object messageObject)
 		{
 			var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
@@ -66,6 +88,9 @@ namespace SevenDigital.Messaging.Base
 			return serialised;
 		}
 
+		/// <summary>
+		/// Poll for a waiting message. Returns default(T) if no message.
+		/// </summary>
 		public T GetMessage<T>(string destinationName)
 		{
 			var messageString = messageRouter.GetAndFinish(destinationName);
@@ -82,6 +107,10 @@ namespace SevenDigital.Messaging.Base
 			}
 		}
 
+		/// <summary>
+		/// Try to start handling a waiting message.
+		/// The message may be acknowledged or cancelled to finish reception.
+		/// </summary>
 		public IPendingMessage<T> TryStartMessage<T>(string destinationName)
 		{
 			ulong deliveryTag;

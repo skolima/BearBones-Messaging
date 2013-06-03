@@ -27,13 +27,13 @@ namespace SevenDigital.Messaging.Base.Routing
 			this.messagingChannel = messagingChannel;
 			queues = new HashSet<string>();
 			exchanges = new HashSet<string>();
-			noOptions = new Dictionary<string,string>();
+			noOptions = new Dictionary<string, string>();
 		}
 
 		/// <summary>
 		/// Deletes all queues and exchanges created or used by this Router.
 		/// </summary>
-		public void RemoveRouting (Func<string, bool> filter)
+		public void RemoveRouting(Func<string, bool> filter)
 		{
 			MessagingBase.ResetCaches();
 			messagingChannel.WithChannel(channel =>
@@ -62,7 +62,7 @@ namespace SevenDigital.Messaging.Base.Routing
 			messagingChannel.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
 			exchanges.Add(name);
 		}
-		
+
 		/// <summary>
 		/// Add a new node to which messages can be sent.
 		/// This node sends messages to all its links
@@ -116,13 +116,13 @@ namespace SevenDigital.Messaging.Base.Routing
 		public string Get(string destinationName, out ulong deliveryTag)
 		{
 			var result = messagingChannel.GetWithChannel(channel => channel.BasicGet(destinationName, false));
-            if (result == null)
-            {
-                deliveryTag = 0UL;
-                return null;
-            }
-            deliveryTag = result.DeliveryTag;
-            return Encoding.UTF8.GetString(result.Body);
+			if (result == null)
+			{
+				deliveryTag = 0UL;
+				return null;
+			}
+			deliveryTag = result.DeliveryTag;
+			return Encoding.UTF8.GetString(result.Body);
 		}
 
 		/// <summary>
@@ -132,7 +132,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
 		public void Finish(ulong deliveryTag)
 		{
-            messagingChannel.WithChannel(channel => channel.BasicAck(deliveryTag, false));
+			messagingChannel.WithChannel(channel => channel.BasicAck(deliveryTag, false));
 		}
 
 		/// <summary>
@@ -141,18 +141,18 @@ namespace SevenDigital.Messaging.Base.Routing
 		public string GetAndFinish(string destinationName)
 		{
 			ulong tag;
-            var str = Get(destinationName, out tag);
-            if (str != null) Finish(tag);
-            return str;
+			var str = Get(destinationName, out tag);
+			if (str != null) Finish(tag);
+			return str;
 		}
 
 		/// <summary>
 		/// Delete all waiting messages from a given destination
 		/// </summary>
 		public void Purge(string destinationName)
-        {
-            messagingChannel.WithChannel(channel => channel.QueuePurge(destinationName));
-        }
+		{
+			messagingChannel.WithChannel(channel => channel.QueuePurge(destinationName));
+		}
 
 		/// <summary>
 		/// Cancel a 'Get' by it's tag. The message will remain on the queue and become available for another 'Get'
@@ -160,9 +160,12 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
 		public void Cancel(ulong deliveryTag)
 		{
-            messagingChannel.WithChannel(channel => channel.BasicReject(deliveryTag, true));
+			messagingChannel.WithChannel(channel => channel.BasicReject(deliveryTag, true));
 		}
 
+		/// <summary>
+		/// Basic properties object with default settings
+		/// </summary>
 		public IBasicProperties EmptyBasicProperties()
 		{
 			return new BasicProperties();

@@ -1,7 +1,12 @@
 ﻿namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 {
+	/// <summary>
+	/// Message as returned by RabbitMQ management API.
+	/// See http://www.rabbitmq.com/management.html
+	/// </summary>
 	public class RMNode : IRMNode
 	{
+#pragma warning disable 1591
 		public string name { get; set; }
 		public string type { get; set; }
 		public bool running { get; set; }
@@ -37,12 +42,22 @@
 		public string statistics_level { get; set; }
 		public string erlang_version { get; set; }
 		#endregion
+		
+#pragma warning restore 1591
 
+		/// <summary>
+		/// Returns true if there are any problems that
+		/// will prevent messages from being received or delivered.
+		/// </summary>
+		/// <returns></returns>
 		public bool AnyAlarms()
 		{
 			return disk_free_alarm || mem_alarm;
 		}
 
+		/// <summary>
+		/// Human readable free memory on the node
+		/// </summary>
 		public string FreeMemPercent()
 		{
 			var free = mem_limit - mem_used;
@@ -50,6 +65,9 @@
 			return pc.ToString("00.00");
 		}
 
+		/// <summary>
+		/// Human readable free disk space on the node
+		/// </summary>
 		public string FreeDisk()
 		{
 			var free = disk_free - disk_free_limit;

@@ -4,8 +4,13 @@ using ServiceStack.Text;
 
 namespace SevenDigital.Messaging.Base.Serialisation
 {
+	/// <summary>
+	/// Default serialiser for message objects.
+	/// Uses ServiceStack.Text
+	/// </summary>
 	public class MessageSerialiser : IMessageSerialiser
 	{
+		///<summary>Return a JSON string representing a source object</summary>
 		public string Serialise(object messageObject)
 		{
 			var type = messageObject.GetType();
@@ -18,12 +23,14 @@ namespace SevenDigital.Messaging.Base.Serialisation
 			return str.Insert(str.Length - 1, ",\"__contracts\":\""+InterfaceStack.Of(messageObject)+"\"");
 		}
 
+		///<summary>Return an object of a known type based on it's JSON representation</summary>
 		public T Deserialise<T>(string source)
 		{
 			JsConfig.PreferInterfaces = true;
 			return JsonSerializer.DeserializeFromString<T>(source);
 		}
 
+		///<summary>Return an object of an unknown type based on it's claimed hierarchy</summary>
 		public object DeserialiseByStack(string source)
 		{
 			var bestKnownType = ContractStack.FirstKnownType(source);
@@ -33,11 +40,16 @@ namespace SevenDigital.Messaging.Base.Serialisation
 			return JsonSerializer.DeserializeFromString(source, WrapperTypeFor(bestKnownType));
 		}
 
-
+		/// <summary>
+		/// Returns an instatiable class that implements the given interface class
+		/// </summary>
 		public Type WrapperTypeFor<T>()
 		{
 			return (typeof(T).IsInterface) ? (DynamicProxy.GetInstanceFor<T>().GetType()) : (typeof(T));
 		}
+		/// <summary>
+		/// Returns an instatiable class that implements the given interface class
+		/// </summary>
 		public Type WrapperTypeFor(Type t)
 		{
 			return (t.IsInterface) ? (DynamicProxy.GetInstanceFor(t).GetType()) : (t);

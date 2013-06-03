@@ -2,11 +2,17 @@ using System;
 
 namespace SevenDigital.Messaging.Base.Serialisation
 {
+	/// <summary>
+	/// Helper class to read the contract stack from incoming JSON messages
+	/// </summary>
 	public class ContractStack
 	{
 		const string Marker = "\"__contracts\":\"";
 
-
+		/// <summary>
+		/// Return the type object for the first contract available in the calling assembly,
+		/// as read from the supplied JSON message.
+		/// </summary>
 		public static Type FirstKnownType(string message)
 		{
 			if (string.IsNullOrEmpty(message)) return null;
