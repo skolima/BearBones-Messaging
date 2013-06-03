@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using RabbitMQ.Client;
 
 namespace SevenDigital.Messaging.Base.RabbitMq
@@ -8,12 +9,15 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 	public class LongTermRabbitConnection : ILongTermConnection
 	{
 		readonly IRabbitMqConnection rabbitMqConnection;
-		ConnectionFactory factory;
-		IConnection conn;
-		IModel channel;
+		readonly object lockObject;
+
+		ConnectionFactory _factory;
+		IConnection _conn;
+		IModel _channel;
 
 		public LongTermRabbitConnection(IRabbitMqConnection rabbitMqConnection)
 		{
+			lockObject = new Object();
 			this.rabbitMqConnection = rabbitMqConnection;
 		}
 
@@ -34,69 +38,97 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 
 		public void WithChannel(Action<IModel> actions)
 		{
-			lock (lockObject)
-			{
-				EnsureChannel();
-				actions(channel);
-			}
+			actions(EnsureChannel());
 		}
 
 		public T GetWithChannel<T>(Func<IModel, T> actions)
 		{
-			lock (lockObject)
-			{
-				EnsureChannel();
-				return actions(channel);
-			}
+			return actions(EnsureChannel());
 		}
 
 		void ShutdownConnection()
 		{
-			if (channel != null && channel.IsOpen)
-			{
-				channel.Close();
-			}
-
-			if (conn != null && conn.IsOpen)
-			{
-				conn.Close();
-			}
-
-			DisposeChannel();
-			DisposeConnection();
-			factory = null;
-		}
-
-		readonly object lockObject = new Object();
-
-
-		void EnsureChannel()
-		{
 			lock (lockObject)
 			{
-				if (factory == null)
+				if (_channel != null && _channel.IsOpen)
 				{
-					factory = rabbitMqConnection.ConnectionFactory();
+					_channel.Close();
 				}
-				if (channel != null && channel.IsOpen) return;
-				if (conn != null && conn.IsOpen)
+
+				if (_conn != null && _conn.IsOpen)
+				{
+					_conn.Close();
+				}
+
+				DisposeChannel();
+				DisposeConnection();
+				_factory = null;
+			}
+		}
+
+
+		IModel EnsureChannel()
+		{
+			var lchan = _channel;
+			if (lchan != null && lchan.IsOpen) return lchan;
+
+			lock (lockObject)
+			{
+				if (_factory == null)
+				{
+					_factory = rabbitMqConnection.ConnectionFactory();
+				}
+				if (_channel != null && _channel.IsOpen) return _channel;
+				if (_conn != null && _conn.IsOpen)
 				{
 					DisposeChannel();
-					channel = conn.CreateModel();
-					return;
+					_channel = _conn.CreateModel();
+					return _channel;
 				}
 
 				DisposeConnection();
 
-				conn = factory.CreateConnection();
-				channel = conn.CreateModel();
+				var lfac = _factory;
+				if (lfac == null) throw new Exception("RabbitMq Connection failed to generate a connection factory");
+				_conn = lfac.CreateConnection();
+
+				_channel = _conn.CreateModel();
+				return _channel;
 			}
 		}
 
-// ReSharper disable EmptyGeneralCatchClause
-		void DisposeConnection() { try { conn.Dispose(); } catch { } }
+		void DisposeConnection() { 
+			lock (lockObject)
+			{
+				//try
+				//{
+					var conn = Interlocked.Exchange(ref _conn, null);
+					if (conn != null) conn.Dispose();
+				//}
+				//catch
+				//{
+				//	Console.WriteLine("disposal failed");
+				//	Ignore();
+				//}
+			}
+		}
 
-		void DisposeChannel() { try { channel.Dispose(); } catch { } }
-// ReSharper restore EmptyGeneralCatchClause
+		void DisposeChannel() { 
+			lock (lockObject)
+			{
+				//try
+				//{
+					var chan = Interlocked.Exchange(ref _channel, null);
+					if (chan != null) chan.Dispose();
+				//}
+				//catch
+				//{
+				//	Console.WriteLine("disposal failed");
+				//	Ignore();
+				//}
+			}
+		}
+
+		static void Ignore() { }
 	}
 }

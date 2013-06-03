@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("SimpleRouting")]
-[assembly: AssemblyProduct("SimpleRouting")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyTitle("SevenDigital.Messaging.Base")]
+[assembly: AssemblyProduct("SevenDigital.Messaging.Base")]
+[assembly: AssemblyCopyright("Copyright © Iain Ballard 2012-2013")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
