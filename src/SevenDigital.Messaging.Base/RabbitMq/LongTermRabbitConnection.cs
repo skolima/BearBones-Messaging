@@ -4,7 +4,10 @@ using RabbitMQ.Client;
 
 namespace SevenDigital.Messaging.Base.RabbitMq
 {
-	public interface ILongTermConnection: IChannelAction { }
+	public interface ILongTermConnection : IChannelAction
+	{
+		void Reset();
+	}
 
 	public class LongTermRabbitConnection : ILongTermConnection
 	{
@@ -38,97 +41,73 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 
 		public void WithChannel(Action<IModel> actions)
 		{
-			actions(EnsureChannel());
+			lock (lockObject)
+			{
+				actions(EnsureChannel());
+			}
 		}
 
 		public T GetWithChannel<T>(Func<IModel, T> actions)
 		{
-			return actions(EnsureChannel());
+			lock (lockObject)
+			{
+				return actions(EnsureChannel());
+			}
 		}
 
 		void ShutdownConnection()
 		{
-			lock (lockObject)
-			{
-				if (_channel != null && _channel.IsOpen)
-				{
-					_channel.Close();
-				}
-
-				if (_conn != null && _conn.IsOpen)
-				{
-					_conn.Close();
-				}
-
-				DisposeChannel();
-				DisposeConnection();
-				_factory = null;
-			}
+			_factory = null;
+			DisposeChannel();
+			DisposeConnection();
 		}
-
 
 		IModel EnsureChannel()
 		{
 			var lchan = _channel;
 			if (lchan != null && lchan.IsOpen) return lchan;
 
-			lock (lockObject)
+			if (_factory == null)
 			{
-				if (_factory == null)
-				{
-					_factory = rabbitMqConnection.ConnectionFactory();
-				}
-				if (_channel != null && _channel.IsOpen) return _channel;
-				if (_conn != null && _conn.IsOpen)
-				{
-					DisposeChannel();
-					_channel = _conn.CreateModel();
-					return _channel;
-				}
-
-				DisposeConnection();
-
-				var lfac = _factory;
-				if (lfac == null) throw new Exception("RabbitMq Connection failed to generate a connection factory");
-				_conn = lfac.CreateConnection();
-
+				_factory = rabbitMqConnection.ConnectionFactory();
+			}
+			if (_conn != null && _conn.IsOpen)
+			{
+				DisposeChannel();
 				_channel = _conn.CreateModel();
 				return _channel;
 			}
+
+			DisposeConnection();
+
+			var lfac = _factory;
+			if (lfac == null) throw new Exception("RabbitMq Connection failed to generate a connection factory");
+			_conn = lfac.CreateConnection();
+
+			_channel = _conn.CreateModel();
+			return _channel;
 		}
 
-		void DisposeConnection() { 
+		void DisposeConnection()
+		{
 			lock (lockObject)
 			{
-				//try
-				//{
-					var conn = Interlocked.Exchange(ref _conn, null);
-					if (conn != null) conn.Dispose();
-				//}
-				//catch
-				//{
-				//	Console.WriteLine("disposal failed");
-				//	Ignore();
-				//}
+				var conn = Interlocked.Exchange(ref _conn, null);
+				if (conn == null) return;
+				if (conn.IsOpen) conn.Close();
+				conn.Dispose();
 			}
 		}
 
-		void DisposeChannel() { 
+		void DisposeChannel()
+		{
 			lock (lockObject)
 			{
-				//try
-				//{
-					var chan = Interlocked.Exchange(ref _channel, null);
-					if (chan != null) chan.Dispose();
-				//}
-				//catch
-				//{
-				//	Console.WriteLine("disposal failed");
-				//	Ignore();
-				//}
+				var chan = Interlocked.Exchange(ref _channel, null);
+				if (chan == null) return;
+				if (chan.IsOpen) chan.Close();
+				chan.Dispose();
 			}
 		}
-
-		static void Ignore() { }
 	}
 }

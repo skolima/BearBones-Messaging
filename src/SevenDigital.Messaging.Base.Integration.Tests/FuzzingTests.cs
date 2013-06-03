@@ -10,6 +10,24 @@ namespace Messaging.Base.Integration.Tests
 	[TestFixture]
 	public class FuzzingTests
 	{
+		IChannelAction _conn;
+
+		[SetUp]
+		public void setup()
+		{
+			new MessagingBaseConfiguration()
+				.WithDefaults()
+				.WithConnectionFromAppConfig();
+
+			
+			_conn = ObjectFactory.GetInstance<IChannelAction>();
+		}
+
+		[TearDown]
+		public void teardown()
+		{
+			_conn.Dispose();
+		}
 
 		[Test]
 		public void can_shutdown_and_restart_connections_on_seperate_threads ()
@@ -20,14 +38,13 @@ namespace Messaging.Base.Integration.Tests
 				.WithConnectionFromAppConfig();
 
 			
-			var conn = ObjectFactory.GetInstance<IChannelAction>();
 			var anyFails = false;
 
 			var b = new Thread(() =>
 			{
 				for (int i = 0; i < 100; i++)
 				{
-					conn.Dispose();
+					_conn.Dispose();
 					Thread.Sleep(100);
 				}
 			});
@@ -35,7 +52,7 @@ namespace Messaging.Base.Integration.Tests
 			{
 				for (int i = 0; i < 100; i++)
 				{
-					if (! conn.GetWithChannel(c => c.IsOpen))
+					if (! _conn.GetWithChannel(c => c.IsOpen))
 						anyFails = true;
 					Thread.Sleep(100);
 				}
@@ -46,7 +63,7 @@ namespace Messaging.Base.Integration.Tests
 
 			Assert.That(a.Join(TimeSpan.FromSeconds(20)));
 			Assert.That(b.Join(TimeSpan.FromSeconds(20)));
-			Assert.False(anyFails);
+			Assert.False(anyFails, "channel was closed during an operation");
 		}
 
 	}
