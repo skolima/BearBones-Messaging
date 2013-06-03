@@ -34,47 +34,47 @@ namespace Messaging.Base.Integration.Tests.MessageRouting
 			subject.Finish(tag1);
 		}
 
-        [Test]
-        public void can_cancel_a_message_making_it_available_again ()
-        {
+		[Test]
+		public void can_cancel_a_message_making_it_available_again()
+		{
 			ulong tag1, tag2;
 			Assert.That(subject.Get("dst", out tag1), Is.EqualTo("Hello"));
 			Assert.That(subject.Get("dst", out tag2), Is.Null);
 
-            subject.Cancel(tag1);
+			subject.Cancel(tag1);
 			Assert.That(subject.Get("dst", out tag2), Is.EqualTo("Hello"));
 
 			subject.Finish(tag2);
-        }
+		}
 
-        [Test]
-        public void cancelled_messages_return_to_the_head_of_the_queue ()
-        {
-            
+		[Test]
+		public void cancelled_messages_return_to_the_head_of_the_queue()
+		{
+
 			ulong tag1, tag2;
 			Assert.That(subject.Get("dst", out tag1), Is.EqualTo("Hello"));
 			subject.Send("Example.Types.IFile", "SecondMessage");
 
-            subject.Cancel(tag1);
+			subject.Cancel(tag1);
 			Assert.That(subject.Get("dst", out tag1), Is.EqualTo("Hello"));
 			Assert.That(subject.Get("dst", out tag2), Is.EqualTo("SecondMessage"));
-            
+
 			subject.Finish(tag1);
 			subject.Finish(tag2);
-        }
-        
+		}
 
-        [Test]
-        public void with_two_messages_waiting_and_one_is_in_progress_the_other_can_be_picked_up ()
-        {
+
+		[Test]
+		public void with_two_messages_waiting_and_one_is_in_progress_the_other_can_be_picked_up()
+		{
 			subject.Send("Example.Types.IFile", "SecondMessage");
 
 			ulong tag1, tag2;
 			Assert.That(subject.Get("dst", out tag1), Is.EqualTo("Hello"));
 			Assert.That(subject.Get("dst", out tag2), Is.EqualTo("SecondMessage"));
-            
+
 			subject.Finish(tag1);
 			subject.Finish(tag2);
-        }
+		}
 	}
 }

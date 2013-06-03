@@ -128,12 +128,7 @@ namespace SevenDigital.Messaging.Base
 				message = serialiser.Deserialise<T>(messageString);
 			}
 
-			return new PendingMessage<T>
-			{
-				Message = message,
-				Cancel = () => messageRouter.Cancel(deliveryTag),
-				Finish = () => messageRouter.Finish(deliveryTag)
-			};
+			return new PendingMessage<T>(messageRouter, message, deliveryTag);
 		}
 
 		static readonly IDictionary<Type, RateLimitedAction> RouteCache = new Dictionary<Type, RateLimitedAction>();
