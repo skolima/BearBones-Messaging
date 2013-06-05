@@ -21,9 +21,9 @@ namespace Messaging.Base.Unit.Tests
 			typeRouter = Substitute.For<ITypeRouter>();
 			messageRouter = Substitute.For<IMessageRouter>();
 			serialiser = Substitute.For<IMessageSerialiser>();
-			MessagingBase.ResetCaches();
 
 			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
+			messaging.ResetCaches();
 			messaging.CreateDestination<IMetadataFile>("MyServiceDestination");
 		}
 

@@ -33,5 +33,10 @@ namespace SevenDigital.Messaging.Base
 		/// The message may be acknowledged or cancelled to finish reception.
 		/// </summary>
 		IPendingMessage<T> TryStartMessage<T>(string destinationName);
+
+		/// <summary>
+		/// Ensure that routes and connections are rebuild on next SendMessage or CreateDestination.
+		/// </summary>
+		void ResetCaches();
 	}
 }
