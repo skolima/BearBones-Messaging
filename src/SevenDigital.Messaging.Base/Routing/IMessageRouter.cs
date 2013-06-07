@@ -1,3 +1,5 @@
+using System;
+
 namespace SevenDigital.Messaging.Base.Routing
 {
 	/// <summary>
@@ -67,5 +69,10 @@ namespace SevenDigital.Messaging.Base.Routing
         /// </summary>
         /// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
 		void Cancel(ulong deliveryTag);
+
+		/// <summary>
+		/// Deletes all queues and exchanges created or used by this Router.
+		/// </summary>
+		void RemoveRouting(Func<string, bool> filter);
 	}
 }
