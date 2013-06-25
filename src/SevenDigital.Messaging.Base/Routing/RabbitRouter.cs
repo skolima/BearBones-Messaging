@@ -17,14 +17,18 @@ namespace SevenDigital.Messaging.Base.Routing
 		readonly ISet<string> queues;
 		readonly ISet<string> exchanges;
 		readonly IDictionary noOptions;
-		readonly IChannelAction messagingChannel;
+		readonly IChannelAction _longTermConnection;
+		readonly IRabbitMqConnection _shortTermConnection;
+		readonly object _lockObject;
 
 		/// <summary>
 		/// Create a new router from config settings
 		/// </summary>
-		public RabbitRouter(IChannelAction messagingChannel)
+		public RabbitRouter(IChannelAction longTermConnection, IRabbitMqConnection shortTermConnection)
 		{
-			this.messagingChannel = messagingChannel;
+			_lockObject = new object();
+			_longTermConnection = longTermConnection;
+			_shortTermConnection = shortTermConnection;
 			queues = new HashSet<string>();
 			exchanges = new HashSet<string>();
 			noOptions = new Dictionary<string, string>();
@@ -35,9 +39,10 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void RemoveRouting(Func<string, bool> filter)
 		{
-			MessagingBase.InternalResetCaches();
-			messagingChannel.WithChannel(channel =>
-				{
+			lock (_lockObject)
+			{
+				MessagingBase.InternalResetCaches();
+				_shortTermConnection.WithChannel(channel => {
 					foreach (var queue in queues.Where(filter))
 					{
 						channel.QueueDelete(queue);
@@ -49,8 +54,9 @@ namespace SevenDigital.Messaging.Base.Routing
 					}
 				});
 
-			queues.Clear();
-			exchanges.Clear();
+				queues.Clear();
+				exchanges.Clear();
+			}
 		}
 
 		/// <summary>
@@ -59,8 +65,11 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void AddSource(string name)
 		{
-			messagingChannel.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
-			exchanges.Add(name);
+			lock (_lockObject)
+			{
+				_shortTermConnection.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
+				exchanges.Add(name);
+			}
 		}
 
 		/// <summary>
@@ -69,8 +78,11 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void AddBroadcastSource(string className)
 		{
-			messagingChannel.WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
-			exchanges.Add(className);
+			lock (_lockObject)
+			{
+				_shortTermConnection.WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
+				exchanges.Add(className);
+			}
 		}
 
 		/// <summary>
@@ -78,8 +90,11 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void AddDestination(string name)
 		{
-			messagingChannel.WithChannel(channel => channel.QueueDeclare(name, true, false, false, noOptions));
-			queues.Add(name);
+			lock (_lockObject)
+			{
+				_shortTermConnection.WithChannel(channel => channel.QueueDeclare(name, true, false, false, noOptions));
+				queues.Add(name);
+			}
 		}
 
 		/// <summary>
@@ -87,7 +102,10 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void Link(string sourceName, string destinationName)
 		{
-			messagingChannel.WithChannel(channel => channel.QueueBind(destinationName, sourceName, ""));
+			lock (_lockObject)
+			{
+				_shortTermConnection.WithChannel(channel => channel.QueueBind(destinationName, sourceName, ""));
+			}
 		}
 
 		/// <summary>
@@ -95,8 +113,11 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void RouteSources(string child, string parent)
 		{
-			if (parent == child) throw new ArgumentException("Can't bind a source to itself");
-			messagingChannel.WithChannel(channel => channel.ExchangeBind(parent, child, ""));
+			lock (_lockObject)
+			{
+				if (parent == child) throw new ArgumentException("Can't bind a source to itself");
+				_shortTermConnection.WithChannel(channel => channel.ExchangeBind(parent, child, ""));
+			}
 		}
 
 		/// <summary>
@@ -104,7 +125,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void Send(string sourceName, string data)
 		{
-			messagingChannel.WithChannel(channel => channel.BasicPublish(
+			_longTermConnection.WithChannel(channel => channel.BasicPublish(
 				sourceName, "", false, false, EmptyBasicProperties(),
 				Encoding.UTF8.GetBytes(data))
 				);
@@ -115,7 +136,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public string Get(string destinationName, out ulong deliveryTag)
 		{
-			var result = messagingChannel.GetWithChannel(channel => channel.BasicGet(destinationName, false));
+			var result = _longTermConnection.GetWithChannel(channel => channel.BasicGet(destinationName, false));
 			if (result == null)
 			{
 				deliveryTag = 0UL;
@@ -132,7 +153,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
 		public void Finish(ulong deliveryTag)
 		{
-			messagingChannel.WithChannel(channel => channel.BasicAck(deliveryTag, false));
+			_longTermConnection.WithChannel(channel => channel.BasicAck(deliveryTag, false));
 		}
 
 		/// <summary>
@@ -151,7 +172,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void Purge(string destinationName)
 		{
-			messagingChannel.WithChannel(channel => channel.QueuePurge(destinationName));
+			_shortTermConnection.WithChannel(channel => channel.QueuePurge(destinationName));
 		}
 
 		/// <summary>
@@ -160,7 +181,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
 		public void Cancel(ulong deliveryTag)
 		{
-			messagingChannel.WithChannel(channel => channel.BasicReject(deliveryTag, true));
+			_longTermConnection.WithChannel(channel => channel.BasicReject(deliveryTag, true));
 		}
 
 		/// <summary>

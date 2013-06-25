@@ -41,18 +41,18 @@ namespace SevenDigital.Messaging.Base.Routing
 
 		/// <summary>
 		/// Get a message from a destination. This does not remove the message from the queue.
-        /// If a message is returned, it will not be available for another get unless
+		/// If a message is returned, it will not be available for another get unless
 		/// you use 'Finish' to complete a message and remove from the queue, or 'Cancel'
 		/// to release the message back to the queue.
 		/// </summary>
 		string Get(string destinationName, out ulong deliveryTag);
 
-        /// <summary>
-        /// Finish a message retrieved by 'Get'.
-        /// This will remove the message from the queue
-        /// </summary>
-        /// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
-        void Finish(ulong deliveryTag);
+		/// <summary>
+		/// Finish a message retrieved by 'Get'.
+		/// This will remove the message from the queue
+		/// </summary>
+		/// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+		void Finish(ulong deliveryTag);
 
 		/// <summary>
 		/// Get a message from a destination, removing it from the queue
@@ -64,10 +64,10 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		void Purge(string destinationName);
 
-        /// <summary>
-        /// Cancel a 'Get' by it's tag. The message will remain on the queue and become available for another 'Get'
-        /// </summary>
-        /// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
+		/// <summary>
+		/// Cancel a 'Get' by it's tag. The message will remain on the queue and become available for another 'Get'
+		/// </summary>
+		/// <param name="deliveryTag">Delivery tag as provided by 'Get'</param>
 		void Cancel(ulong deliveryTag);
 
 		/// <summary>

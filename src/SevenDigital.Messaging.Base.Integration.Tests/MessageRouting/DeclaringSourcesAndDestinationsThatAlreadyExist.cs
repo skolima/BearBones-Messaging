@@ -18,7 +18,8 @@ namespace Messaging.Base.Integration.Tests
 		{
 			query = ConfigurationHelpers.RabbitMqQueryWithConfigSettings();
 			connection = ConfigurationHelpers.ChannelWithAppConfigSettings();
-			router = new RabbitRouter(connection);
+			var shortTermConnection = ConfigurationHelpers.FreshConnectionFromAppConfig();
+			router = new RabbitRouter(connection, shortTermConnection);
 		}
 
 		[Test]

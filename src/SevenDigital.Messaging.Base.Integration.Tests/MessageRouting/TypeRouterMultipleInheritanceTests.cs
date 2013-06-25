@@ -13,8 +13,9 @@ namespace Messaging.Base.Integration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			var connection = ConfigurationHelpers.ChannelWithAppConfigSettings();
-			router = new RabbitRouter(connection);
+			var longTermConnection = ConfigurationHelpers.ChannelWithAppConfigSettings();
+			var shortTermConnection = ConfigurationHelpers.FreshConnectionFromAppConfig();
+			router = new RabbitRouter(longTermConnection, shortTermConnection);
 			subject = new TypeRouter(router);
 		}
 

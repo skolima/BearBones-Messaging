@@ -21,7 +21,8 @@ namespace Messaging.Base.Integration.Tests
 		{
 			query = ConfigurationHelpers.RabbitMqQueryWithConfigSettings();
 			channelAction = ConfigurationHelpers.ChannelWithAppConfigSettings();
-			router = new RabbitRouter(channelAction);
+			var shortTermConnection = ConfigurationHelpers.FreshConnectionFromAppConfig();
+			router = new RabbitRouter(channelAction, shortTermConnection);
 		}
 
 		[Test]
