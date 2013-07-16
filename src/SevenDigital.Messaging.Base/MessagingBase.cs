@@ -74,16 +74,6 @@ namespace SevenDigital.Messaging.Base
 		/// </summary>
 		public void SendMessage(object messageObject)
 		{
-			/*var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
-
-			if (!interfaceTypes.HasSingle())
-				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
-
-			var sourceType = interfaceTypes.Single();
-			var serialised = serialiser.Serialise(messageObject);
-
-			RouteSource(sourceType);
-			messageRouter.Send(sourceType.FullName, serialised);*/
 			SendPrepared(PrepareForSend(messageObject));
 		}
 

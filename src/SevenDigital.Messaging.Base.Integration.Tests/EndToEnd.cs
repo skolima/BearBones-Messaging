@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Example.Types;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
 using SevenDigital.Messaging.Base.Routing;
+using SevenDigital.Messaging.Base.Serialisation;
 using StructureMap;
 
 namespace Messaging.Base.Integration.Tests
@@ -26,7 +28,7 @@ namespace Messaging.Base.Integration.Tests
 			testMessage = new SuperMetadata
 			{
 				CorrelationId = Guid.NewGuid(),
-				Contents = "These are my contents: ⰊⰄⰷἚ𐰕𐰑ꔘⶤعبػػ↴↳↲↰",
+				Contents = "These are my ||\"\\' ' contents: ⰊⰄⰷἚ𐰕𐰑ꔘⶤعبػػ↴↳↲↰",
 				FilePath = @"C:\temp\",
 				HashValue = 893476,
 				MetadataName = "KeyValuePair"
@@ -38,6 +40,26 @@ namespace Messaging.Base.Integration.Tests
 		{
 			messaging.CreateDestination<IMsg>("Test_Destination");
 			messaging.SendMessage(testMessage);
+
+			var finalObject = (IMetadataFile)messaging.GetMessage<IMsg>("Test_Destination");
+
+			Assert.That(finalObject, Is.Not.Null);
+			Assert.That(finalObject.CorrelationId, Is.EqualTo(testMessage.CorrelationId));
+			Assert.That(finalObject.Contents, Is.EqualTo(testMessage.Contents));
+			Assert.That(finalObject.FilePath, Is.EqualTo(testMessage.FilePath));
+			Assert.That(finalObject.HashValue, Is.EqualTo(testMessage.HashValue));
+			Assert.That(finalObject.MetadataName, Is.EqualTo(testMessage.MetadataName));
+			Assert.That(finalObject.Equals(testMessage), Is.False);
+		}
+		
+
+		[Test]
+		public void Should_be_able_to_send_and_receive_messages_using_prepare_message_intermediates()
+		{
+			messaging.CreateDestination<IMsg>("Test_Destination");
+			byte[] raw = messaging.PrepareForSend(testMessage).ToBytes();
+
+			messaging.SendPrepared(PreparedMessage.FromBytes(raw));
 
 			var finalObject = (IMetadataFile)messaging.GetMessage<IMsg>("Test_Destination");
 

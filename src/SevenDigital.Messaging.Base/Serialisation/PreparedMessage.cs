@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace SevenDigital.Messaging.Base
+namespace SevenDigital.Messaging.Base.Serialisation
 {
 	/// <summary>
 	/// A pre-serialised message

@@ -1,8 +1,7 @@
 using System;
 using System.Threading;
-using SevenDigital.Messaging.Base.Routing;
 
-namespace SevenDigital.Messaging.Base
+namespace SevenDigital.Messaging.Base.Routing
 {
 	/// <summary>
 	/// A received message instance

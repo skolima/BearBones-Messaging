@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationTests.cs" />
     <Compile Include="ContractNameTests.cs" />
+    <Compile Include="Serialisation\PreparedMessageTests.cs" />
     <Compile Include="TryStartMessageByNameTests.cs" />
     <Compile Include="GetTypeByNameTests.cs" />
     <Compile Include="SendMessageObjectTests.cs" />

@@ -1,4 +1,4 @@
-namespace SevenDigital.Messaging.Base
+namespace SevenDigital.Messaging.Base.Serialisation
 {
 	/// <summary>
 	/// Contract for serialised messages

@@ -1,4 +1,5 @@
 using System;
+using SevenDigital.Messaging.Base.Serialisation;
 
 namespace SevenDigital.Messaging.Base
 {
