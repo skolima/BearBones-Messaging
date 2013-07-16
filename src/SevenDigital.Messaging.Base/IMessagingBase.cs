@@ -21,7 +21,7 @@ namespace SevenDigital.Messaging.Base
 		/// Send a message to all bound destinations.
 		/// Returns serialised form of the message object.
 		/// </summary>
-		string SendMessage(object messageObject);
+		void SendMessage(object messageObject);
 
 		/// <summary>
 		/// Poll for a waiting message. Returns default(T) if no message.
@@ -38,5 +38,18 @@ namespace SevenDigital.Messaging.Base
 		/// Ensure that routes and connections are rebuild on next SendMessage or CreateDestination.
 		/// </summary>
 		void ResetCaches();
+
+		/// <summary>
+		/// Convert a message object to a simplified serialisable format.
+		/// This is intended for later sending with SendPrepared().
+		/// If you want to send immediately, use SendMessage();
+		/// </summary>
+		IPreparedMessage PrepareForSend(object messageObject);
+
+		/// <summary>
+		/// Immediately send a prepared message.
+		/// </summary>
+		/// <param name="message">A message created by PrepareForSend()</param>
+		void SendPrepared(IPreparedMessage message);
 	}
 }

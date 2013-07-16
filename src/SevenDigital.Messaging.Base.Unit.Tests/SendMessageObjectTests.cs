@@ -16,7 +16,6 @@ namespace Messaging.Base.Unit.Tests
 		IMessageSerialiser serialiser;
 		SuperMetadata metadataMessage;
 		object badMessage;
-		string result;
 		IMessagingBase messaging;
 		private const string serialisedObject = "serialised object";
 
@@ -33,13 +32,13 @@ namespace Messaging.Base.Unit.Tests
 
 			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
 			messaging.ResetCaches();
-			result = messaging.SendMessage(metadataMessage);
+			messaging.SendMessage(metadataMessage);
 		}
 
 		[Test]
 		public void Should_setup_type_message_type_if_not_already_in_place()
 		{
-			result = messaging.SendMessage(metadataMessage);
+			messaging.SendMessage(metadataMessage);
 			typeRouter.Received().BuildRoutes(typeof(IMetadataFile));
 		}
 
@@ -61,12 +60,6 @@ namespace Messaging.Base.Unit.Tests
 		{
 			var source = typeof (IMetadataFile).FullName;
 			messageRouter.Received().Send(source, serialisedObject);
-		}
-
-		[Test]
-		public void Should_return_serialised_message ()
-		{
-			Assert.That(result, Is.EqualTo(serialisedObject));
 		}
 	}
 

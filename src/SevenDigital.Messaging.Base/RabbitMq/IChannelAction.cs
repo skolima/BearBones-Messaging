@@ -6,7 +6,7 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 	/// <summary>
 	/// Wrapper for actions that communicate with a RabbitMQ cluster.
 	/// </summary>
-	public interface IChannelAction:IDisposable
+	public interface IChannelAction : IDisposable
 	{
 		/// <summary>
 		/// Perform an action against the RMQ cluster, returning no data

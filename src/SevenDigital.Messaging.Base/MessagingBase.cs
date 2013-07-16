@@ -72,9 +72,9 @@ namespace SevenDigital.Messaging.Base
 		/// Send a message to all bound destinations.
 		/// Returns serialised form of the message object.
 		/// </summary>
-		public string SendMessage(object messageObject)
+		public void SendMessage(object messageObject)
 		{
-			var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
+			/*var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
 
 			if (!interfaceTypes.HasSingle())
 				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
@@ -83,9 +83,8 @@ namespace SevenDigital.Messaging.Base
 			var serialised = serialiser.Serialise(messageObject);
 
 			RouteSource(sourceType);
-			messageRouter.Send(sourceType.FullName, serialised);
-
-			return serialised;
+			messageRouter.Send(sourceType.FullName, serialised);*/
+			SendPrepared(PrepareForSend(messageObject));
 		}
 
 		/// <summary>
@@ -150,6 +149,34 @@ namespace SevenDigital.Messaging.Base
 		public void ResetCaches()
 		{
 			InternalResetCaches();
+		}
+
+		/// <summary>
+		/// Convert a message object to a simplified serialisable format.
+		/// This is intended for later sending with SendPrepared().
+		/// If you want to send immediately, use SendMessage();
+		/// </summary>
+		public IPreparedMessage PrepareForSend(object messageObject)
+		{
+			var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
+
+			if (!interfaceTypes.HasSingle())
+				throw new ArgumentException("Messages must directly implement exactly one interface", "messageObject");
+			
+			var sourceType = interfaceTypes.Single();
+			var serialised = serialiser.Serialise(messageObject);
+
+			RouteSource(sourceType);
+			return new PreparedMessage(sourceType.FullName, serialised);
+		}
+
+		/// <summary>
+		/// Immediately send a prepared message.
+		/// </summary>
+		/// <param name="message">A message created by PrepareForSend()</param>
+		public void SendPrepared(IPreparedMessage message)
+		{
+			messageRouter.Send(message.TypeName(), message.SerialisedMessage());
 		}
 
 		internal static void InternalResetCaches()

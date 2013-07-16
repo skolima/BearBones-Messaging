@@ -55,8 +55,10 @@
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IMessagingBase.cs" />
     <Compile Include="IPendingMessage.cs" />
+    <Compile Include="Serialisation\IPreparedMessage.cs" />
     <Compile Include="MessagingBase.cs" />
     <Compile Include="MessagingBaseConfiguration.cs" />
+    <Compile Include="Serialisation\PreparedMessage.cs" />
     <Compile Include="Routing\PendingMessage.cs" />
     <Compile Include="RabbitMq\IChannelAction.cs" />
     <Compile Include="RabbitMq\IRabbitMqConnection.cs" />
