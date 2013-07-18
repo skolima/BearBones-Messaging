@@ -43,12 +43,6 @@
     <None Include="App.config" />
     <None Include="ReadMe.md" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SignalHandling\SignalHandling.csproj">
-      <Project>{cb9be29d-7a45-4358-ab31-7310451c2fc8}</Project>
-      <Name>SignalHandling</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
