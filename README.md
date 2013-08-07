@@ -6,8 +6,8 @@ BearBones-Messaging
 BearBones messaging: lower-level framework, part of a contract-interface based distributed event framework for .Net
 
 
-Rough road-map
+To do
 --------------
 
-* Capture and handle dead messages (i.e. no one is handling a message type) -- maybe by having a failed send on the sender side and a special general dead messages queue (rather than error queue for each real queue)
-* Temporary listening -- delete consumer queue when no longer listening.
+* Retry messages to go to end of queue (so the whole queue cycles if there are a few bad messages)
+* RPC vote-to-consume pattern
