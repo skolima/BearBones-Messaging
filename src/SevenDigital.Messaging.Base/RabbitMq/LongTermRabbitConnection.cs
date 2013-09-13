@@ -115,6 +115,7 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 
 			var lfac = _factory;
 			if (lfac == null) throw new Exception("RabbitMq Connection failed to generate a connection factory");
+			lfac.RequestedHeartbeat = 60;
 			_conn = lfac.CreateConnection();
 
 			_channel = _conn.CreateModel();

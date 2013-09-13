@@ -41,6 +41,7 @@ namespace SevenDigital.Messaging.Base.RabbitMq
 					Protocol = Protocols.FromEnvironment(),
 					HostName = Host,
 					VirtualHost = VirtualHost,
+					RequestedHeartbeat = 60
 				};
 		}
 
