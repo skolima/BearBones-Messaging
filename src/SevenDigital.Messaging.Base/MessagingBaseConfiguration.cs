@@ -14,7 +14,6 @@ namespace SevenDigital.Messaging.Base
 	public class MessagingBaseConfiguration
 	{
 		IRabbitMqConnection configuredConnection;
-		IRabbitMqQuery configuredQuery;
 
 		/// <summary>
 		/// Configure all default mappings in structure map.

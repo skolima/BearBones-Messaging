@@ -559,16 +559,56 @@
         <member name="M:ShiftIt.Http.HttpClient.CrossLoad(ShiftIt.Http.IHttpRequest,ShiftIt.Http.IHttpRequestBuilder,System.String)">
             <summary>
             Request data from one resource and provide to another, calculating a 
-            hash of the cross-loaded data.
-            This is done in a memory-efficient manner.
+            hash of the cross-loaded data. This is done in a memory-efficient manner.
+            If either source or destination return a non-success result (including redirects)
+            an exception will be thrown
             </summary>
             <param name="loadRequest">Request that will provide body data (should be a GET or POST)</param>
             <param name="storeRequest">Request that will accept body data (should be a PUT or POST)</param>
             <param name="hashAlgorithmName">Name of hash algorithm to use (should a name supported by System.Security.Cryptography.HashAlgorithm)</param>
+            <exception cref="T:ShiftIt.Http.HttpTransferException">ShiftIt.Http.HttpTransferException</exception>
         </member>
         <member name="P:ShiftIt.Http.HttpClient.Timeout">
             <summary>
             Connection and data transfer timeout
+            </summary>
+        </member>
+        <member name="T:ShiftIt.Http.HttpResponseExtensions">
+            <summary>
+            Extensions for IHttpResponse
+            </summary>
+        </member>
+        <member name="M:ShiftIt.Http.HttpResponseExtensions.HttpStatusCode(ShiftIt.Http.IHttpResponse)">
+            <summary>
+            Converts StatusCode integer into HttpStatusCode enum.
+            </summary>
+            <param name="response"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ShiftIt.Http.HttpTransferException">
+            <summary>
+            Exception thrown when a non-sucess result is returned from
+            a method that does not expose a IHttpResponse
+            </summary>
+        </member>
+        <member name="M:ShiftIt.Http.HttpTransferException.#ctor(System.Collections.Generic.IDictionary{System.String,System.String},System.Uri,System.Int32)">
+            <summary>
+            Create an exception object for returned headers, target and status
+            </summary>
+        </member>
+        <member name="P:ShiftIt.Http.HttpTransferException.Headers">
+            <summary>
+            Headers returned by failing call
+            </summary>
+        </member>
+        <member name="P:ShiftIt.Http.HttpTransferException.Target">
+            <summary>
+            Original target for failing call
+            </summary>
+        </member>
+        <member name="P:ShiftIt.Http.HttpTransferException.StatusCode">
+            <summary>
+            Status code returned by target
             </summary>
         </member>
         <member name="T:ShiftIt.Http.IHttpRequest">
@@ -576,14 +616,19 @@
             Data required to make a HTTP request
             </summary>
         </member>
-        <member name="M:ShiftIt.Http.IHttpRequest.RequestHead">
-            <summary>
-            Headers
-            </summary>
-        </member>
         <member name="P:ShiftIt.Http.IHttpRequest.Target">
             <summary>
             Target resource
+            </summary>
+        </member>
+        <member name="P:ShiftIt.Http.IHttpRequest.Verb">
+            <summary>
+            Verb used
+            </summary>
+        </member>
+        <member name="P:ShiftIt.Http.IHttpRequest.RequestHead">
+            <summary>
+            Headers
             </summary>
         </member>
         <member name="P:ShiftIt.Http.IHttpRequest.DataStream">
@@ -761,25 +806,25 @@
             Defaults to */* if not provided. 
             </summary>
         </member>
-        <member name="M:ShiftIt.Http.IHttpRequestBuilder.Data(System.IO.Stream,System.Int64)">
-            <summary>
-            Provide a data stream for the request. It will be sent to the target resource's
-            hosting server.
-            </summary>
-            <param name="stream">Data stream</param>
-            <param name="length">Length of data. Must be provided.</param>
-        </member>
-        <member name="M:ShiftIt.Http.IHttpRequestBuilder.StringData(System.String)">
-            <summary>
-            Provide string data for the request. It will be sent to the target resource's
-            hosting server.
-            </summary>
-        </member>
         <member name="M:ShiftIt.Http.IHttpRequestBuilder.BasicAuthentication(System.String,System.String)">
             <summary>
             Provide basic authentication details for the target resource.
             WARNING: this will be sent in the clear. Use only in internal networks
             or over SSL connections.
+            </summary>
+        </member>
+        <member name="M:ShiftIt.Http.IHttpRequestBuilder.Build(System.IO.Stream,System.Int64)">
+            <summary>
+            Build the request, providing a data stream for the request. It will be sent to the target resource's
+            hosting server.
+            </summary>
+            <param name="stream">Data stream</param>
+            <param name="length">Length of data. Must be provided.</param>
+        </member>
+        <member name="M:ShiftIt.Http.IHttpRequestBuilder.Build(System.String)">
+            <summary>
+            Build the request, providing string data for the request. It will be sent to the target resource's
+            hosting server.
             </summary>
         </member>
         <member name="M:ShiftIt.Http.IHttpRequestBuilder.Build">
@@ -828,22 +873,8 @@
         </member>
         <member name="M:ShiftIt.Http.HttpRequestBuilder.Accept(System.String)">
             <summary>
-            Set the MIME types to accept for the resource.
+            Set the MIME types to accept for the resource. Replaces existing header value.
             Defaults to */* if not provided. 
-            </summary>
-        </member>
-        <member name="M:ShiftIt.Http.HttpRequestBuilder.Data(System.IO.Stream,System.Int64)">
-            <summary>
-            Provide a data stream for the request. It will be sent to the target resource's
-            hosting server.
-            </summary>
-            <param name="stream">Data stream</param>
-            <param name="length">Length of data. Must be provided.</param>
-        </member>
-        <member name="M:ShiftIt.Http.HttpRequestBuilder.StringData(System.String)">
-            <summary>
-            Provide string data for the request. It will be sent to the target resource's
-            hosting server.
             </summary>
         </member>
         <member name="M:ShiftIt.Http.HttpRequestBuilder.BasicAuthentication(System.String,System.String)">
@@ -851,6 +882,20 @@
             Provide basic authentication details for the target resource.
             WARNING: this will be sent in the clear. Use only in internal networks
             or over SSL connections.
+            </summary>
+        </member>
+        <member name="M:ShiftIt.Http.HttpRequestBuilder.Build(System.IO.Stream,System.Int64)">
+            <summary>
+            Build the request, providing a data stream for the request. It will be sent to the target resource's
+            hosting server.
+            </summary>
+            <param name="stream">Data stream</param>
+            <param name="length">Length of data. Must be provided.</param>
+        </member>
+        <member name="M:ShiftIt.Http.HttpRequestBuilder.Build(System.String)">
+            <summary>
+            Build the request, providing string data for the request. It will be sent to the target resource's
+            hosting server.
             </summary>
         </member>
         <member name="M:ShiftIt.Http.HttpRequestBuilder.Build">
@@ -866,31 +911,6 @@
         <member name="M:ShiftIt.Http.HttpRequestBuilder.AddHeader(System.String,System.String)">
             <summary>
             Add a value to a header field, supplimenting any existing values
-            </summary>
-        </member>
-        <member name="M:ShiftIt.Http.HttpRequestBuilder.RequestHead">
-            <summary>
-            Headers
-            </summary>
-        </member>
-        <member name="P:ShiftIt.Http.HttpRequestBuilder.Target">
-            <summary>
-            Target resource
-            </summary>
-        </member>
-        <member name="P:ShiftIt.Http.HttpRequestBuilder.DataLength">
-            <summary>
-            Length of body data
-            </summary>
-        </member>
-        <member name="P:ShiftIt.Http.HttpRequestBuilder.Secure">
-            <summary>
-            Returns true if a HTTPS resource is being requested.
-            </summary>
-        </member>
-        <member name="P:ShiftIt.Http.HttpRequestBuilder.DataStream">
-            <summary>
-            Body data stream
             </summary>
         </member>
         <member name="T:ShiftIt.Http.Internal.HttpResponseParser">
