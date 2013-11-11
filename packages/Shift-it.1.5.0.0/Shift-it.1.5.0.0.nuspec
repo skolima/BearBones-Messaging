@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Shift-it</id>
-    <version>1.4.0.0</version>
+    <version>1.5.0.0</version>
     <authors>i-e-b</authors>
     <owners>i-e-b</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/i-e-b/Shift-it</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Collection of low-level HTTP and FTP file transfer tools</description>
-    <releaseNotes>Changed data stream approach to avoid confusing failure scenarios.</releaseNotes>
+    <releaseNotes>Completely re-worked stream filtering for faster and more correct handling of compressed and chunked streams.</releaseNotes>
     <copyright>Copyright 2013</copyright>
     <tags>http ftp sockets client</tags>
   </metadata>
