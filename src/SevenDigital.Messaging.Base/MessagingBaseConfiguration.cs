@@ -45,18 +45,21 @@ namespace SevenDigital.Messaging.Base
 		}
 
 		/// <summary>
+		/// Use a specific rabbit management node
 		/// </summary>
+		[Obsolete("Please use WithRabbitManagement(string host, int port, string username, string password, string vhost) instead.")]
+		public MessagingBaseConfiguration WithRabbitManagement(string host, string username, string password, string vhost)
 		{
+			const int port = 55672; // before RMQ 3; 3 redirects, so we use this for compatibility for now.
+			//const int port = 15672; // RMQ 3+
 
+			return WithRabbitManagement(host, port, username, password, vhost);
 		}
-
-		const int port = 55672; // before RMQ 3; 3 redirects, so we use this for compatibility for now.
-		//const int port = 15672; // RMQ 3+
 
 		/// <summary>
 		/// Use a specific rabbit management node
 		/// </summary>
-		public MessagingBaseConfiguration WithRabbitManagement(string host, string username, string password, string vhost)
+		public MessagingBaseConfiguration WithRabbitManagement(string host, int port, string username, string password, string vhost)
 		{
 			ObjectFactory.Configure(map => map.For<IRabbitMqQuery>().Use(() =>
 				new RabbitMqQuery("http://" + host + ":" + port, username, password, vhost)));
