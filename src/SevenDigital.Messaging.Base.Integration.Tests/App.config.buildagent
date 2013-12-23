@@ -3,6 +3,7 @@
   <appSettings>
     <clear/>
     <add key="Messaging.Host" value="systest-jester-q00.nix.sys.7d/testing"/>
+    <add key="Messaging.Port" value="55672"/>
     <add key="ApiUsername" value="guest"/>
     <add key="ApiPassword" value="guest"/>
   </appSettings>
