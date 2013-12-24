@@ -1,7 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using ServiceStack.Text;
-using ShiftIt.Http;
 
 namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 {
@@ -79,12 +79,13 @@ namespace SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement
 
 		static string GetResponseString(Uri target)
 		{
-			using (var response = new HttpClient().Request(
-				new HttpRequestBuilder().BasicAuthentication("guest", "guest").Get(target).Build()
-				))
-			{
-				return response.BodyReader.ReadStringToLength();
-			}
+			var request = (HttpWebRequest) WebRequest.Create(target);
+			request.AutomaticDecompression = DecompressionMethods.GZip;
+			request.Credentials = new NetworkCredential("guest", "guest");
+
+			using (var response = request.GetResponse())
+				using (var responseStream = response.GetResponseStream())
+					return new StreamReader(responseStream).ReadToEnd();
 		}
 	}
 }
