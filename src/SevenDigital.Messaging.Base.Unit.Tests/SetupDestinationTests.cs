@@ -1,4 +1,5 @@
-﻿using Example.Types;
+﻿using System;
+using Example.Types;
 using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base;
@@ -24,13 +25,13 @@ namespace Messaging.Base.Unit.Tests
 
 			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
 			messaging.ResetCaches();
-			messaging.CreateDestination<IMetadataFile>("MyServiceDestination");
+			messaging.CreateDestination<IMetadataFile>("MyServiceDestination", String.Empty);
 		}
 
 		[Test]
 		public void Should_setup_type_routing_for_listening_type ()
 		{
-			typeRouter.Received().BuildRoutes(typeof(IMetadataFile));
+			typeRouter.Received().BuildRoutes(typeof(IMetadataFile), String.Empty);
 		}
 
 		[Test]
@@ -42,7 +43,7 @@ namespace Messaging.Base.Unit.Tests
 		[Test]
 		public void Should_link_destination_to_target_type_source ()
 		{
-			messageRouter.Received().Link("Example.Types.IMetadataFile", "MyServiceDestination");
+			messageRouter.Received().Link("Example.Types.IMetadataFile", "MyServiceDestination", String.Empty);
 		}
 	}
 }

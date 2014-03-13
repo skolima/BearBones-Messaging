@@ -1,4 +1,5 @@
-﻿using Example.Types;
+﻿using System;
+using Example.Types;
 using NSubstitute;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base.Routing;
@@ -16,7 +17,7 @@ namespace Messaging.Base.Unit.Tests
 		{
 			router = Substitute.For<IMessageRouter>();
 			subject = new TypeRouter(router);
-			subject.BuildRoutes(typeof(SuperMetadata));
+			subject.BuildRoutes(typeof(SuperMetadata), String.Empty);
 		}
 		
 		[Test]

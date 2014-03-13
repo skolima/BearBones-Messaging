@@ -100,33 +100,33 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <summary>
 		/// Create a link between a source node and a destination node by a routing key
 		/// </summary>
-		public void Link(string sourceName, string destinationName)
+		public void Link(string sourceName, string destinationName, string routingKey)
 		{
 			lock (_lockObject)
 			{
-				_shortTermConnection.WithChannel(channel => channel.QueueBind(destinationName, sourceName, ""));
+				_shortTermConnection.WithChannel(channel => channel.QueueBind(destinationName, sourceName, routingKey));
 			}
 		}
 
 		/// <summary>
 		/// Route a message between two sources.
 		/// </summary>
-		public void RouteSources(string child, string parent)
+		public void RouteSources(string child, string parent, string routingKey)
 		{
 			lock (_lockObject)
 			{
 				if (parent == child) throw new ArgumentException("Can't bind a source to itself");
-				_shortTermConnection.WithChannel(channel => channel.ExchangeBind(parent, child, ""));
+				_shortTermConnection.WithChannel(channel => channel.ExchangeBind(parent, child, routingKey));
 			}
 		}
 
 		/// <summary>
 		/// Send a message to an established source (will be routed to destinations by key)
 		/// </summary>
-		public void Send(string sourceName, string data)
+		public void Send(string sourceName, string data, string routingKey)
 		{
 			_longTermConnection.WithChannel(channel => channel.BasicPublish(
-				sourceName, "", false, false, EmptyBasicProperties(),
+				sourceName, routingKey, false, false, EmptyBasicProperties(),
 				Encoding.UTF8.GetBytes(data))
 				);
 		}

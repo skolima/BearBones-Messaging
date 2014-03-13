@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base.RabbitMq;
 using SevenDigital.Messaging.Base.RabbitMq.RabbitMqManagement;
@@ -46,10 +47,10 @@ namespace Messaging.Base.Integration.Tests
 			router.AddSource("src");
 			router.AddDestination("dst");
 
-			router.Link("src", "dst");
-			router.Link("src", "dst");
+			router.Link("src", "dst", String.Empty);
+			router.Link("src", "dst", String.Empty);
 
-			router.Send("src", "Hello");
+			router.Send("src", "Hello", String.Empty);
 
 			Assert.That(router.GetAndFinish("dst"), Is.EqualTo("Hello"));
 			Assert.That(router.GetAndFinish("dst"), Is.Null);
@@ -62,11 +63,11 @@ namespace Messaging.Base.Integration.Tests
 			router.AddSource("srcB");
 			router.AddDestination("dst");
 
-			router.RouteSources("srcA", "srcB");
-			router.RouteSources("srcA", "srcB");
+			router.RouteSources("srcA", "srcB", "");
+			router.RouteSources("srcA", "srcB", "");
 
-			router.Link("srcB", "dst");
-			router.Send("srcA", "Hello");
+			router.Link("srcB", "dst", String.Empty);
+			router.Send("srcA", "Hello", String.Empty);
 
 			Assert.That(router.GetAndFinish("dst"), Is.EqualTo("Hello"));
 			Assert.That(router.GetAndFinish("dst"), Is.Null);

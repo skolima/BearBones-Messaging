@@ -1,4 +1,5 @@
-﻿using Example.Types;
+﻿using System;
+using Example.Types;
 using NUnit.Framework;
 using SevenDigital.Messaging.Base.Routing;
 
@@ -18,11 +19,11 @@ namespace Messaging.Base.Integration.Tests.MessageRouting
 			subject = new RabbitRouter(longTermConnection, shortTermConnection);
 
 			typeRouter = new TypeRouter(subject);
-			typeRouter.BuildRoutes(typeof(IFile));
+			typeRouter.BuildRoutes(typeof(IFile), String.Empty);
 
 			subject.AddDestination("dst");
-			subject.Link("Example.Types.IMsg", "dst");
-			subject.Send("Example.Types.IFile", "Hello");
+			subject.Link("Example.Types.IMsg", "dst", String.Empty);
+			subject.Send("Example.Types.IFile", "Hello", String.Empty);
 		}
 
 		[Test]
@@ -54,7 +55,7 @@ namespace Messaging.Base.Integration.Tests.MessageRouting
 
 			ulong tag1, tag2;
 			Assert.That(subject.Get("dst", out tag1), Is.EqualTo("Hello"));
-			subject.Send("Example.Types.IFile", "SecondMessage");
+			subject.Send("Example.Types.IFile", "SecondMessage", String.Empty);
 
 			subject.Cancel(tag1);
 			Assert.That(subject.Get("dst", out tag1), Is.EqualTo("Hello"));
@@ -68,7 +69,7 @@ namespace Messaging.Base.Integration.Tests.MessageRouting
 		[Test]
 		public void with_two_messages_waiting_and_one_is_in_progress_the_other_can_be_picked_up()
 		{
-			subject.Send("Example.Types.IFile", "SecondMessage");
+			subject.Send("Example.Types.IFile", "SecondMessage", String.Empty);
 
 			ulong tag1, tag2;
 			Assert.That(subject.Get("dst", out tag1), Is.EqualTo("Hello"));
