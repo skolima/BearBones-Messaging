@@ -20,5 +20,9 @@ namespace SevenDigital.Messaging.Base.Serialisation
 		/// </summary>
 		string SerialisedMessage();
 
+		/// <summary>
+		/// Routing key for this message
+		/// </summary>
+		string RoutingKey { get; }
 	}
 }

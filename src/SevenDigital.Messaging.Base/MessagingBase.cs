@@ -74,7 +74,12 @@ namespace SevenDigital.Messaging.Base
 		/// </summary>
 		public void SendMessage(object messageObject, string routingKey)
 		{
-			SendPrepared(PrepareForSend(messageObject, routingKey), routingKey);
+			SendPrepared(PrepareForSend(messageObject, routingKey));
+		}
+
+		public void SendMessage(object messageObject)
+		{
+			SendMessage(messageObject, String.Empty);
 		}
 
 		/// <summary>
@@ -158,17 +163,16 @@ namespace SevenDigital.Messaging.Base
 			var serialised = serialiser.Serialise(messageObject);
 
 			RouteSource(sourceType, routingKey);
-			return new PreparedMessage(sourceType.FullName, serialised);
+			return new PreparedMessage(sourceType.FullName, serialised, routingKey);
 		}
 
 		/// <summary>
 		/// Immediately send a prepared message.
 		/// </summary>
 		/// <param name="message">A message created by PrepareForSend()</param>
-		/// <param name="routingKey"></param>
-		public void SendPrepared(IPreparedMessage message, string routingKey)
+		public void SendPrepared(IPreparedMessage message)
 		{
-			messageRouter.Send(message.TypeName(), message.SerialisedMessage(), routingKey);
+			messageRouter.Send(message.TypeName(), message.SerialisedMessage(), message.RoutingKey);
 		}
 
 		internal static void InternalResetCaches()

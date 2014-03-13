@@ -19,10 +19,14 @@ namespace SevenDigital.Messaging.Base
 		void CreateDestination(Type sourceMessage, string destinationName, string routingKey);
 
 		/// <summary>
-		/// Send a message to all bound destinations.
-		/// Returns serialised form of the message object.
+		/// Send a message to all bound destinations with routing key
 		/// </summary>
 		void SendMessage(object messageObject, string routingKey);
+
+		/// <summary>
+		/// Send a message to all bound destinations.
+		/// </summary>
+		void SendMessage(object messageObject);
 
 		/// <summary>
 		/// Poll for a waiting message. Returns default(T) if no message.
@@ -51,7 +55,6 @@ namespace SevenDigital.Messaging.Base
 		/// Immediately send a prepared message.
 		/// </summary>
 		/// <param name="message">A message created by PrepareForSend()</param>
-		/// <param name="routingKey"></param>
-		void SendPrepared(IPreparedMessage message, string routingKey);
+		void SendPrepared(IPreparedMessage message);
 	}
 }

@@ -57,7 +57,7 @@ namespace Messaging.Base.Integration.Tests
 			messaging.CreateDestination<IMsg>("Test_Destination", String.Empty);
 			byte[] raw = messaging.PrepareForSend(testMessage, String.Empty).ToBytes();
 
-			messaging.SendPrepared(PreparedMessage.FromBytes(raw), String.Empty);
+			messaging.SendPrepared(PreparedMessage.FromBytes(raw));
 
 			var finalObject = (IMetadataFile)messaging.GetMessage<IMsg>("Test_Destination");
 
