@@ -72,6 +72,7 @@
     <Compile Include="Serialisation\WhenSerialisingAnObjectWithNoTopLevelInterfaces.cs" />
     <Compile Include="Serialisation\WhenSerialisingAnObjectWithOneTopLevelInterface.cs" />
     <Compile Include="Serialisation\WhenSerialisingAnObjectWithTwoTopLevelInterfaces.cs" />
+    <Compile Include="TypeRouting\RabbitRouterTests.cs" />
     <Compile Include="TypeRouting\RoutingExample_ConcreteClass.cs" />
     <Compile Include="TypeRouting\RoutingExample_IMetaData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

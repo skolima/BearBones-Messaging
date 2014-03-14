@@ -241,6 +241,20 @@ namespace Messaging.Base.Integration.Tests
 		}
 
 		[Test]
+		public void Should_be_able_to_send_with_routing_key_and_receive_when_multiple_destinations_defined()
+		{
+			messaging.CreateDestination<IMsg>("Test_Destination", "routingKey");
+			messaging.CreateDestination<IMetadataFile>("Test_Destination", String.Empty);
+
+			messaging.SendMessage(new UltraMegaData {CorrelationId = Guid.NewGuid()}, "routingKey");
+
+			var finalObject = (IUltraMegaData)messaging.GetMessage<IMsg>("Test_Destination");
+
+			Assert.That(finalObject, Is.Not.Null);
+			Assert.That(finalObject.CorrelationId, Is.Not.EqualTo(Guid.Empty));
+		}
+
+		[Test]
 		public void Should_be_able_to_send_and_recieve_using_specific_routing_key()
 		{
 			messaging.CreateDestination<IMsg>("Test_Destination", "routingKey");

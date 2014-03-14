@@ -65,23 +65,36 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// </summary>
 		public void AddSource(string name)
 		{
-			lock (_lockObject)
-			{
-				_shortTermConnection.WithChannel(channel => channel.ExchangeDeclare(name, "direct", true, false, noOptions));
-				exchanges.Add(name);
-			}
+			AddSource(name, ExchangeType.Direct);
 		}
 
 		/// <summary>
 		/// Add a new node to which messages can be sent.
-		/// This node sends messages to all its links
+		/// This node send messages over links that share a routing key.
 		/// </summary>
-		public void AddBroadcastSource(string className)
+		public void AddSource(string name, ExchangeType exchangeType)
 		{
+			string exchangeTypeString;
+			switch (exchangeType)
+			{
+				case ExchangeType.Fanout:
+					exchangeTypeString = "fanout";
+					break;
+
+				case ExchangeType.Topic:
+					exchangeTypeString = "topic";
+					break;
+
+				case ExchangeType.Direct:
+				default:
+					exchangeTypeString = "direct";
+					break;
+			}
+
 			lock (_lockObject)
 			{
-				_shortTermConnection.WithChannel(channel => channel.ExchangeDeclare(className, "fanout", true, false, noOptions));
-				exchanges.Add(className);
+				_shortTermConnection.WithChannel(channel => channel.ExchangeDeclare(name, exchangeTypeString, true, false, noOptions));
+				exchanges.Add(name);
 			}
 		}
 

@@ -11,7 +11,18 @@ namespace Example.Types
 		public string MetadataName { get; set; }
 	}
 
-	public class UltraMegaData : IHash, IPath
+	public interface IUltraMegaData : IHash, IPath
+	{
+	}
+
+	public class ClassWithTwoInterfaces : IHash, IPath
+	{
+		public Guid CorrelationId { get; set; }
+		public int HashValue { get; set; }
+		public string FilePath { get; set; }
+	}
+
+	public class UltraMegaData : IUltraMegaData
 	{
 		public Guid CorrelationId { get; set; }
 		public int HashValue { get; set; }

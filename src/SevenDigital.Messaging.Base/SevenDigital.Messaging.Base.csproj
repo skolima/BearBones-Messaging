@@ -55,6 +55,7 @@
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="IMessagingBase.cs" />
     <Compile Include="IPendingMessage.cs" />
+    <Compile Include="Routing\ExchangeType.cs" />
     <Compile Include="Serialisation\IPreparedMessage.cs" />
     <Compile Include="MessagingBase.cs" />
     <Compile Include="MessagingBaseConfiguration.cs" />

@@ -9,15 +9,15 @@ namespace SevenDigital.Messaging.Base.Routing
 	{
 		/// <summary>
 		/// Add a new node to which messages can be sent.
-		/// This node send messages over links that share a routing key.
+		/// This node send messages over links that share a routing key (direct exchange).
 		/// </summary>
 		void AddSource(string name);
 
 		/// <summary>
 		/// Add a new node to which messages can be sent.
-		/// This node sends messages to all its links
+		/// Allows specifying the exchange type explicitly.
 		/// </summary>
-		void AddBroadcastSource(string className);
+		void AddSource(string name, ExchangeType exchangeType);
 
 		/// <summary>
 		/// Add a new node where messages can be picked up
