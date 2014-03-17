@@ -37,5 +37,14 @@ namespace Messaging.Base.Unit.Tests.TypeRouting
 			_model.Received().ExchangeDeclare(
 				Arg.Any<string>(), rabbitExchangeType, Arg.Any<bool>(), Arg.Any<bool>(),Arg.Any<IDictionary<string, object>>());
 		}
+
+		[Test]
+		public void Shold_throw_when_exchange_type_is_not_an_expected_value()
+		{
+			var exception = Assert.Throws<ArgumentOutOfRangeException>(
+				() => _subject.AddSource(Guid.NewGuid().ToString(), (ExchangeType) 42));
+
+			Assert.That(exception.Message, Is.StringContaining("42"));
+		}
 	}
 }

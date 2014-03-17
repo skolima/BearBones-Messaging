@@ -29,7 +29,7 @@ namespace Messaging.Base.Unit.Tests
 		[TestCase("Example.Types.IMsg")]
 		public void Should_create_source_for_each_interface_type(string interfaceFullType)
 		{
-			router.Received().AddSource(interfaceFullType);
+			router.Received().AddSource(interfaceFullType, ExchangeType.Direct);
 		}
 
 		[Test]

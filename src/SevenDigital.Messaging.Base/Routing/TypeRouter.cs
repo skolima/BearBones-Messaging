@@ -25,7 +25,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <param name="routingKey"></param>
 		public void BuildRoutes(Type type, string routingKey)
 		{
-			if (type.IsInterface) router.AddSource(type.FullName);
+			if (type.IsInterface) router.AddSource(type.FullName, ExchangeType.Direct);
 			AddSourcesAndRoute(type, routingKey);
 		}
 
@@ -33,7 +33,7 @@ namespace SevenDigital.Messaging.Base.Routing
 		{
 			foreach (var interfaceType in type.DirectlyImplementedInterfaces())
 			{
-				router.AddSource(interfaceType.FullName);
+				router.AddSource(interfaceType.FullName, ExchangeType.Direct);
 				router.RouteSources(type.FullName, interfaceType.FullName, routingKey);
 				AddSourcesAndRoute(interfaceType, routingKey);
 			}

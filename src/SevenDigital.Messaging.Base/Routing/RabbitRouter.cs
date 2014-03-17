@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,15 +62,6 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// Add a new node to which messages can be sent.
 		/// This node send messages over links that share a routing key.
 		/// </summary>
-		public void AddSource(string name)
-		{
-			AddSource(name, ExchangeType.Direct);
-		}
-
-		/// <summary>
-		/// Add a new node to which messages can be sent.
-		/// This node send messages over links that share a routing key.
-		/// </summary>
 		public void AddSource(string name, ExchangeType exchangeType)
 		{
 			string exchangeTypeString;
@@ -86,9 +76,12 @@ namespace SevenDigital.Messaging.Base.Routing
 					break;
 
 				case ExchangeType.Direct:
-				default:
 					exchangeTypeString = "direct";
 					break;
+
+				default:
+					throw new ArgumentOutOfRangeException("exchangeType",
+						String.Format("ExchangeType {0} is not a valid value.", exchangeType));
 			}
 
 			lock (_lockObject)
