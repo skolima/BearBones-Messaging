@@ -17,7 +17,7 @@ namespace Messaging.Base.Unit.Tests
 		{
 			router = Substitute.For<IMessageRouter>();
 			subject = new TypeRouter(router);
-			subject.BuildRoutes(typeof(SuperMetadata), String.Empty);
+			subject.BuildRoutes(typeof(SuperMetadata), String.Empty, ExchangeType.Direct);
 		}
 		
 		[Test]

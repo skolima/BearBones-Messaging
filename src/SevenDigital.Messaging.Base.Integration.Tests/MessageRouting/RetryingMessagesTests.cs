@@ -19,7 +19,7 @@ namespace Messaging.Base.Integration.Tests.MessageRouting
 			subject = new RabbitRouter(longTermConnection, shortTermConnection);
 
 			typeRouter = new TypeRouter(subject);
-			typeRouter.BuildRoutes(typeof(IFile), String.Empty);
+			typeRouter.BuildRoutes(typeof(IFile), String.Empty, ExchangeType.Direct);
 
 			subject.AddDestination("dst");
 			subject.Link("Example.Types.IMsg", "dst", String.Empty);

@@ -18,7 +18,7 @@ namespace Messaging.Base.Unit.Tests
 
 			subject = new TypeRouter(router);
 
-			subject.BuildRoutes(typeof(Example.Types.IMetadataFile), String.Empty);
+			subject.BuildRoutes(typeof(Example.Types.IMetadataFile), String.Empty, ExchangeType.Direct);
 		}
 
 		[Test]

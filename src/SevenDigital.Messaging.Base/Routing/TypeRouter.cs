@@ -21,21 +21,19 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <summary>
 		/// Build all dependant types into the messaging server
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="routingKey"></param>
-		public void BuildRoutes(Type type, string routingKey)
+		public void BuildRoutes(Type type, string routingKey, ExchangeType exchangeType)
 		{
-			if (type.IsInterface) router.AddSource(type.FullName, ExchangeType.Direct);
-			AddSourcesAndRoute(type, routingKey);
+			if (type.IsInterface) router.AddSource(type.FullName, exchangeType);
+			AddSourcesAndRoute(type, routingKey, exchangeType);
 		}
 
-		void AddSourcesAndRoute(Type type, string routingKey)
+		void AddSourcesAndRoute(Type type, string routingKey, ExchangeType exchangeType)
 		{
 			foreach (var interfaceType in type.DirectlyImplementedInterfaces())
 			{
-				router.AddSource(interfaceType.FullName, ExchangeType.Direct);
+				router.AddSource(interfaceType.FullName, exchangeType);
 				router.RouteSources(type.FullName, interfaceType.FullName, routingKey);
-				AddSourcesAndRoute(interfaceType, routingKey);
+				AddSourcesAndRoute(interfaceType, routingKey, exchangeType);
 			}
 		}
 	}

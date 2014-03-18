@@ -53,33 +53,27 @@ namespace SevenDigital.Messaging.Base
 		/// <summary>
 		/// Ensure a destination exists, and bind it to the exchanges for the given type
 		/// </summary>
-		public void CreateDestination<T>(string destinationName, string routingKey)
+		public void CreateDestination<T>(string destinationName, string routingKey, ExchangeType exchangeType)
 		{
-			CreateDestination(typeof(T), destinationName, routingKey);
+			CreateDestination(typeof(T), destinationName, routingKey, exchangeType);
 		}
 
 		/// <summary>
 		/// Ensure a destination exists, and bind it to the exchanges for the given type
 		/// </summary>
-		public void CreateDestination(Type sourceType, string destinationName, string routingKey)
+		public void CreateDestination(Type sourceType, string destinationName, string routingKey, ExchangeType exchangeType)
 		{
-			RouteSource(sourceType, routingKey);
+			RouteSource(sourceType, routingKey, exchangeType);
 			messageRouter.AddDestination(destinationName);
 			messageRouter.Link(sourceType.FullName, destinationName, routingKey);
 		}
 
 		/// <summary>
 		/// Send a message to all bound destinations.
-		/// Returns serialised form of the message object.
 		/// </summary>
-		public void SendMessage(object messageObject, string routingKey)
+		public void SendMessage(object messageObject, string routingKey, ExchangeType exchangeType)
 		{
-			SendPrepared(PrepareForSend(messageObject, routingKey));
-		}
-
-		public void SendMessage(object messageObject)
-		{
-			SendMessage(messageObject, String.Empty);
+			SendPrepared(PrepareForSend(messageObject, routingKey, exchangeType));
 		}
 
 		/// <summary>
@@ -126,14 +120,14 @@ namespace SevenDigital.Messaging.Base
 		}
 
 		static readonly IDictionary<Tuple<Type, string>, RateLimitedAction> RouteCache = new Dictionary<Tuple<Type, string>, RateLimitedAction>();
-		void RouteSource(Type routeType, string routingKey)
+		void RouteSource(Type routeType, string routingKey, ExchangeType exchangeType)
 		{
 			var routeKey = Tuple.Create(routeType, routingKey);
 			lock (RouteCache)
 			{
 				if (!RouteCache.ContainsKey(routeKey))
 				{
-					RouteCache.Add(routeKey, RateLimitedAction.Of(() => typeRouter.BuildRoutes(routeType, routingKey)));
+					RouteCache.Add(routeKey, RateLimitedAction.Of(() => typeRouter.BuildRoutes(routeType, routingKey, exchangeType)));
 				}
 			}
 			RouteCache[routeKey].YoungerThan(TimeSpan.FromMinutes(1));
@@ -152,7 +146,7 @@ namespace SevenDigital.Messaging.Base
 		/// This is intended for later sending with SendPrepared().
 		/// If you want to send immediately, use SendMessage();
 		/// </summary>
-		public IPreparedMessage PrepareForSend(object messageObject, string routingKey)
+		public IPreparedMessage PrepareForSend(object messageObject, string routingKey, ExchangeType exchangeType)
 		{
 			var interfaceTypes = messageObject.GetType().DirectlyImplementedInterfaces().ToList();
 
@@ -162,7 +156,7 @@ namespace SevenDigital.Messaging.Base
 			var sourceType = interfaceTypes.Single();
 			var serialised = serialiser.Serialise(messageObject);
 
-			RouteSource(sourceType, routingKey);
+			RouteSource(sourceType, routingKey, exchangeType);
 			return new PreparedMessage(sourceType.FullName, serialised, routingKey);
 		}
 

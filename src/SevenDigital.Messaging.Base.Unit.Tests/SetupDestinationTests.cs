@@ -25,13 +25,13 @@ namespace Messaging.Base.Unit.Tests
 
 			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
 			messaging.ResetCaches();
-			messaging.CreateDestination<IMetadataFile>("MyServiceDestination", String.Empty);
+			messaging.CreateDestination<IMetadataFile>("MyServiceDestination", String.Empty, ExchangeType.Direct);
 		}
 
 		[Test]
 		public void Should_setup_type_routing_for_listening_type ()
 		{
-			typeRouter.Received().BuildRoutes(typeof(IMetadataFile), String.Empty);
+			typeRouter.Received().BuildRoutes(typeof(IMetadataFile), String.Empty, ExchangeType.Direct);
 		}
 
 		[Test]

@@ -32,14 +32,13 @@ namespace Messaging.Base.Unit.Tests
 
 			messaging = new MessagingBase(typeRouter, messageRouter, serialiser);
 			messaging.ResetCaches();
-			messaging.SendMessage(metadataMessage);
+			messaging.SendMessage(metadataMessage, String.Empty, ExchangeType.Direct);
 		}
 
 		[Test]
 		public void Should_setup_type_message_type_if_not_already_in_place()
 		{
-			messaging.SendMessage(metadataMessage, String.Empty);
-			typeRouter.Received().BuildRoutes(typeof(IMetadataFile), String.Empty);
+			typeRouter.Received().BuildRoutes(typeof(IMetadataFile), String.Empty, ExchangeType.Direct);
 		}
 
 		[Test]
@@ -51,7 +50,7 @@ namespace Messaging.Base.Unit.Tests
 		[Test]
 		public void Should_throw_exception_when_sending_message_without_exactly_one_parent_interface()
 		{
-			var ex = Assert.Throws<ArgumentException>(() => messaging.SendMessage(badMessage, String.Empty));
+			var ex = Assert.Throws<ArgumentException>(() => messaging.SendMessage(badMessage, String.Empty, ExchangeType.Direct));
 			Assert.That(ex.Message, Contains.Substring("Messages must directly implement exactly one interface"));
 		}
 

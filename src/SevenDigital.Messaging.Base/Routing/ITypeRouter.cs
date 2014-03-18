@@ -10,8 +10,6 @@ namespace SevenDigital.Messaging.Base.Routing
 		/// <summary>
 		/// Build all dependant types into the messaging server
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="routingKey"></param>
-		void BuildRoutes(Type type, string routingKey);
+		void BuildRoutes(Type type, string routingKey, ExchangeType exchangeType);
 	}
 }

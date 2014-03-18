@@ -1,4 +1,5 @@
 using System;
+using SevenDigital.Messaging.Base.Routing;
 using SevenDigital.Messaging.Base.Serialisation;
 
 namespace SevenDigital.Messaging.Base
@@ -11,22 +12,17 @@ namespace SevenDigital.Messaging.Base
 		/// <summary>
 		/// Ensure a destination exists, and bind it to the exchanges for the given type
 		/// </summary>
-		void CreateDestination<T>(string destinationName, string routingKey);
+		void CreateDestination<T>(string destinationName, string routingKey, ExchangeType exchangeType);
 		
 		/// <summary>
 		/// Ensure a destination exists, and bind it to the exchanges for the given type
 		/// </summary>
-		void CreateDestination(Type sourceMessage, string destinationName, string routingKey);
+		void CreateDestination(Type sourceMessage, string destinationName, string routingKey, ExchangeType exchangeType);
 
 		/// <summary>
 		/// Send a message to all bound destinations with routing key
 		/// </summary>
-		void SendMessage(object messageObject, string routingKey);
-
-		/// <summary>
-		/// Send a message to all bound destinations.
-		/// </summary>
-		void SendMessage(object messageObject);
+		void SendMessage(object messageObject, string routingKey, ExchangeType exchangeType);
 
 		/// <summary>
 		/// Poll for a waiting message. Returns default(T) if no message.
@@ -49,7 +45,7 @@ namespace SevenDigital.Messaging.Base
 		/// This is intended for later sending with SendPrepared().
 		/// If you want to send immediately, use SendMessage();
 		/// </summary>
-		IPreparedMessage PrepareForSend(object messageObject, string routingKey);
+		IPreparedMessage PrepareForSend(object messageObject, string routingKey, ExchangeType exchangeType);
 
 		/// <summary>
 		/// Immediately send a prepared message.
