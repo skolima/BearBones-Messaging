@@ -175,10 +175,11 @@ namespace SevenDigital.Messaging.Base
 			{
 				RouteCache.Clear();
 			}
-			var channelAction = ObjectFactory.TryGetInstance<IChannelAction>();
-			if (channelAction is LongTermRabbitConnection)
+
+			var longTermRabbitConnection = ObjectFactory.Container.TryGetInstance<IChannelAction>() as LongTermRabbitConnection;
+			if (longTermRabbitConnection != null)
 			{
-				((LongTermRabbitConnection)channelAction).Reset();
+				longTermRabbitConnection.Reset();
 			}
 		}
 	}
